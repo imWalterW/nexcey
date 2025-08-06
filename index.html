@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexcey - Your Web Design Partner</title>
+    <meta name="description" content="Modern, responsive websites tailored to your brand. Professional web design services including landing pages, portfolio sites, and e-commerce solutions.">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="images/logo.png" alt="Nexcey Logo" id="logo-img">
+                </div>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#about-us" class="nav-link">About Us</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                    <li><a href="#clients" class="nav-link">Clients</a></li>
+                    <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                    <li><a href="#contact-us" class="nav-link">Contact Us</a></li>
+                </ul>
+                <div class="nav-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <h1 class="hero-title" id="hero-title">Web Design that Drives Results</h1>
+            <p class="hero-subtitle" id="hero-subtitle">Modern, responsive websites tailored to your brand.</p>
+            <a href="#contact-us" class="cta-button" id="hero-cta">Get Started</a>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about-us" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 id="about-title">About Nexcey</h2>
+                    <p id="about-text">Nexcey is a modern web design studio offering tailor-made website solutions. From stunning landing pages to powerful e-commerce sites, we bring your ideas to life with clean, functional, and engaging designs.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/placeholder-images/about-image.jpg" alt="About Nexcey" id="about-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 id="services-title">Our Services</h2>
+            <div class="services-grid" id="services-grid">
+                <div class="service-item">
+                    <i class="fas fa-laptop-code service-icon"></i>
+                    <h3>Landing Pages</h3>
+                    <p>High-converting single-page websites designed to capture leads and drive action.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-briefcase service-icon"></i>
+                    <h3>Portfolio Websites</h3>
+                    <p>Showcase your work with stunning portfolio sites that highlight your expertise.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-building service-icon"></i>
+                    <h3>Business Websites</h3>
+                    <p>Professional corporate websites that establish credibility and drive growth.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-shopping-cart service-icon"></i>
+                    <h3>E-commerce Websites</h3>
+                    <p>Full-featured online stores with secure payment processing and inventory management.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 id="pricing-title">Pricing Plans</h2>
+            <div class="pricing-grid" id="pricing-grid">
+                <div class="pricing-card" data-plan="starter">
+                    <h3 class="plan-name">Starter Pack</h3>
+                    <div class="plan-price">$200</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Single Page Website</li>
+                        <li><i class="fas fa-check"></i> Free 1 Year Domain & Hosting</li>
+                        <li><i class="fas fa-check"></i> 1 Professional Email</li>
+                    </ul>
+                    <button class="plan-button">Choose Plan</button>
+                </div>
+                <div class="pricing-card featured" data-plan="gold">
+                    <div class="featured-badge">Most Popular</div>
+                    <h3 class="plan-name">Gold Pack</h3>
+                    <div class="plan-price">$350</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Up to 5 Pages</li>
+                        <li><i class="fas fa-check"></i> Free 1 Year Domain & Hosting</li>
+                        <li><i class="fas fa-check"></i> 3 Professional Emails</li>
+                    </ul>
+                    <button class="plan-button">Choose Plan</button>
+                </div>
+                <div class="pricing-card" data-plan="platinum">
+                    <h3 class="plan-name">Platinum Pack</h3>
+                    <div class="plan-price">$500</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Up to 10 Pages (Best for E-commerce)</li>
+                        <li><i class="fas fa-check"></i> Free 1 Year Domain & Hosting</li>
+                        <li><i class="fas fa-check"></i> 5 Professional Emails</li>
+                    </ul>
+                    <button class="plan-button">Choose Plan</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section id="clients" class="clients-section">
+        <div class="container">
+            <h2 id="clients-title">Our Clients</h2>
+            <div class="clients-carousel" id="clients-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide">
+                        <div class="client-item">
+                            <img src="images/placeholder-images/client1-logo.jpg" alt="Client 1" class="client-logo">
+                            <img src="images/placeholder-images/client1-website.jpg" alt="Client 1 Website" class="client-website">
+                        </div>
+                        <div class="client-item">
+                            <img src="images/placeholder-images/client2-logo.jpg" alt="Client 2" class="client-logo">
+                            <img src="images/placeholder-images/client2-website.jpg" alt="Client 2 Website" class="client-website">
+                        </div>
+                        <div class="client-item">
+                            <img src="images/placeholder-images/client3-logo.jpg" alt="Client 3" class="client-logo">
+                            <img src="images/placeholder-images/client3-website.jpg" alt="Client 3 Website" class="client-website">
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn prev" id="clients-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next" id="clients-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 id="testimonials-title">What Our Clients Say</h2>
+            <div class="testimonials-carousel" id="testimonials-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide">
+                        <div class="testimonial-item">
+                            <img src="images/placeholder-images/testimonial1.jpg" alt="Client Photo" class="testimonial-image">
+                            <h4 class="testimonial-name">John Smith</h4>
+                            <p class="testimonial-comment">"Nexcey transformed our online presence completely. Their attention to detail and modern design approach exceeded our expectations."</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <img src="images/placeholder-images/testimonial2.jpg" alt="Client Photo" class="testimonial-image">
+                            <h4 class="testimonial-name">Sarah Johnson</h4>
+                            <p class="testimonial-comment">"Professional, creative, and delivered on time. I couldn't be happier with my new e-commerce website."</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <img src="images/placeholder-images/testimonial3.jpg" alt="Client Photo" class="testimonial-image">
+                            <h4 class="testimonial-name">Mike Davis</h4>
+                            <p class="testimonial-comment">"The team at Nexcey understood our vision perfectly and brought it to life with stunning results."</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn prev" id="testimonials-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next" id="testimonials-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-us" class="contact-section">
+        <div class="container">
+            <h2 id="contact-title">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span id="contact-email">info@nexcey.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span id="contact-phone">+94 72 445 2222</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="contact-address">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</span>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" placeholder="Your Phone">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="images/logo.png" alt="Nexcey Logo" class="footer-logo" id="footer-logo">
+                    <p>Your trusted web design partner for modern, responsive websites.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-envelope"></i> <span id="footer-email">info@nexcey.com</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="footer-phone">+94 72 445 2222</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="footer-address">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</span></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links" id="social-links">
+                        <a href="#" id="facebook-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" id="x-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" id="linkedin-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" id="instagram-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="whatsapp-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Nexcey. All rights reserved.</p>
+                <a href="admin/dashboard.html" class="admin-link">Admin Dashboard</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
