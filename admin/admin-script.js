@@ -1,7 +1,135 @@
-// Admin Dashboard JavaScript - Complete Version
+// Admin Dashboard JavaScript - Complete Version with Login Protection
 document.addEventListener('DOMContentLoaded', function() {
-    initializeAdmin();
+    // Check authentication before initializing admin
+    if (checkAuthenticationStatus()) {
+        initializeAdmin();
+        setupLogoutFunctionality();
+        addCredentialsManagement();
+    } else {
+        redirectToLogin();
+    }
 });
+
+// Authentication check
+function checkAuthenticationStatus() {
+    // Check if admin auth functions are available
+    if (typeof window.adminAuth !== 'undefined') {
+        return window.adminAuth.isAuthenticated();
+    }
+    
+    // Fallback authentication check
+    const sessionData = getSessionData();
+    if (!sessionData || !sessionData.authenticated) {
+        return false;
+    }
+    
+    // Check if session is still valid
+    const maxAge = sessionData.rememberMe ? 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000;
+    const isValid = Date.now() - sessionData.timestamp < maxAge;
+    
+    if (!isValid) {
+        clearSession();
+        return false;
+    }
+    
+    return true;
+}
+
+function getSessionData() {
+    let sessionData = localStorage.getItem('nexcey-admin-session');
+    if (!sessionData) {
+        sessionData = sessionStorage.getItem('nexcey-admin-session');
+    }
+    
+    if (sessionData) {
+        try {
+            return JSON.parse(sessionData);
+        } catch (error) {
+            console.error('Error parsing session data:', error);
+            clearSession();
+        }
+    }
+    
+    return null;
+}
+
+function clearSession() {
+    localStorage.removeItem('nexcey-admin-session');
+    sessionStorage.removeItem('nexcey-admin-session');
+}
+
+function redirectToLogin() {
+    window.location.href = 'index.html';
+}
+
+function setupLogoutFunctionality() {
+    // Add logout button to header
+    const headerActions = document.querySelector('.header-actions');
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'btn btn-danger';
+    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+    logoutBtn.addEventListener('click', handleLogout);
+    headerActions.appendChild(logoutBtn);
+    
+    // Auto-logout on window close/refresh
+    window.addEventListener('beforeunload', () => {
+        const sessionData = getSessionData();
+        if (sessionData && !sessionData.rememberMe) {
+            clearSession();
+        }
+    });
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        clearSession();
+        window.location.href = 'index.html';
+    }
+}
+
+function addCredentialsManagement() {
+    // Add credentials section to general settings
+    const generalSection = document.getElementById('general');
+    const credentialsHTML = `
+        <div class="credentials-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color);">
+            <h3 style="color: var(--danger-color); margin-bottom: 1rem;">
+                <i class="fas fa-shield-alt"></i> Login Credentials
+            </h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="new-username">New Username</label>
+                    <input type="text" id="new-username" placeholder="Enter new username">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm new password">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-warning" id="update-credentials">
+                        <i class="fas fa-key"></i> Update Credentials
+                    </button>
+                </div>
+            </div>
+            <small style="color: var(--danger-color); display: block; margin-top: 1rem;">
+                ⚠️ Warning: Changing credentials will require you to login again with the new details.
+            </small>
+        </div>
+    `;
+    
+    generalSection.insertAdjacentHTML('beforeend', credentialsHTML);
+    
+    // Setup credentials update functionality
+    document.getElementById('update-credentials').addEventListener('click', handleCredentialsUpdate);
+}
+
+function handleCredentialsUpdate() {
+    const newUsername = document.getElementById('new-username').value.trim();
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword =
 
 function initializeAdmin() {
     setupNavigation();
