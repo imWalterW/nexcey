@@ -877,5 +877,7 @@ function saveAllChangesWithValidation() {
         showToast('Please fill in all required fields', 'error');
     }
 }
+// Add these at the end of your admin-script.js file
+});
 
 console.log('Nexcey Admin Dashboard loaded successfully!');
