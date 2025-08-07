@@ -122,8 +122,8 @@ async function loadAllCMSData() {
     console.log('🔄 Loading CMS data...');
     
     // Set your GitHub details here
-    const GITHUB_USERNAME = 'YOUR_GITHUB_USERNAME'; // Replace with your GitHub username
-    const REPO_NAME = 'YOUR_REPO_NAME';             // Replace with your repository name
+    const GITHUB_USERNAME = 'imWalterW'; // Replace with your GitHub username
+    const REPO_NAME = 'nexcey';             // Replace with your repository name
     
     try {
         await Promise.all([
@@ -838,4 +838,5 @@ async function loadCMSData() {
         console.log('CMS data not available, using defaults');
     }
 }
+
 
