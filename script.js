@@ -301,4 +301,65 @@ function loadSavedContent() {
             console.error('Error loading saved content:', error);
         }
     }
+
 }
+// Add this function to your existing script.js
+async function loadCMSData() {
+    try {
+        // Load hero data
+        const heroResponse = await fetch('/_data/hero.json');
+        if (heroResponse.ok) {
+            const heroData = await heroResponse.json();
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroCta = document.getElementById('hero-cta');
+            
+            if (heroTitle) heroTitle.textContent = heroData.title;
+            if (heroSubtitle) heroSubtitle.textContent = heroData.subtitle;
+            if (heroCta) heroCta.textContent = heroData.cta_text;
+        }
+        
+        // Load about data
+        const aboutResponse = await fetch('/_data/about.json');
+        if (aboutResponse.ok) {
+            const aboutData = await aboutResponse.json();
+            const aboutTitle = document.getElementById('about-title');
+            const aboutText = document.getElementById('about-text');
+            
+            if (aboutTitle) aboutTitle.textContent = aboutData.title;
+            if (aboutText) aboutText.textContent = aboutData.text;
+        }
+        
+        // Load contact data
+        const contactResponse = await fetch('/_data/contact.json');
+        if (contactResponse.ok) {
+            const contactData = await contactResponse.json();
+            updateContactInfo(contactData);
+        }
+        
+    } catch (error) {
+        console.log('CMS data not available, using defaults');
+    }
+}
+
+function updateContactInfo(contactData) {
+    const elements = {
+        'contact-email': contactData.email,
+        'contact-phone': contactData.phone,
+        'contact-address': contactData.address,
+        'footer-email': contactData.email,
+        'footer-phone': contactData.phone,
+        'footer-address': contactData.address
+    };
+    
+    Object.keys(elements).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = elements[id];
+    });
+}
+
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadCMSData();
+    // ... your existing code
+});
