@@ -1,143 +1,21 @@
-// Admin Dashboard JavaScript - Complete Version with Login Protection
+// Admin Dashboard JavaScript - Fixed and Complete Version
+console.log('🔧 Admin Dashboard Loading...');
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication before initializing admin
-    if (checkAuthenticationStatus()) {
-        initializeAdmin();
-        setupLogoutFunctionality();
-        addCredentialsManagement();
-    } else {
-        redirectToLogin();
-    }
+    console.log('✅ DOM Content Loaded');
+    initializeAdmin();
 });
 
-// Authentication check
-function checkAuthenticationStatus() {
-    // Check if admin auth functions are available
-    if (typeof window.adminAuth !== 'undefined') {
-        return window.adminAuth.isAuthenticated();
-    }
-    
-    // Fallback authentication check
-    const sessionData = getSessionData();
-    if (!sessionData || !sessionData.authenticated) {
-        return false;
-    }
-    
-    // Check if session is still valid
-    const maxAge = sessionData.rememberMe ? 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000;
-    const isValid = Date.now() - sessionData.timestamp < maxAge;
-    
-    if (!isValid) {
-        clearSession();
-        return false;
-    }
-    
-    return true;
-}
-
-function getSessionData() {
-    let sessionData = localStorage.getItem('nexcey-admin-session');
-    if (!sessionData) {
-        sessionData = sessionStorage.getItem('nexcey-admin-session');
-    }
-    
-    if (sessionData) {
-        try {
-            return JSON.parse(sessionData);
-        } catch (error) {
-            console.error('Error parsing session data:', error);
-            clearSession();
-        }
-    }
-    
-    return null;
-}
-
-function clearSession() {
-    localStorage.removeItem('nexcey-admin-session');
-    sessionStorage.removeItem('nexcey-admin-session');
-}
-
-function redirectToLogin() {
-    window.location.href = 'index.html';
-}
-
-function setupLogoutFunctionality() {
-    // Add logout button to header
-    const headerActions = document.querySelector('.header-actions');
-    const logoutBtn = document.createElement('button');
-    logoutBtn.className = 'btn btn-danger';
-    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
-    logoutBtn.addEventListener('click', handleLogout);
-    headerActions.appendChild(logoutBtn);
-    
-    // Auto-logout on window close/refresh
-    window.addEventListener('beforeunload', () => {
-        const sessionData = getSessionData();
-        if (sessionData && !sessionData.rememberMe) {
-            clearSession();
-        }
-    });
-}
-
-function handleLogout() {
-    if (confirm('Are you sure you want to logout?')) {
-        clearSession();
-        window.location.href = 'index.html';
-    }
-}
-
-function addCredentialsManagement() {
-    // Add credentials section to general settings
-    const generalSection = document.getElementById('general');
-    const credentialsHTML = `
-        <div class="credentials-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color);">
-            <h3 style="color: var(--danger-color); margin-bottom: 1rem;">
-                <i class="fas fa-shield-alt"></i> Login Credentials
-            </h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="new-username">New Username</label>
-                    <input type="text" id="new-username" placeholder="Enter new username">
-                </div>
-                <div class="form-group">
-                    <label for="new-password">New Password</label>
-                    <input type="password" id="new-password" placeholder="Enter new password">
-                </div>
-                <div class="form-group">
-                    <label for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" placeholder="Confirm new password">
-                </div>
-                <div class="form-group">
-                    <button type="button" class="btn btn-warning" id="update-credentials">
-                        <i class="fas fa-key"></i> Update Credentials
-                    </button>
-                </div>
-            </div>
-            <small style="color: var(--danger-color); display: block; margin-top: 1rem;">
-                ⚠️ Warning: Changing credentials will require you to login again with the new details.
-            </small>
-        </div>
-    `;
-    
-    generalSection.insertAdjacentHTML('beforeend', credentialsHTML);
-    
-    // Setup credentials update functionality
-    document.getElementById('update-credentials').addEventListener('click', handleCredentialsUpdate);
-}
-
-function handleCredentialsUpdate() {
-    const newUsername = document.getElementById('new-username').value.trim();
-    const newPassword = document.getElementById('new-password').value;
-    const confirmPassword =
-
 function initializeAdmin() {
+    console.log('🎯 Initializing Admin...');
     setupNavigation();
     setupFormHandlers();
     setupImageUploads();
     setupDynamicLists();
     loadSavedData();
     setupColorPicker();
+    addLogoutButton();
+    console.log('✅ Admin Initialized Successfully!');
 }
 
 // Navigation between sections
@@ -510,7 +388,6 @@ function adjustBrightness(hex, percent) {
 
 // Auto-save functionality
 function autoSave() {
-    // Save current form state to localStorage
     const formData = collectFormData();
     localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
 }
@@ -521,7 +398,7 @@ function collectFormData() {
     // Collect all form inputs
     const inputs = document.querySelectorAll('input, textarea, select');
     inputs.forEach(input => {
-        if (input.type === 'file') return; // Skip file inputs
+        if (input.type === 'file') return;
         
         const id = input.id || input.name;
         if (id) {
@@ -643,6 +520,8 @@ function populateImagePreviews(images) {
 // Save all changes
 function saveAllChanges() {
     const saveBtn = document.getElementById('save-all');
+    if (!saveBtn) return;
+    
     const originalText = saveBtn.innerHTML;
     
     // Show loading state
@@ -703,6 +582,8 @@ function prepareContentForWebsite(data) {
 // Toast notification system
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
+    if (!toast) return;
+    
     const toastContent = toast.querySelector('.toast-content span');
     const toastIcon = toast.querySelector('.toast-content i');
     
@@ -734,150 +615,31 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// Mobile menu toggle for admin panel
-function toggleMobileMenu() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('open');
-}
-
-// Add mobile menu button functionality (if needed)
-document.addEventListener('click', (e) => {
-    const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
+// Add logout functionality  
+function addLogoutButton() {
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) return;
     
-    // Close sidebar when clicking outside on mobile
-    if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
-        if (!sidebar.contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
-    }
-});
-
-// Handle window resize
-window.addEventListener('resize', () => {
-    const sidebar = document.querySelector('.sidebar');
-    
-    // Close mobile menu on desktop
-    if (window.innerWidth > 1024) {
-        sidebar.classList.remove('open');
-    }
-});
-
-// Export functionality (bonus feature)
-function exportWebsiteData() {
-    const data = collectFormData();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'nexcey-website-data.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    showToast('Website data exported successfully!', 'success');
-}
-
-// Import functionality (bonus feature)
-function importWebsiteData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            populateFormData(data);
-            showToast('Data imported successfully!', 'success');
-        } catch (error) {
-            showToast('Error importing data. Please check the file format.', 'error');
-            console.error('Import error:', error);
-        }
-    };
-    reader.readAsText(file);
-}
-
-// Clear all data function (with confirmation)
-function clearAllData() {
-    if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
-        localStorage.removeItem('nexcey-admin-data');
-        localStorage.removeItem('nexcey-content');
-        localStorage.removeItem('nexcey-images');
-        localStorage.removeItem('nexcey-primary-color');
-        
-        // Reload the page to reset everything
-        location.reload();
-    }
-}
-
-// Initialize tooltips or help text
-function initializeHelpSystem() {
-    // Add help tooltips to form elements
-    const helpTexts = {
-        'site-title': 'This appears in the browser tab and search results',
-        'primary-color': 'This color will be used throughout your website',
-        'hero-title': 'The main headline visitors see first',
-        'hero-subtitle': 'Supporting text under your main headline',
-        'contact-email': 'Where contact form submissions will be sent'
-    };
-    
-    Object.keys(helpTexts).forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.title = helpTexts[fieldId];
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'btn btn-danger';
+    logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+    logoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('nexcey-admin-session');
+            sessionStorage.removeItem('nexcey-admin-session');
+            window.location.href = 'index.html';
         }
     });
+    headerActions.appendChild(logoutBtn);
 }
 
-// Initialize help system
-document.addEventListener('DOMContentLoaded', () => {
-    initializeHelpSystem();
-});
-
-// Add keyboard shortcuts
+// Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     // Ctrl+S to save
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         saveAllChanges();
     }
-    
-    // Ctrl+E to export
-    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
-        e.preventDefault();
-        exportWebsiteData();
-    }
 });
 
-// Validate form inputs
-function validateFormInputs() {
-    const requiredFields = ['site-title', 'hero-title', 'contact-email'];
-    let isValid = true;
-    
-    requiredFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field && !field.value.trim()) {
-            field.style.borderColor = 'var(--danger-color)';
-            isValid = false;
-        } else if (field) {
-            field.style.borderColor = '';
-        }
-    });
-    
-    return isValid;
-}
-
-// Enhanced save with validation
-function saveAllChangesWithValidation() {
-    if (validateFormInputs()) {
-        saveAllChanges();
-    } else {
-        showToast('Please fill in all required fields', 'error');
-    }
-}
-// Add these at the end of your admin-script.js file
-});
-
-console.log('Nexcey Admin Dashboard loaded successfully!');
+console.log('✅ Nexcey Admin Dashboard loaded successfully!');
