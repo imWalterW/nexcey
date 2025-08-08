@@ -1,3 +1,24 @@
+// Add this at the very beginning of your admin-script.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Check Netlify Identity authentication
+    if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+            if (!user) {
+                // Redirect to CMS login
+                window.location.href = 'cms.html';
+                return;
+            }
+            // User is authenticated, proceed with admin
+            console.log('✅ User authenticated:', user.email);
+            initializeHybridAdmin();
+        });
+    } else {
+        // Fallback - proceed without auth (for testing)
+        console.log('⚠️ Netlify Identity not available, proceeding without auth');
+        initializeHybridAdmin();
+    }
+});
+
 // Hybrid Admin Dashboard - Your Layout + Netlify CMS Backend
 console.log('🔧 Hybrid Admin Dashboard Loading...');
 
@@ -701,3 +722,4 @@ function addLogoutButton() {
 }
 
 console.log('✅ Hybrid Admin Dashboard loaded successfully!');
+
