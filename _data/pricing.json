@@ -1,0 +1,31 @@
+{
+  "plans": [
+    {
+      "name": "Starter Pack",
+      "price": "$200",
+      "features": [
+        "Single Page Website",
+        "Free 1 Year Domain & Hosting",
+        "1 Professional Email"
+      ]
+    },
+    {
+      "name": "Gold Pack",
+      "price": "$350",
+      "features": [
+        "Up to 5 Pages",
+        "Free 1 Year Domain & Hosting",
+        "3 Professional Emails"
+      ]
+    },
+    {
+      "name": "Platinum Pack",
+      "price": "$500",
+      "features": [
+        "Up to 10 Pages (Best for E-commerce)",
+        "Free 1 Year Domain & Hosting",
+        "5 Professional Emails"
+      ]
+    }
+  ]
+}
