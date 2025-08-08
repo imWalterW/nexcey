@@ -610,6 +610,130 @@ function setupPlanButtons() {
         });
     });
 }
+// Add this function to your existing script.js
+async function loadCMSContent() {
+    console.log('🔄 Loading CMS content...');
+    
+    try {
+        // Load hero data
+        const heroResponse = await fetch('/_data/hero.json');
+        if (heroResponse.ok) {
+            const heroData = await heroResponse.json();
+            updateHeroContent(heroData);
+        }
+        
+        // Load about data
+        const aboutResponse = await fetch('/_data/about.json');
+        if (aboutResponse.ok) {
+            const aboutData = await aboutResponse.json();
+            updateAboutContent(aboutData);
+        }
+        
+        // Load contact data
+        const contactResponse = await fetch('/_data/contact.json');
+        if (contactResponse.ok) {
+            const contactData = await contactResponse.json();
+            updateContactContent(contactData);
+        }
+        
+        // Load social data
+        const socialResponse = await fetch('/_data/social.json');
+        if (socialResponse.ok) {
+            const socialData = await socialResponse.json();
+            updateSocialContent(socialData);
+        }
+        
+        // Load settings
+        const settingsResponse = await fetch('/_data/settings.json');
+        if (settingsResponse.ok) {
+            const settingsData = await settingsResponse.json();
+            updateSiteSettings(settingsData);
+        }
+        
+        console.log('✅ CMS content loaded successfully!');
+        
+    } catch (error) {
+        console.log('⚠️ CMS content not available, using defaults');
+    }
+}
+
+function updateHeroContent(data) {
+    const heroTitle = document.getElementById('hero-title');
+    const heroSubtitle = document.getElementById('hero-subtitle');
+    const heroCta = document.getElementById('hero-cta');
+    
+    if (heroTitle && data.title) heroTitle.textContent = data.title;
+    if (heroSubtitle && data.subtitle) heroSubtitle.textContent = data.subtitle;
+    if (heroCta && data.cta_text) heroCta.textContent = data.cta_text;
+}
+
+function updateAboutContent(data) {
+    const aboutTitle = document.getElementById('about-title');
+    const aboutText = document.getElementById('about-text');
+    
+    if (aboutTitle && data.title) aboutTitle.textContent = data.title;
+    if (aboutText && data.text) aboutText.textContent = data.text;
+}
+
+function updateContactContent(data) {
+    const elements = {
+        'contact-email': data.email,
+        'contact-phone': data.phone,
+        'contact-address': data.address,
+        'footer-email': data.email,
+        'footer-phone': data.phone,
+        'footer-address': data.address
+    };
+    
+    Object.keys(elements).forEach(id => {
+        const element = document.getElementById(id);
+        if (element && elements[id]) {
+            element.textContent = elements[id];
+        }
+    });
+}
+
+function updateSocialContent(data) {
+    const socialLinks = {
+        'facebook-link': data.facebook,
+        'x-link': data.twitter,
+        'linkedin-link': data.linkedin,
+        'instagram-link': data.instagram,
+        'whatsapp-link': data.whatsapp
+    };
+    
+    Object.keys(socialLinks).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (socialLinks[id]) {
+                element.href = socialLinks[id];
+                element.style.display = 'inline-block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+    });
+}
+
+function updateSiteSettings(data) {
+    // Update site title
+    if (data.site_title) {
+        document.title = data.site_title;
+    }
+    
+    // Update theme color
+    if (data.primary_color) {
+        document.documentElement.style.setProperty('--primary-color', data.primary_color);
+        
+        // Calculate variations
+        const primaryLight = adjustBrightness(data.primary_color, 40);
+        const primaryDark = adjustBrightness(data.primary_color, -40);
+        
+        document.documentElement.style.setProperty('--primary-light', primaryLight);
+        document.documentElement.style.setProperty('--primary-dark', primaryDark);
+        document.documentElement.style.setProperty('--gradient', `linear-gradient(135deg, ${data.primary_color} 0%, ${primaryLight} 100%)`);
+    }
+}
 
 // Initialize carousels
 document.addEventListener('DOMContentLoaded', () => {
@@ -838,5 +962,6 @@ async function loadCMSData() {
         console.log('CMS data not available, using defaults');
     }
 }
+
 
 
