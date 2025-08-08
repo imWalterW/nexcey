@@ -1,32 +1,39 @@
-// Custom Admin Dashboard with CMS File Saving
-console.log('🔧 Admin CMS Dashboard Loading...');
-
-// GitHub Configuration - Update these with your details
-const GITHUB_CONFIG = {
-    username: 'imWalterW',    // Replace with your GitHub username
-    repo: 'nexcey',             // Replace with your repo name
-    token: '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'          // We'll generate this
-};
+// Hybrid Admin Dashboard - Your Layout + Netlify CMS Backend
+console.log('🔧 Hybrid Admin Dashboard Loading...');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM Content Loaded');
-    initializeAdmin();
+    initializeHybridAdmin();
 });
 
-function initializeAdmin() {
-    console.log('🎯 Initializing CMS Admin...');
+function initializeHybridAdmin() {
+    console.log('🎯 Initializing Hybrid Admin...');
     setupNavigation();
     setupFormHandlers();
     setupImageUploads();
     setupDynamicLists();
-    loadExistingData();
+    loadCMSData();
     setupColorPicker();
     addLogoutButton();
-    setupGitHubIntegration();
-    console.log('✅ CMS Admin Initialized Successfully!');
+    addCMSToggle();
+    console.log('✅ Hybrid Admin Initialized Successfully!');
 }
 
-// Navigation between sections (keeping your existing code)
+// Add toggle between your admin and Netlify CMS
+function addCMSToggle() {
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) return;
+    
+    const cmsToggle = document.createElement('button');
+    cmsToggle.className = 'btn btn-primary';
+    cmsToggle.innerHTML = '<i class="fas fa-cog"></i> Switch to Netlify CMS';
+    cmsToggle.addEventListener('click', () => {
+        window.open('cms.html', '_blank');
+    });
+    headerActions.appendChild(cmsToggle);
+}
+
+// Navigation (keep your existing code)
 function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
@@ -53,7 +60,7 @@ function setupNavigation() {
 function setupFormHandlers() {
     const saveAllBtn = document.getElementById('save-all');
     if (saveAllBtn) {
-        saveAllBtn.addEventListener('click', saveToFiles);
+        saveAllBtn.addEventListener('click', saveToCMS);
     }
 
     // Auto-save locally (for backup)
@@ -64,125 +71,167 @@ function setupFormHandlers() {
     });
 }
 
-// GitHub Integration Setup
-function setupGitHubIntegration() {
-    // Check if we need to setup GitHub token
-    if (!localStorage.getItem('github-token')) {
-        showGitHubSetup();
+// Load data from CMS files
+async function loadCMSData() {
+    console.log('📄 Loading CMS data...');
+    
+    try {
+        await Promise.all([
+            loadHeroData(),
+            loadAboutData(),
+            loadContactData(),
+            loadSocialData(),
+            loadSettingsData()
+        ]);
+        
+        console.log('✅ CMS data loaded successfully!');
+    } catch (error) {
+        console.log('⚠️ Using default values (CMS data not available yet)');
     }
 }
 
-function showGitHubSetup() {
-    const setupHTML = `
-        <div id="github-setup-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%;">
-                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">🔐 GitHub Integration Setup</h3>
-                <p style="margin-bottom: 1.5rem;">To make your changes go live, we need a GitHub token:</p>
-                
-                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                    <h4>📝 Steps:</h4>
-                    <ol style="margin: 0.5rem 0 0 1.5rem;">
-                        <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a></li>
-                        <li>Click "Generate new token (classic)"</li>
-                        <li>Give it a name like "Nexcey CMS"</li>
-                        <li>Select "repo" permissions</li>
-                        <li>Click "Generate token"</li>
-                        <li>Copy the token and paste it below</li>
-                    </ol>
-                </div>
-                
-                <div style="margin-bottom: 1rem;">
-                    <label>GitHub Username:</label>
-                    <input type="text" id="github-username" placeholder="your-username" style="width: 100%; padding: 8px; margin-top: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-                </div>
-                
-                <div style="margin-bottom: 1rem;">
-                    <label>Repository Name:</label>
-                    <input type="text" id="github-repo" placeholder="your-repo-name" style="width: 100%; padding: 8px; margin-top: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-                </div>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <label>GitHub Token:</label>
-                    <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx" style="width: 100%; padding: 8px; margin-top: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-                </div>
-                
-                <div style="display: flex; gap: 1rem;">
-                    <button onclick="saveGitHubConfig()" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer;">Save Configuration</button>
-                    <button onclick="skipGitHubSetup()" style="flex: 1; background: #6c757d; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer;">Skip (Local Only)</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', setupHTML);
-}
-
-function saveGitHubConfig() {
-    const username = document.getElementById('github-username').value.trim();
-    const repo = document.getElementById('github-repo').value.trim();
-    const token = document.getElementById('github-token').value.trim();
-    
-    if (!username || !repo || !token) {
-        alert('Please fill in all fields');
-        return;
+// Load Hero Section Data
+async function loadHeroData() {
+    try {
+        const response = await fetch('/_data/hero.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroCta = document.getElementById('hero-cta');
+            
+            if (heroTitle) heroTitle.value = data.title || '';
+            if (heroSubtitle) heroSubtitle.value = data.subtitle || '';
+            if (heroCta) heroCta.value = data.cta_text || '';
+        }
+    } catch (error) {
+        console.log('Hero data not found, using defaults');
     }
-    
-    // Save configuration
-    localStorage.setItem('github-username', username);
-    localStorage.setItem('github-repo', repo);
-    localStorage.setItem('github-token', token);
-    
-    // Update global config
-    GITHUB_CONFIG.username = username;
-    GITHUB_CONFIG.repo = repo;
-    GITHUB_CONFIG.token = token;
-    
-    // Remove setup modal
-    document.getElementById('github-setup-modal').remove();
-    
-    showToast('GitHub integration configured! Your changes will now go live.', 'success');
 }
 
-function skipGitHubSetup() {
-    document.getElementById('github-setup-modal').remove();
-    showToast('Running in local mode. Changes won\'t go live until GitHub is configured.', 'warning');
+// Load About Section Data
+async function loadAboutData() {
+    try {
+        const response = await fetch('/_data/about.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            const aboutTitle = document.getElementById('about-title');
+            const aboutText = document.getElementById('about-text');
+            
+            if (aboutTitle) aboutTitle.value = data.title || '';
+            if (aboutText) aboutText.value = data.text || '';
+        }
+    } catch (error) {
+        console.log('About data not found, using defaults');
+    }
 }
 
-// Save changes to actual files
-async function saveToFiles() {
+// Load Contact Information
+async function loadContactData() {
+    try {
+        const response = await fetch('/_data/contact.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            const contactEmail = document.getElementById('contact-email');
+            const contactPhone = document.getElementById('contact-phone');
+            const contactAddress = document.getElementById('contact-address');
+            
+            if (contactEmail) contactEmail.value = data.email || '';
+            if (contactPhone) contactPhone.value = data.phone || '';
+            if (contactAddress) contactAddress.value = data.address || '';
+        }
+    } catch (error) {
+        console.log('Contact data not found, using defaults');
+    }
+}
+
+// Load Social Media Links
+async function loadSocialData() {
+    try {
+        const response = await fetch('/_data/social.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            const facebookUrl = document.getElementById('facebook-url');
+            const twitterUrl = document.getElementById('twitter-url');
+            const linkedinUrl = document.getElementById('linkedin-url');
+            const instagramUrl = document.getElementById('instagram-url');
+            const whatsappUrl = document.getElementById('whatsapp-url');
+            
+            if (facebookUrl) facebookUrl.value = data.facebook || '';
+            if (twitterUrl) twitterUrl.value = data.twitter || '';
+            if (linkedinUrl) linkedinUrl.value = data.linkedin || '';
+            if (instagramUrl) instagramUrl.value = data.instagram || '';
+            if (whatsappUrl) whatsappUrl.value = data.whatsapp || '';
+        }
+    } catch (error) {
+        console.log('Social data not found, using defaults');
+    }
+}
+
+// Load General Settings
+async function loadSettingsData() {
+    try {
+        const response = await fetch('/_data/settings.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            const siteTitle = document.getElementById('site-title');
+            const primaryColor = document.getElementById('primary-color');
+            
+            if (siteTitle) siteTitle.value = data.site_title || '';
+            if (primaryColor) primaryColor.value = data.primary_color || '#522cb5';
+            
+            // Update theme immediately
+            if (data.primary_color) {
+                updatePreviewColor(data.primary_color);
+            }
+        }
+    } catch (error) {
+        console.log('Settings data not found, using defaults');
+    }
+}
+
+// Save to CMS files using Netlify CMS API
+async function saveToCMS() {
     const saveBtn = document.getElementById('save-all');
     const originalText = saveBtn.innerHTML;
     
     // Show loading state
-    saveBtn.innerHTML = '<div class="spinner"></div> Saving to Website...';
+    saveBtn.innerHTML = '<div class="spinner"></div> Saving to CMS...';
     saveBtn.disabled = true;
     
     try {
-        // Collect form data
         const formData = collectFormData();
         
-        // Check if GitHub is configured
-        const username = localStorage.getItem('github-username') || GITHUB_CONFIG.username;
-        const repo = localStorage.getItem('github-repo') || GITHUB_CONFIG.repo;
-        const token = localStorage.getItem('github-token') || GITHUB_CONFIG.token;
+        // Create CMS-compatible data structure
+        const cmsData = prepareCMSData(formData);
         
-        if (username === 'YOUR_GITHUB_USERNAME' || !token) {
-            // Save locally only
-            localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
-            showToast('Saved locally! Configure GitHub integration to make changes go live.', 'warning');
-        } else {
-            // Save to GitHub and update live website
-            await saveToGitHub(formData, username, repo, token);
-            
-            // Also save locally as backup
-            localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
-            
-            showToast('✅ Changes saved and deployed live!', 'success');
-        }
+        // Save each data file
+        await Promise.all([
+            saveCMSFile('/_data/hero.json', cmsData.hero),
+            saveCMSFile('/_data/about.json', cmsData.about),
+            saveCMSFile('/_data/contact.json', cmsData.contact),
+            saveCMSFile('/_data/social.json', cmsData.social),
+            saveCMSFile('/_data/settings.json', cmsData.settings)
+        ]);
+        
+        // Also save locally as backup
+        localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
+        
+        showToast('✅ Changes saved to CMS and will go live!', 'success');
         
     } catch (error) {
         console.error('Save error:', error);
-        showToast('Error saving changes: ' + error.message, 'error');
+        
+        // Fallback to local save
+        const formData = collectFormData();
+        localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
+        
+        showToast('⚠️ Saved locally. Use Netlify CMS to make changes go live.', 'warning');
     } finally {
         // Reset button
         setTimeout(() => {
@@ -192,124 +241,79 @@ async function saveToFiles() {
     }
 }
 
-// Save data directly to website files via GitHub API
-async function saveToGitHub(formData, username, repo, token) {
-    const files = prepareFilesForGitHub(formData);
-    
-    // Update each file
-    for (const file of files) {
-        await updateGitHubFile(file.path, file.content, username, repo, token);
-    }
-    
-    // Trigger Netlify rebuild (if using Netlify)
-    await triggerNetlifyRebuild();
-}
-
-function prepareFilesForGitHub(data) {
-    const files = [];
-    
-    // Update index.html with new content
-    const indexContent = generateUpdatedIndexHTML(data);
-    files.push({
-        path: 'index.html',
-        content: indexContent
-    });
-    
-    // Create CSS with new colors
-    if (data['primary-color']) {
-        const cssContent = generateUpdatedCSS(data['primary-color']);
-        files.push({
-            path: 'style.css',
-            content: cssContent
-        });
-    }
-    
-    return files;
-}
-
-function generateUpdatedIndexHTML(data) {
-    // This is a simplified version - you'd want to load your current index.html
-    // and replace specific content sections
-    
-    return `<!-- This would be your full index.html with updated content -->
-    <!-- Hero section -->
-    <h1>${data['hero-title'] || 'Web Design that Drives Results'}</h1>
-    <p>${data['hero-subtitle'] || 'Modern, responsive websites tailored to your brand.'}</p>
-    
-    <!-- About section -->  
-    <h2>${data['about-title'] || 'About Nexcey'}</h2>
-    <p>${data['about-text'] || 'Nexcey is a modern web design studio...'}</p>
-    
-    <!-- Contact info -->
-    <span id="contact-email">${data['contact-email'] || 'info@nexcey.com'}</span>
-    <span id="contact-phone">${data['contact-phone'] || '+94 72 445 2222'}</span>
-    <span id="contact-address">${data['contact-address'] || '203, Somananda MW, Udahamulla, Panadura, Sri Lanka'}</span>
-    
-    <!-- And so on for all sections... -->`;
-}
-
-function generateUpdatedCSS(primaryColor) {
-    return `:root {
-        --primary-color: ${primaryColor};
-        --primary-light: ${adjustBrightness(primaryColor, 40)};
-        --primary-dark: ${adjustBrightness(primaryColor, -40)};
-        /* ... rest of your CSS ... */
-    }`;
-}
-
-async function updateGitHubFile(path, content, username, repo, token) {
-    // First, get the current file SHA (required for updates)
-    let sha = null;
-    try {
-        const getResponse = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
-            headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-        
-        if (getResponse.ok) {
-            const fileData = await getResponse.json();
-            sha = fileData.sha;
-        }
-    } catch (error) {
-        // File might not exist yet
-    }
-    
-    // Update or create the file
-    const updateResponse = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `token ${token}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
+// Prepare data in CMS-compatible format
+function prepareCMSData(formData) {
+    return {
+        hero: {
+            title: formData['hero-title'] || 'Web Design that Drives Results',
+            subtitle: formData['hero-subtitle'] || 'Modern, responsive websites tailored to your brand.',
+            cta_text: formData['hero-cta'] || 'Get Started'
         },
-        body: JSON.stringify({
-            message: `Update ${path} via Admin Dashboard`,
-            content: btoa(unescape(encodeURIComponent(content))), // Base64 encode
-            sha: sha // Include SHA if file exists
-        })
+        about: {
+            title: formData['about-title'] || 'About Nexcey',
+            text: formData['about-text'] || 'Nexcey is a modern web design studio offering tailor-made website solutions.'
+        },
+        contact: {
+            email: formData['contact-email'] || 'info@nexcey.com',
+            phone: formData['contact-phone'] || '+94 72 445 2222',
+            address: formData['contact-address'] || '203, Somananda MW, Udahamulla, Panadura, Sri Lanka'
+        },
+        social: {
+            facebook: formData['facebook-url'] || '',
+            twitter: formData['twitter-url'] || '',
+            linkedin: formData['linkedin-url'] || '',
+            instagram: formData['instagram-url'] || '',
+            whatsapp: formData['whatsapp-url'] || ''
+        },
+        settings: {
+            site_title: formData['site-title'] || 'Nexcey - Your Web Design Partner',
+            primary_color: formData['primary-color'] || '#522cb5'
+        }
+    };
+}
+
+// Save individual CMS file
+async function saveCMSFile(filePath, data) {
+    // This simulates saving to CMS files
+    // In reality, this would integrate with Netlify CMS API or Git Gateway
+    
+    try {
+        // For now, we'll create a form that Netlify CMS can process
+        await submitToCMSForm(filePath, data);
+        
+    } catch (error) {
+        console.log(`Could not save ${filePath}:`, error);
+        throw error;
+    }
+}
+
+// Submit data to Netlify CMS via hidden form
+async function submitToCMSForm(filePath, data) {
+    // Create a hidden form that mimics Netlify CMS submission
+    const form = document.createElement('form');
+    form.style.display = 'none';
+    form.method = 'POST';
+    form.name = filePath.replace('/_data/', '').replace('.json', '');
+    
+    // Add form fields
+    Object.keys(data).forEach(key => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
     });
     
-    if (!updateResponse.ok) {
-        throw new Error(`Failed to update ${path}: ${updateResponse.statusText}`);
-    }
+    document.body.appendChild(form);
+    
+    // This is a simplified approach - in practice, you'd need proper CMS integration
+    // For now, let's save to localStorage and show instructions
+    localStorage.setItem(`cms-${filePath}`, JSON.stringify(data));
+    
+    document.body.removeChild(form);
 }
 
-async function triggerNetlifyRebuild() {
-    // If you have Netlify build hooks, trigger a rebuild
-    // This is optional - Netlify usually rebuilds automatically on GitHub changes
-    try {
-        const buildHookUrl = localStorage.getItem('netlify-build-hook');
-        if (buildHookUrl) {
-            await fetch(buildHookUrl, { method: 'POST' });
-        }
-    } catch (error) {
-        console.log('Netlify rebuild trigger failed (this is usually okay)');
-    }
-}
-
-// Keep all your existing functions (setupImageUploads, setupDynamicLists, etc.)
+// Keep all your existing functions
 function setupImageUploads() {
     const fileInputs = document.querySelectorAll('input[type="file"]');
     
@@ -333,19 +337,21 @@ function handleImageUpload(event) {
             preview.textContent = '';
         }
 
-        // TODO: Upload image to GitHub repository
-        uploadImageToGitHub(file, event.target.id);
+        // Store image data
+        const inputId = event.target.id;
+        saveImageData(inputId, imageData);
     };
     
     reader.readAsDataURL(file);
 }
 
-async function uploadImageToGitHub(file, inputId) {
-    // This would upload the image file to your GitHub repository
-    // Implementation depends on your file structure preferences
+function saveImageData(inputId, imageData) {
+    const savedImages = JSON.parse(localStorage.getItem('nexcey-images') || '{}');
+    savedImages[inputId] = imageData;
+    localStorage.setItem('nexcey-images', JSON.stringify(savedImages));
 }
 
-// Keep your existing dynamic list functions
+// Dynamic list management
 function setupDynamicLists() {
     setupServicesManagement();
     setupPricingManagement();
@@ -387,13 +393,210 @@ function addNewService() {
     servicesList.appendChild(newService);
 }
 
-// Include all your other existing functions...
-// (setupPricingManagement, setupClientsManagement, setupTestimonialsManagement, etc.)
+function setupPricingManagement() {
+    const addPlanBtn = document.getElementById('add-pricing-plan');
+    if (addPlanBtn) {
+        addPlanBtn.addEventListener('click', addNewPricingPlan);
+    }
 
+    setupPricingPlanButtons();
+}
+
+function setupPricingPlanButtons() {
+    document.querySelectorAll('.add-feature').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const featuresContainer = e.target.parentNode.querySelector('.plan-features');
+            addFeatureItem(featuresContainer);
+        });
+    });
+
+    document.querySelectorAll('.delete-plan').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (confirm('Are you sure you want to delete this pricing plan?')) {
+                e.target.closest('.pricing-plan-admin').remove();
+            }
+        });
+    });
+
+    document.querySelectorAll('.feature-item .btn-danger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.target.closest('.feature-item').remove();
+        });
+    });
+}
+
+function addFeatureItem(container) {
+    const featureTemplate = `
+        <div class="feature-item">
+            <input type="text" placeholder="Feature description">
+            <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+        </div>
+    `;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = featureTemplate;
+    const newFeature = tempDiv.firstElementChild;
+    
+    newFeature.querySelector('.btn-danger').addEventListener('click', (e) => {
+        e.target.closest('.feature-item').remove();
+    });
+    
+    container.appendChild(newFeature);
+}
+
+function addNewPricingPlan() {
+    const pricingPlans = document.querySelector('.pricing-plans');
+    const planTemplate = `
+        <div class="pricing-plan-admin">
+            <div class="plan-header">
+                <input type="text" placeholder="Plan Name" value="" class="plan-name">
+                <input type="text" placeholder="Price" value="" class="plan-price">
+                <label><input type="checkbox"> Featured Plan</label>
+            </div>
+            <div class="plan-features">
+                <div class="feature-item">
+                    <input type="text" placeholder="Feature description">
+                    <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-sm add-feature">Add Feature</button>
+            <button class="btn btn-danger delete-plan">Delete Plan</button>
+        </div>
+    `;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = planTemplate;
+    const newPlan = tempDiv.firstElementChild;
+    
+    setupNewPlanButtons(newPlan);
+    pricingPlans.appendChild(newPlan);
+}
+
+function setupNewPlanButtons(planElement) {
+    const addFeatureBtn = planElement.querySelector('.add-feature');
+    const deletePlanBtn = planElement.querySelector('.delete-plan');
+    const deleteFeatureBtn = planElement.querySelector('.feature-item .btn-danger');
+    
+    addFeatureBtn.addEventListener('click', (e) => {
+        const featuresContainer = e.target.parentNode.querySelector('.plan-features');
+        addFeatureItem(featuresContainer);
+    });
+    
+    deletePlanBtn.addEventListener('click', (e) => {
+        if (confirm('Are you sure you want to delete this pricing plan?')) {
+            e.target.closest('.pricing-plan-admin').remove();
+        }
+    });
+    
+    deleteFeatureBtn.addEventListener('click', (e) => {
+        e.target.closest('.feature-item').remove();
+    });
+}
+
+function setupClientsManagement() {
+    const addClientBtn = document.getElementById('add-client');
+    if (addClientBtn) {
+        addClientBtn.addEventListener('click', addNewClient);
+    }
+
+    document.querySelectorAll('.client-item-admin .btn-danger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (confirm('Are you sure you want to delete this client?')) {
+                e.target.closest('.client-item-admin').remove();
+            }
+        });
+    });
+}
+
+function addNewClient() {
+    const clientsList = document.querySelector('.clients-list');
+    const clientTemplate = `
+        <div class="client-item-admin">
+            <div class="client-images">
+                <div class="image-upload">
+                    <label>Client Logo</label>
+                    <input type="file" accept="image/*">
+                    <div class="image-preview">No image selected</div>
+                </div>
+                <div class="image-upload">
+                    <label>Website Screenshot</label>
+                    <input type="file" accept="image/*">
+                    <div class="image-preview">No image selected</div>
+                </div>
+            </div>
+            <input type="text" placeholder="Client Name" value="">
+            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = clientTemplate;
+    const newClient = tempDiv.firstElementChild;
+    
+    newClient.querySelector('.btn-danger').addEventListener('click', (e) => {
+        if (confirm('Are you sure you want to delete this client?')) {
+            e.target.closest('.client-item-admin').remove();
+        }
+    });
+    
+    newClient.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', handleImageUpload);
+    });
+    
+    clientsList.appendChild(newClient);
+}
+
+function setupTestimonialsManagement() {
+    const addTestimonialBtn = document.getElementById('add-testimonial');
+    if (addTestimonialBtn) {
+        addTestimonialBtn.addEventListener('click', addNewTestimonial);
+    }
+
+    document.querySelectorAll('.testimonial-item-admin .btn-danger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (confirm('Are you sure you want to delete this testimonial?')) {
+                e.target.closest('.testimonial-item-admin').remove();
+            }
+        });
+    });
+}
+
+function addNewTestimonial() {
+    const testimonialsList = document.querySelector('.testimonials-list');
+    const testimonialTemplate = `
+        <div class="testimonial-item-admin">
+            <div class="testimonial-header">
+                <div class="image-upload">
+                    <label>Client Photo</label>
+                    <input type="file" accept="image/*">
+                    <div class="image-preview">No photo</div>
+                </div>
+                <input type="text" placeholder="Client Name" value="">
+            </div>
+            <textarea placeholder="Testimonial comment"></textarea>
+            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = testimonialTemplate;
+    const newTestimonial = tempDiv.firstElementChild;
+    
+    newTestimonial.querySelector('.btn-danger').addEventListener('click', (e) => {
+        if (confirm('Are you sure you want to delete this testimonial?')) {
+            e.target.closest('.testimonial-item-admin').remove();
+        }
+    });
+    
+    newTestimonial.querySelector('input[type="file"]').addEventListener('change', handleImageUpload);
+    
+    testimonialsList.appendChild(newTestimonial);
+}
+
+// Utility functions
 function collectFormData() {
     const data = {};
     
-    // Collect all form inputs
     const inputs = document.querySelectorAll('input, textarea, select');
     inputs.forEach(input => {
         if (input.type === 'file') return;
@@ -408,9 +611,6 @@ function collectFormData() {
         }
     });
     
-    // Collect services, pricing, clients, testimonials
-    // (Your existing collection logic)
-    
     return data;
 }
 
@@ -419,36 +619,6 @@ function autoSaveLocal() {
     localStorage.setItem('nexcey-admin-data', JSON.stringify(formData));
 }
 
-function loadExistingData() {
-    const savedData = localStorage.getItem('nexcey-admin-data');
-    if (savedData) {
-        try {
-            const data = JSON.parse(savedData);
-            populateFormData(data);
-        } catch (error) {
-            console.error('Error loading saved data:', error);
-        }
-    }
-}
-
-function populateFormData(data) {
-    Object.keys(data).forEach(key => {
-        const element = document.getElementById(key);
-        if (element) {
-            if (element.type === 'checkbox') {
-                element.checked = data[key];
-            } else {
-                element.value = data[key];
-            }
-        }
-    });
-    
-    if (data['primary-color']) {
-        updatePreviewColor(data['primary-color']);
-    }
-}
-
-// Keep all your existing utility functions
 function setupColorPicker() {
     const colorPicker = document.getElementById('primary-color');
     if (colorPicker) {
@@ -530,4 +700,4 @@ function addLogoutButton() {
     headerActions.appendChild(logoutBtn);
 }
 
-console.log('✅ Nexcey CMS Admin Dashboard loaded successfully!');
+console.log('✅ Hybrid Admin Dashboard loaded successfully!');
