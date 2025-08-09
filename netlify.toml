@@ -78,13 +78,18 @@
 [context.deploy-preview]
   command = ""
 
-# Plugin configuration
-[[plugins]]
-  package = "netlify-plugin-minify-html"
+# Plugin configuration (optional - remove if you don't want plugins)
+# [[plugins]]
+#   package = "netlify-plugin-minify-html"
 
-[[plugins]]
-  package = "netlify-plugin-inline-critical-css"
-  
-  [plugins.inputs]
-    # Inline critical CSS for faster loading
-    minify = true
+# [[plugins]]
+#   package = "netlify-plugin-inline-critical-css"
+#   
+#   [plugins.inputs]
+#     # Extract critical CSS for faster loading
+#     extract = true
+#     dimensions = [
+#       { width = 1200, height = 900 },
+#       { width = 768, height = 1024 },
+#       { width = 375, height = 667 }
+#     ]
