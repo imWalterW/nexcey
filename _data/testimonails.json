@@ -1,0 +1,25 @@
+{
+  "title": "What Our Clients Say",
+  "testimonials": [
+    {
+      "name": "Sarah Johnson",
+      "image": "assets/images/testimonials/sarah.jpg",
+      "comment": "Nexcey delivered exactly what we needed. Our new website has increased our online sales by 40% in just 3 months!"
+    },
+    {
+      "name": "Michael Chen",
+      "image": "assets/images/testimonials/michael.jpg",
+      "comment": "Professional, creative, and responsive. The team at Nexcey understood our vision and brought it to life perfectly."
+    },
+    {
+      "name": "Emily Rodriguez",
+      "image": "assets/images/testimonials/emily.jpg",
+      "comment": "Outstanding service from start to finish. Our portfolio website showcases our work beautifully and attracts new clients daily."
+    },
+    {
+      "name": "David Thompson",
+      "image": "assets/images/testimonials/david.jpg",
+      "comment": "The e-commerce platform they built for us is user-friendly and has streamlined our entire sales process. Highly recommended!"
+    }
+  ]
+}

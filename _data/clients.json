@@ -1,0 +1,30 @@
+{
+  "title": "Our Clients",
+  "clients": [
+    {
+      "name": "TechCorp Solutions",
+      "logo": "assets/images/clients/techcorp-logo.png",
+      "websiteImage": "assets/images/clients/techcorp-website.jpg"
+    },
+    {
+      "name": "Green Earth Organic",
+      "logo": "assets/images/clients/greenearth-logo.png",
+      "websiteImage": "assets/images/clients/greenearth-website.jpg"
+    },
+    {
+      "name": "Urban Fashion Hub",
+      "logo": "assets/images/clients/urbanfashion-logo.png",
+      "websiteImage": "assets/images/clients/urbanfashion-website.jpg"
+    },
+    {
+      "name": "Fitness Plus Gym",
+      "logo": "assets/images/clients/fitnessplus-logo.png",
+      "websiteImage": "assets/images/clients/fitnessplus-website.jpg"
+    },
+    {
+      "name": "Delicious Bites Restaurant",
+      "logo": "assets/images/clients/deliciousbites-logo.png",
+      "websiteImage": "assets/images/clients/deliciousbites-website.jpg"
+    }
+  ]
+}

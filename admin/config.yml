@@ -1,0 +1,126 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "config"
+    label: "Site Configuration"
+    files:
+      - label: "Theme Settings"
+        name: "theme"
+        file: "_data/theme.json"
+        fields:
+          - { label: "Primary Color", name: "primaryColor", widget: "color", default: "#522cb5" }
+          - { label: "Logo", name: "logo", widget: "image", required: false }
+          - { label: "Favicon", name: "favicon", widget: "image", required: false }
+
+  - name: "homepage"
+    label: "Homepage Content"
+    files:
+      - label: "Hero Section"
+        name: "hero"
+        file: "_data/hero.json"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Subtitle", name: "subtitle", widget: "string" }
+          - { label: "Call to Action Text", name: "ctaText", widget: "string" }
+          - { label: "Call to Action Link", name: "ctaLink", widget: "string" }
+
+      - label: "About Section"
+        name: "about"
+        file: "_data/about.json"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Text", name: "text", widget: "text" }
+          - { label: "Image", name: "image", widget: "image", required: false }
+
+      - label: "Services"
+        name: "services"
+        file: "_data/services.json"
+        fields:
+          - { label: "Section Title", name: "title", widget: "string" }
+          - label: "Services"
+            name: "services"
+            widget: "list"
+            fields:
+              - { label: "Service Name", name: "name", widget: "string" }
+              - label: "Icon"
+                name: "icon"
+                widget: "select"
+                options:
+                  - { label: "Rocket", value: "fas fa-rocket" }
+                  - { label: "Palette", value: "fas fa-palette" }
+                  - { label: "Briefcase", value: "fas fa-briefcase" }
+                  - { label: "Shopping Cart", value: "fas fa-shopping-cart" }
+                  - { label: "Code", value: "fas fa-code" }
+                  - { label: "Mobile", value: "fas fa-mobile-alt" }
+                  - { label: "Search", value: "fas fa-search" }
+                  - { label: "Chart", value: "fas fa-chart-line" }
+                  - { label: "Shield", value: "fas fa-shield-alt" }
+                  - { label: "Globe", value: "fas fa-globe" }
+                  - { label: "Laptop", value: "fas fa-laptop" }
+                  - { label: "Bullhorn", value: "fas fa-bullhorn" }
+              - { label: "Description", name: "description", widget: "text" }
+
+      - label: "Pricing Plans"
+        name: "pricing"
+        file: "_data/pricing.json"
+        fields:
+          - { label: "Section Title", name: "title", widget: "string" }
+          - label: "Plans"
+            name: "plans"
+            widget: "list"
+            fields:
+              - { label: "Plan Name", name: "name", widget: "string" }
+              - { label: "Price", name: "price", widget: "string" }
+              - { label: "Most Popular", name: "popular", widget: "boolean", default: false }
+              - label: "Features"
+                name: "features"
+                widget: "list"
+                field: { label: "Feature", name: "feature", widget: "string" }
+
+      - label: "Clients"
+        name: "clients"
+        file: "_data/clients.json"
+        fields:
+          - { label: "Section Title", name: "title", widget: "string" }
+          - label: "Clients"
+            name: "clients"
+            widget: "list"
+            fields:
+              - { label: "Client Name", name: "name", widget: "string" }
+              - { label: "Logo", name: "logo", widget: "image" }
+              - { label: "Website Screenshot", name: "websiteImage", widget: "image" }
+
+      - label: "Testimonials"
+        name: "testimonials"
+        file: "_data/testimonials.json"
+        fields:
+          - { label: "Section Title", name: "title", widget: "string" }
+          - label: "Testimonials"
+            name: "testimonials"
+            widget: "list"
+            fields:
+              - { label: "Client Name", name: "name", widget: "string" }
+              - { label: "Client Photo", name: "image", widget: "image" }
+              - { label: "Testimonial", name: "comment", widget: "text" }
+
+      - label: "Footer"
+        name: "footer"
+        file: "_data/footer.json"
+        fields:
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Phone", name: "phone", widget: "string" }
+          - { label: "Address", name: "address", widget: "text" }
+          - label: "Social Links"
+            name: "social"
+            widget: "object"
+            fields:
+              - { label: "Facebook", name: "facebook", widget: "string", required: false }
+              - { label: "X (Twitter)", name: "x", widget: "string", required: false }
+              - { label: "Instagram", name: "instagram", widget: "string", required: false }
+              - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
+              - { label: "WhatsApp", name: "whatsapp", widget: "string", required: false }

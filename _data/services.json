@@ -1,0 +1,17 @@
+{
+  "title": "Our Services",
+  "services": [
+    {
+      "name": "Landing Pages",
+      "icon": "fas fa-rocket",
+      "description": "High-converting landing pages that capture leads and drive sales with stunning designs."
+    },
+    {
+      "name": "Portfolio Websites",
+      "icon": "fas fa-palette",
+      "description": "Showcase your work beautifully with custom portfolio websites that impress clients."
+    },
+    {
+      "name": "Business Websites",
+      "icon": "fas fa-briefcase",
+      "description": "Professional business websites that establish credibility and grow your online presence."

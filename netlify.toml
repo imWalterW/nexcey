@@ -1,0 +1,90 @@
+[build]
+  # Build command (not needed for static sites)
+  command = ""
+  
+  # Directory to publish
+  publish = "."
+  
+  # Functions directory (if you add serverless functions later)
+  functions = "netlify/functions"
+
+[build.environment]
+  # Node version (if needed for build tools)
+  NODE_VERSION = "18"
+
+# Redirect rules
+[[redirects]]
+  # Redirect /admin to /admin/
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+[[redirects]]
+  # Handle client-side routing (if you add SPA features later)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["!*"]}
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Cache control for assets
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    # Disable caching for admin panel
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/_data/*"
+  [headers.values]
+    # Cache data files but allow updates
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    # Long cache for CSS files
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    # Long cache for JS files  
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    # Long cache for images
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Enable Netlify Identity
+[context.production]
+  command = ""
+  
+[context.deploy-preview]
+  command = ""
+
+# Plugin configuration
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+
+[[plugins]]
+  package = "netlify-plugin-inline-critical-css"
+  
+  [plugins.inputs]
+    # Inline critical CSS for faster loading
+    minify = true

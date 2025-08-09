@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexcey Web Design Service</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="assets/images/logo.png" alt="Nexcey Logo" class="logo" id="headerLogo">
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about-us" class="nav-link">About Us</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#clients" class="nav-link">Clients</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                <li><a href="#contact-us" class="nav-link">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="hero-title" id="heroTitle">Web Design that Drives Results</h1>
+            <p class="hero-subtitle" id="heroSubtitle">Modern, responsive websites tailored to your brand.</p>
+            <a href="#contact-us" class="cta-button" id="heroCtaButton">
+                <span id="heroCtaText">Get Started</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about-us" class="about section-padding">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right">
+                    <h2 id="aboutTitle">About Nexcey</h2>
+                    <p id="aboutText">Nexcey is a modern web design studio offering tailor-made website solutions. From stunning landing pages to powerful e-commerce sites, we bring your ideas to life with clean, functional, and engaging designs.</p>
+                </div>
+                <div class="about-image" data-aos="fade-left">
+                    <img src="assets/images/about-image.jpg" alt="About Nexcey" id="aboutImage">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services section-padding">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up" id="servicesTitle">Our Services</h2>
+            <div class="services-container">
+                <div class="services-wrapper" id="servicesWrapper">
+                    <!-- Services will be loaded dynamically -->
+                </div>
+                <div class="carousel-arrows services-arrows">
+                    <button class="arrow-btn prev-btn" id="servicesPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="arrow-btn next-btn" id="servicesNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing section-padding">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up" id="pricingTitle">Pricing Plans</h2>
+            <div class="pricing-container">
+                <div class="pricing-wrapper" id="pricingWrapper">
+                    <!-- Pricing cards will be loaded dynamically -->
+                </div>
+                <div class="carousel-arrows pricing-arrows">
+                    <button class="arrow-btn prev-btn" id="pricingPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="arrow-btn next-btn" id="pricingNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section id="clients" class="clients section-padding">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up" id="clientsTitle">Our Clients</h2>
+            <div class="clients-container">
+                <div class="clients-wrapper" id="clientsWrapper">
+                    <!-- Clients will be loaded dynamically -->
+                </div>
+                <div class="carousel-arrows clients-arrows">
+                    <button class="arrow-btn prev-btn" id="clientsPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="arrow-btn next-btn" id="clientsNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials section-padding">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up" id="testimonialsTitle">What Our Clients Say</h2>
+            <div class="testimonials-container">
+                <div class="testimonials-wrapper" id="testimonialsWrapper">
+                    <!-- Testimonials will be loaded dynamically -->
+                </div>
+                <div class="carousel-arrows testimonials-arrows">
+                    <button class="arrow-btn prev-btn" id="testimonialsPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="arrow-btn next-btn" id="testimonialsNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-us" class="contact section-padding">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up" id="contactTitle">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info" data-aos="fade-right">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span id="contactEmail">info@nexcey.com</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span id="contactPhone">+94 72 445 2222</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <span id="contactAddress">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper" data-aos="fade-left">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" name="phone" placeholder="Your Phone">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            Send Message
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="assets/images/logo.png" alt="Nexcey Logo" class="footer-logo" id="footerLogo">
+                </div>
+                <div class="footer-contact">
+                    <p id="footerEmail">info@nexcey.com</p>
+                    <p id="footerPhone">+94 72 445 2222</p>
+                    <p id="footerAddress">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link" id="socialFacebook" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link" id="socialX" target="_blank">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link" id="socialLinkedin" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-link" id="socialInstagram" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link" id="socialWhatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nexcey. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

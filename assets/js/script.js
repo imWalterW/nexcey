@@ -1,0 +1,617 @@
+// Global variables
+let currentTheme = {};
+let servicesData = [];
+let pricingData = [];
+let clientsData = [];
+let testimonialsData = [];
+
+// Initialize AOS (Animate On Scroll)
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+    });
+    
+    // Load all data
+    loadAllData();
+    
+    // Initialize mobile navigation
+    initMobileNav();
+    
+    // Initialize smooth scrolling
+    initSmoothScrolling();
+    
+    // Initialize contact form
+    initContactForm();
+    
+    // Initialize header scroll effect
+    initHeaderScroll();
+});
+
+// Load all data from JSON files
+async function loadAllData() {
+    try {
+        await Promise.all([
+            loadTheme(),
+            loadHeroData(),
+            loadAboutData(),
+            loadServicesData(),
+            loadPricingData(),
+            loadClientsData(),
+            loadTestimonialsData(),
+            loadFooterData()
+        ]);
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+// Load theme configuration
+async function loadTheme() {
+    try {
+        const response = await fetch('_data/theme.json');
+        currentTheme = await response.json();
+        applyTheme();
+    } catch (error) {
+        console.error('Error loading theme:', error);
+    }
+}
+
+// Apply theme to CSS variables
+function applyTheme() {
+    if (currentTheme.primaryColor) {
+        document.documentElement.style.setProperty('--primary-color', currentTheme.primaryColor);
+        document.documentElement.style.setProperty('--primary-light', lightenColor(currentTheme.primaryColor, 20));
+        document.documentElement.style.setProperty('--primary-dark', darkenColor(currentTheme.primaryColor, 20));
+    }
+    
+    if (currentTheme.logo) {
+        document.getElementById('headerLogo').src = currentTheme.logo;
+        document.getElementById('footerLogo').src = currentTheme.logo;
+    }
+    
+    if (currentTheme.favicon) {
+        document.querySelector('link[rel="icon"]').href = currentTheme.favicon;
+    }
+}
+
+// Load hero section data
+async function loadHeroData() {
+    try {
+        const response = await fetch('_data/hero.json');
+        const heroData = await response.json();
+        
+        document.getElementById('heroTitle').textContent = heroData.title;
+        document.getElementById('heroSubtitle').textContent = heroData.subtitle;
+        document.getElementById('heroCtaText').textContent = heroData.ctaText;
+        document.getElementById('heroCtaButton').href = heroData.ctaLink;
+    } catch (error) {
+        console.error('Error loading hero data:', error);
+    }
+}
+
+// Load about section data
+async function loadAboutData() {
+    try {
+        const response = await fetch('_data/about.json');
+        const aboutData = await response.json();
+        
+        document.getElementById('aboutTitle').textContent = aboutData.title;
+        document.getElementById('aboutText').textContent = aboutData.text;
+        
+        if (aboutData.image) {
+            document.getElementById('aboutImage').src = aboutData.image;
+        }
+    } catch (error) {
+        console.error('Error loading about data:', error);
+    }
+}
+
+// Load services data
+async function loadServicesData() {
+    try {
+        const response = await fetch('_data/services.json');
+        const data = await response.json();
+        servicesData = data.services;
+        
+        document.getElementById('servicesTitle').textContent = data.title;
+        renderServices();
+    } catch (error) {
+        console.error('Error loading services data:', error);
+    }
+}
+
+// Render services section
+function renderServices() {
+    const wrapper = document.getElementById('servicesWrapper');
+    wrapper.innerHTML = '';
+    
+    if (servicesData.length <= 4) {
+        // Show all services in grid
+        wrapper.className = 'services-wrapper';
+        servicesData.forEach((service, index) => {
+            wrapper.appendChild(createServiceItem(service, index));
+        });
+    } else {
+        // Create carousel
+        wrapper.className = 'carousel-container';
+        const carouselWrapper = document.createElement('div');
+        carouselWrapper.className = 'carousel-wrapper';
+        
+        // Create slides (4 services per slide)
+        for (let i = 0; i < servicesData.length; i += 4) {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-item';
+            
+            const grid = document.createElement('div');
+            grid.className = 'services-wrapper';
+            
+            const slideServices = servicesData.slice(i, i + 4);
+            slideServices.forEach((service, index) => {
+                grid.appendChild(createServiceItem(service, i + index));
+            });
+            
+            slide.appendChild(grid);
+            carouselWrapper.appendChild(slide);
+        }
+        
+        wrapper.appendChild(carouselWrapper);
+        
+        // Show carousel arrows
+        document.querySelector('.services-arrows').classList.add('show');
+        initCarousel('services');
+    }
+}
+
+// Create service item element
+function createServiceItem(service, index) {
+    const item = document.createElement('div');
+    item.className = 'service-item';
+    item.setAttribute('data-aos', 'fade-up');
+    item.setAttribute('data-aos-delay', (index % 4) * 100);
+    
+    item.innerHTML = `
+        <div class="service-icon">
+            <i class="${service.icon}"></i>
+        </div>
+        <h3>${service.name}</h3>
+        <p>${service.description}</p>
+    `;
+    
+    return item;
+}
+
+// Load pricing data
+async function loadPricingData() {
+    try {
+        const response = await fetch('_data/pricing.json');
+        const data = await response.json();
+        pricingData = data.plans;
+        
+        document.getElementById('pricingTitle').textContent = data.title;
+        renderPricing();
+    } catch (error) {
+        console.error('Error loading pricing data:', error);
+    }
+}
+
+// Render pricing section
+function renderPricing() {
+    const wrapper = document.getElementById('pricingWrapper');
+    wrapper.innerHTML = '';
+    
+    if (pricingData.length <= 3) {
+        // Show all plans in grid
+        wrapper.className = 'pricing-wrapper';
+        pricingData.forEach((plan, index) => {
+            wrapper.appendChild(createPricingCard(plan, index));
+        });
+    } else {
+        // Create carousel
+        wrapper.className = 'carousel-container';
+        const carouselWrapper = document.createElement('div');
+        carouselWrapper.className = 'carousel-wrapper';
+        
+        // Create slides (3 plans per slide)
+        for (let i = 0; i < pricingData.length; i += 3) {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-item';
+            
+            const grid = document.createElement('div');
+            grid.className = 'pricing-wrapper';
+            
+            const slidePlans = pricingData.slice(i, i + 3);
+            slidePlans.forEach((plan, index) => {
+                grid.appendChild(createPricingCard(plan, i + index));
+            });
+            
+            slide.appendChild(grid);
+            carouselWrapper.appendChild(slide);
+        }
+        
+        wrapper.appendChild(carouselWrapper);
+        
+        // Show carousel arrows
+        document.querySelector('.pricing-arrows').classList.add('show');
+        initCarousel('pricing');
+    }
+}
+
+// Create pricing card element
+function createPricingCard(plan, index) {
+    const card = document.createElement('div');
+    card.className = `pricing-card ${plan.popular ? 'popular' : ''}`;
+    card.setAttribute('data-aos', 'fade-up');
+    card.setAttribute('data-aos-delay', (index % 3) * 100);
+    
+    const featuresHtml = plan.features.map(feature => `<li>${feature}</li>`).join('');
+    
+    card.innerHTML = `
+        ${plan.popular ? '<div class="popular-badge">Most Popular</div>' : ''}
+        <h3>${plan.name}</h3>
+        <div class="price">${plan.price}</div>
+        <ul class="pricing-features">
+            ${featuresHtml}
+        </ul>
+    `;
+    
+    return card;
+}
+
+// Load clients data
+async function loadClientsData() {
+    try {
+        const response = await fetch('_data/clients.json');
+        const data = await response.json();
+        clientsData = data.clients;
+        
+        document.getElementById('clientsTitle').textContent = data.title;
+        renderClients();
+    } catch (error) {
+        console.error('Error loading clients data:', error);
+    }
+}
+
+// Render clients section
+function renderClients() {
+    const wrapper = document.getElementById('clientsWrapper');
+    wrapper.innerHTML = '';
+    
+    if (clientsData.length <= 3) {
+        // Show all clients in grid
+        wrapper.className = 'clients-wrapper';
+        clientsData.forEach((client, index) => {
+            wrapper.appendChild(createClientItem(client, index));
+        });
+    } else {
+        // Create carousel
+        wrapper.className = 'carousel-container';
+        const carouselWrapper = document.createElement('div');
+        carouselWrapper.className = 'carousel-wrapper';
+        
+        // Create slides (3 clients per slide)
+        for (let i = 0; i < clientsData.length; i += 3) {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-item';
+            
+            const grid = document.createElement('div');
+            grid.className = 'clients-wrapper';
+            
+            const slideClients = clientsData.slice(i, i + 3);
+            slideClients.forEach((client, index) => {
+                grid.appendChild(createClientItem(client, i + index));
+            });
+            
+            slide.appendChild(grid);
+            carouselWrapper.appendChild(slide);
+        }
+        
+        wrapper.appendChild(carouselWrapper);
+        
+        // Show carousel arrows
+        document.querySelector('.clients-arrows').classList.add('show');
+        initCarousel('clients');
+    }
+}
+
+// Create client item element
+function createClientItem(client, index) {
+    const item = document.createElement('div');
+    item.className = 'client-item';
+    item.setAttribute('data-aos', 'fade-up');
+    item.setAttribute('data-aos-delay', (index % 3) * 100);
+    
+    item.innerHTML = `
+        <img src="${client.logo}" alt="${client.name} Logo" class="client-logo">
+        <img src="${client.websiteImage}" alt="${client.name} Website" class="client-website">
+        <div class="client-name">${client.name}</div>
+    `;
+    
+    return item;
+}
+
+// Load testimonials data
+async function loadTestimonialsData() {
+    try {
+        const response = await fetch('_data/testimonials.json');
+        const data = await response.json();
+        testimonialsData = data.testimonials;
+        
+        document.getElementById('testimonialsTitle').textContent = data.title;
+        renderTestimonials();
+    } catch (error) {
+        console.error('Error loading testimonials data:', error);
+    }
+}
+
+// Render testimonials section
+function renderTestimonials() {
+    const wrapper = document.getElementById('testimonialsWrapper');
+    wrapper.innerHTML = '';
+    
+    if (testimonialsData.length <= 3) {
+        // Show all testimonials in grid
+        wrapper.className = 'testimonials-wrapper';
+        testimonialsData.forEach((testimonial, index) => {
+            wrapper.appendChild(createTestimonialItem(testimonial, index));
+        });
+    } else {
+        // Create carousel
+        wrapper.className = 'carousel-container';
+        const carouselWrapper = document.createElement('div');
+        carouselWrapper.className = 'carousel-wrapper';
+        
+        // Create slides (3 testimonials per slide)
+        for (let i = 0; i < testimonialsData.length; i += 3) {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-item';
+            
+            const grid = document.createElement('div');
+            grid.className = 'testimonials-wrapper';
+            
+            const slideTestimonials = testimonialsData.slice(i, i + 3);
+            slideTestimonials.forEach((testimonial, index) => {
+                grid.appendChild(createTestimonialItem(testimonial, i + index));
+            });
+            
+            slide.appendChild(grid);
+            carouselWrapper.appendChild(slide);
+        }
+        
+        wrapper.appendChild(carouselWrapper);
+        
+        // Show carousel arrows
+        document.querySelector('.testimonials-arrows').classList.add('show');
+        initCarousel('testimonials');
+    }
+}
+
+// Create testimonial item element
+function createTestimonialItem(testimonial, index) {
+    const item = document.createElement('div');
+    item.className = 'testimonial-item';
+    item.setAttribute('data-aos', 'fade-up');
+    item.setAttribute('data-aos-delay', (index % 3) * 100);
+    
+    item.innerHTML = `
+        <div class="testimonial-header">
+            <img src="${testimonial.image}" alt="${testimonial.name}" class="testimonial-image">
+            <div class="testimonial-name">${testimonial.name}</div>
+        </div>
+        <div class="testimonial-comment">"${testimonial.comment}"</div>
+    `;
+    
+    return item;
+}
+
+// Load footer data
+async function loadFooterData() {
+    try {
+        const response = await fetch('_data/footer.json');
+        const footerData = await response.json();
+        
+        document.getElementById('footerEmail').textContent = footerData.email;
+        document.getElementById('footerPhone').textContent = footerData.phone;
+        document.getElementById('footerAddress').textContent = footerData.address;
+        document.getElementById('contactEmail').textContent = footerData.email;
+        document.getElementById('contactPhone').textContent = footerData.phone;
+        document.getElementById('contactAddress').textContent = footerData.address;
+        
+        // Set social links
+        if (footerData.social.facebook) {
+            document.getElementById('socialFacebook').href = footerData.social.facebook;
+        }
+        if (footerData.social.x) {
+            document.getElementById('socialX').href = footerData.social.x;
+        }
+        if (footerData.social.linkedin) {
+            document.getElementById('socialLinkedin').href = footerData.social.linkedin;
+        }
+        if (footerData.social.instagram) {
+            document.getElementById('socialInstagram').href = footerData.social.instagram;
+        }
+        if (footerData.social.whatsapp) {
+            document.getElementById('socialWhatsapp').href = footerData.social.whatsapp;
+        }
+    } catch (error) {
+        console.error('Error loading footer data:', error);
+    }
+}
+
+// Initialize carousel functionality
+function initCarousel(type) {
+    const wrapper = document.querySelector(`#${type}sWrapper .carousel-wrapper`);
+    const prevBtn = document.getElementById(`${type}sPrev`);
+    const nextBtn = document.getElementById(`${type}sNext`);
+    const slides = wrapper.querySelectorAll('.carousel-item');
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    // Auto-play functionality
+    let autoPlayInterval;
+    
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            nextSlide();
+        }, 4000);
+    }
+    
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+    }
+    
+    function updateCarousel() {
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+    
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0; // Loop back to first slide
+        }
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = totalSlides - 1; // Loop to last slide
+        }
+        updateCarousel();
+    }
+    
+    // Event listeners
+    nextBtn.addEventListener('click', () => {
+        stopAutoPlay();
+        nextSlide();
+        startAutoPlay();
+    });
+    
+    prevBtn.addEventListener('click', () => {
+        stopAutoPlay();
+        prevSlide();
+        startAutoPlay();
+    });
+    
+    // Pause autoplay on hover
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+    
+    // Initialize
+    updateCarousel();
+    startAutoPlay();
+}
+
+// Initialize mobile navigation
+function initMobileNav() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+    
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
+}
+
+// Initialize smooth scrolling
+function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Initialize contact form
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('.submit-btn');
+        const originalText = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.innerHTML = '<div class="loading"></div> Sending...';
+        submitBtn.disabled = true;
+        
+        // Get form data
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        try {
+            // Simulate form submission (replace with actual form handler)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you soon.');
+            form.reset();
+        } catch (error) {
+            alert('Sorry, there was an error sending your message. Please try again.');
+        } finally {
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+// Initialize header scroll effect
+function initHeaderScroll() {
+    const header = document.getElementById('header');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            header.style.background = 'rgba(255, 255, 255, 0.98)';
+            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+        } else {
+            header.style.background = 'rgba(255, 255, 255, 0.95)';
+            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        }
+    });
+}
+
+// Utility functions for color manipulation
+function lightenColor(color, percent) {
+    const num = parseInt(color.replace("#", ""), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+}
+
+function darkenColor(color, percent) {
+    const num = parseInt(color.replace("#", ""), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) - amt;
+    const G = (num >> 8 & 0x00FF) - amt;
+    const B = (num & 0x0000FF) - amt;
+    return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+        (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+        (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+}

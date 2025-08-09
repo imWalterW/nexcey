@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager - Nexcey</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    /* Custom styling for Netlify CMS to match Nexcey theme */
+    :root {
+      --primary-color: #522cb5;
+      --primary-light: #7c52d6;
+      --primary-dark: #3d2088;
+    }
+    
+    /* Override CMS styles */
+    .nc-app-header {
+      background-color: var(--primary-color) !important;
+    }
+    
+    .nc-app-header h1 {
+      color: white !important;
+    }
+    
+    .nc-entryEditor-controlPane-control button {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+    
+    .nc-entryEditor-controlPane-control button:hover {
+      background-color: var(--primary-dark) !important;
+      border-color: var(--primary-dark) !important;
+    }
+    
+    .nc-collectionPage-sidebar {
+      background-color: #f8f9fa !important;
+    }
+    
+    .nc-collectionPage-sidebar .nc-collectionPage-sidebarHeading {
+      color: var(--primary-color) !important;
+    }
+    
+    /* Loading screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 9999;
+    }
+    
+    .loading-logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .loading-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="../assets/images/logo.png" alt="Nexcey Logo" class="loading-logo">
+    <div class="loading-text">Loading Content Management System...</div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- The Netlify CMS will be injected into this div -->
+  <div id="nc-root"></div>
+  
+  <script>
+    // Hide loading screen when CMS is ready
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loadingScreen').style.display = 'none';
+      }, 2000);
+    });
+    
+    // Netlify Identity Widget initialization
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
+  
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <script>
+    // Custom preview for services
+    CMS.registerPreviewTemplate('services', ({ entry, widgetFor, widgetsFor }) => {
+      const data = entry.getIn(['data']).toJS();
+      return `
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #522cb5; text-align: center; margin-bottom: 30px;">
+            ${data.title}
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            ${data.services.map(service => `
+              <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 20px rgba(82, 44, 181, 0.1); text-align: center;">
+                <div style="font-size: 2rem; color: #522cb5; margin-bottom: 15px;">
+                  <i class="${service.icon}"></i>
+                </div>
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">${service.name}</h3>
+                <p style="color: #6c757d; line-height: 1.6;">${service.description}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+    
+    // Custom preview for pricing
+    CMS.registerPreviewTemplate('pricing', ({ entry }) => {
+      const data = entry.getIn(['data']).toJS();
+      return `
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #522cb5; text-align: center; margin-bottom: 30px;">
+            ${data.title}
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            ${data.plans.map(plan => `
+              <div style="background: ${plan.popular ? 'linear-gradient(135deg, #522cb5, #7c52d6)' : 'white'}; 
+                          color: ${plan.popular ? 'white' : '#2c3e50'};
+                          padding: 30px 20px; 
+                          border-radius: 10px; 
+                          box-shadow: 0 4px 20px rgba(82, 44, 181, 0.1); 
+                          text-align: center; 
+                          position: relative;
+                          border: ${plan.popular ? '2px solid #522cb5' : '2px solid transparent'};">
+                ${plan.popular ? '<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ffc107; color: #2c3e50; padding: 5px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Most Popular</div>' : ''}
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px;">${plan.name}</h3>
+                <div style="font-size: 2.5rem; font-weight: bold; color: ${plan.popular ? 'white' : '#522cb5'}; margin-bottom: 20px;">
+                  ${plan.price}
+                </div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                  ${plan.features.map(feature => `
+                    <li style="padding: 8px 0; border-bottom: 1px solid ${plan.popular ? 'rgba(255, 255, 255, 0.2)' : '#e9ecef'};">
+                      ${feature}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
