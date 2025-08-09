@@ -1,0 +1,81 @@
+/* Custom Netlify CMS Styling to match Nexcey purple theme */
+
+/* Main color overrides */
+.css-1a9zqn7-AppHeaderButton-button-buttonActive,
+.css-1a9zqn7-AppHeaderButton-button-buttonActive:focus,
+.css-1a9zqn7-AppHeaderButton-button-buttonActive:hover {
+  background-color: #522cb5 !important;
+}
+
+.css-1ih4xzc-AppHeader {
+  background-color: #522cb5 !important;
+}
+
+.css-1kw71j3-ToolbarButton-button-buttonActive,
+.css-1kw71j3-ToolbarButton-button-buttonActive:focus {
+  background-color: #522cb5 !important;
+}
+
+.css-1hw7kpz-ControlHint-hint {
+  color: #522cb5 !important;
+}
+
+.css-1a9zqn7-AppHeaderButton-button:hover {
+  background-color: #6c5ce7 !important;
+}
+
+/* Button styling */
+button[type="button"]:not([class*="css"]) {
+  background-color: #522cb5 !important;
+  border-color: #522cb5 !important;
+}
+
+button[type="button"]:not([class*="css"]):hover {
+  background-color: #4a27a3 !important;
+  border-color: #4a27a3 !important;
+}
+
+/* Link colors */
+a {
+  color: #522cb5 !important;
+}
+
+a:hover {
+  color: #4a27a3 !important;
+}
+
+/* Form elements */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #522cb5 !important;
+  box-shadow: 0 0 0 2px rgba(82, 44, 181, 0.2) !important;
+}
+
+/* Selected items */
+.css-12jo7m5-indicatorSeparator {
+  background-color: #522cb5 !important;
+}
+
+.css-1pahdxg-control:hover .css-1hb7zxy-IndicatorsContainer .css-tlfecz-indicatorContainer:hover {
+  color: #522cb5 !important;
+}
+
+/* Custom preview styling for the content */
+.preview-pane {
+  font-family: 'Inter', sans-serif;
+}
+
+.preview-pane h1, .preview-pane h2, .preview-pane h3 {
+  color: #522cb5;
+}
+
+.preview-pane .button-preview {
+  background: linear-gradient(135deg, #522cb5 0%, #6c5ce7 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+}
