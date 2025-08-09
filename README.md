@@ -2,8 +2,6 @@
 
 A modern, responsive website built with HTML, CSS, JavaScript, and Netlify CMS for easy content management.
 
-![Nexcey Website Preview](assets/images/website-preview.png)
-
 ## 🌟 Features
 
 - ✅ **Fully Responsive Design** - Perfect on all devices
@@ -209,3 +207,4 @@ For support and questions:
 ---
 
 Built with ❤️ by [Nexcey Web Design Service](https://nexcey.com)
+
