@@ -1,4 +1,36 @@
-// Generic carousel setup function
+// Load footer data
+async function loadFooterData() {
+    try {
+        const response = await fetch('_data/footer.json');
+        const footerData = await response.json();
+        
+        document.getElementById('footerEmail').textContent = footerData.email;
+        document.getElementById('footerPhone').textContent = footerData.phone;
+        document.getElementById('footerAddress').textContent = footerData.address;
+        document.getElementById('contactEmail').textContent = footerData.email;
+        document.getElementById('contactPhone').textContent = footerData.phone;
+        document.getElementById('contactAddress').textContent = footerData.address;
+        
+        // Set social links
+        if (footerData.social.facebook) {
+            document.getElementById('socialFacebook').href = footerData.social.facebook;
+        }
+        if (footerData.social.x) {
+            document.getElementById('socialX').href = footerData.social.x;
+        }
+        if (footerData.social.linkedin) {
+            document.getElementById('socialLinkedin').href = footerData.social.linkedin;
+        }
+        if (footerData.social.instagram) {
+            document.getElementById('socialInstagram').href = footerData.social.instagram;
+        }
+        if (footerData.social.whatsapp) {
+            document.getElementById('socialWhatsapp').href = footerData.social.whatsapp;
+        }
+    } catch (error) {
+        console.error('Error loading footer data:', error);
+    }
+}// Generic carousel setup function
 function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
     const wrapper = document.getElementById(`${type}sWrapper`);
     wrapper.className = 'carousel-container';
