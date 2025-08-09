@@ -187,19 +187,11 @@ async function loadContent() {
             clientsCarousel.innerHTML = clientsData.clients.map(client => `
                 <div class="client__card">
                     <div class="client__logo">
-                        ${client.logo && client.logo.trim() !== '' 
-                            ? `<img src="${client.logo}" alt="${client.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                               <div style="width:80px;height:80px;background:var(--gradient);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:1.5rem;">${client.name.charAt(0)}</div>`
-                            : `<div style="width:80px;height:80px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">${client.name.charAt(0)}</div>`
-                        }
+                        <img src="${client.logo}" alt="${client.name}" onerror="this.style.display='none'">
                     </div>
                     <h4 class="client__name">${client.name}</h4>
                     <div class="client__website">
-                        ${client.websiteImage && client.websiteImage.trim() !== ''
-                            ? `<img src="${client.websiteImage}" alt="${client.name} website" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                               <div style="background:#f0f0f0;display:none;align-items:center;justify-content:center;color:#666;height:100%;">Website Preview</div>`
-                            : `<div style="background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;height:100%;">Website Preview</div>`
-                        }
+                        <img src="${client.websiteImage}" alt="${client.name} website" onerror="this.style.display='none'">
                     </div>
                 </div>
             `).join('');
