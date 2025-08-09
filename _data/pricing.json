@@ -10,7 +10,7 @@
       ]
     },
     {
-      "name": "Gold Pack",
+      "name": "Gold Pack", 
       "price": "$350",
       "features": [
         "Up to 5 Pages",
@@ -20,7 +20,7 @@
     },
     {
       "name": "Platinum Pack",
-      "price": "$500",
+      "price": "$500", 
       "features": [
         "Up to 10 Pages (Best for E-commerce)",
         "Free 1 Year Domain & Hosting",
