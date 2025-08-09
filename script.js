@@ -187,11 +187,19 @@ async function loadContent() {
             clientsCarousel.innerHTML = clientsData.clients.map(client => `
                 <div class="client__card">
                     <div class="client__logo">
-                        <img src="${client.logo}" alt="${client.name}" onerror="this.style.display='none'">
+                        ${client.logo && client.logo.trim() !== '' 
+                            ? `<img src="${client.logo}" alt="${client.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div style="width:80px;height:80px;background:var(--gradient);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:1.5rem;">${client.name.charAt(0)}</div>`
+                            : `<div style="width:80px;height:80px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">${client.name.charAt(0)}</div>`
+                        }
                     </div>
                     <h4 class="client__name">${client.name}</h4>
                     <div class="client__website">
-                        <img src="${client.websiteImage}" alt="${client.name} website" onerror="this.style.display='none'">
+                        ${client.websiteImage && client.websiteImage.trim() !== ''
+                            ? `<img src="${client.websiteImage}" alt="${client.name} website" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div style="background:#f0f0f0;display:none;align-items:center;justify-content:center;color:#666;height:100%;">Website Preview</div>`
+                            : `<div style="background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;height:100%;">Website Preview</div>`
+                        }
                     </div>
                 </div>
             `).join('');
@@ -227,7 +235,11 @@ async function loadContent() {
             testimonialsCarousel.innerHTML = testimonialsData.testimonials.map(testimonial => `
                 <div class="testimonial__card">
                     <div class="testimonial__image">
-                        <img src="${testimonial.image}" alt="${testimonial.name}" onerror="this.style.display='none'">
+                        ${testimonial.image && testimonial.image.trim() !== '' 
+                            ? `<img src="${testimonial.image}" alt="${testimonial.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:1.5rem;">👤</div>`
+                            : `<div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">👤</div>`
+                        }
                     </div>
                     <h4 class="testimonial__name">${testimonial.name}</h4>
                     <p class="testimonial__comment">${testimonial.comment}</p>
@@ -240,17 +252,24 @@ async function loadContent() {
         testimonialsCarousel.innerHTML = `
             <div class="testimonial__card">
                 <div class="testimonial__image">
-                    <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;">👤</div>
+                    <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">👤</div>
                 </div>
                 <h4 class="testimonial__name">John Doe</h4>
                 <p class="testimonial__comment">Nexcey created an amazing website for my business. The design is modern and the service was exceptional!</p>
             </div>
             <div class="testimonial__card">
                 <div class="testimonial__image">
-                    <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;">👤</div>
+                    <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">👤</div>
                 </div>
                 <h4 class="testimonial__name">Jane Smith</h4>
                 <p class="testimonial__comment">Professional, creative, and delivered on time. I highly recommend Nexcey for web design services.</p>
+            </div>
+            <div class="testimonial__card">
+                <div class="testimonial__image">
+                    <div style="width:60px;height:60px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;">👤</div>
+                </div>
+                <h4 class="testimonial__name">Mike Johnson</h4>
+                <p class="testimonial__comment">The team at Nexcey understood our vision perfectly and delivered beyond our expectations.</p>
             </div>
         `;
     }
