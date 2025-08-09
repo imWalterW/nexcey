@@ -1,4 +1,177 @@
-// Global variables
+// Generic carousel setup function
+function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
+    const wrapper = document.getElementById(`${type}sWrapper`);
+    wrapper.className = 'carousel-container';
+    
+    const carouselWrapper = document.createElement('div');
+    carouselWrapper.className = 'carousel-wrapper';
+    carouselWrapper.id = `${type}CarouselWrapper`;
+    
+    // Create slides
+    for (let i = 0; i < data.length; i += itemsPerSlide) {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-item';
+        
+        const grid = document.createElement('div');
+        grid.className = `${type}-wrapper`;
+        
+        const slideData = data.slice(i, i + itemsPerSlide);
+        slideData.forEach((item, index) => {
+            grid.appendChild(createItemFunction(item, i + index));
+        });
+        
+        slide.appendChild(grid);
+        carouselWrapper.appendChild(slide);
+    }
+    
+    wrapper.appendChild(carouselWrapper);
+    
+    // Show carousel arrows
+    document.querySelector(`.${type}-arrows`).classList.add('show');
+    
+    // Initialize carousel with a small delay to ensure DOM is ready
+    setTimeout(() => {
+        initCarousel(type);
+    }, 100);
+}
+
+// Initialize carousel functionality
+function initCarousel(type) {
+    const wrapper = document.getElementById(`${type}CarouselWrapper`);
+    const prevBtn = document.getElementById(`${type}sPrev`);
+    const nextBtn = document.getElementById(`${type}sNext`);
+    
+    if (!wrapper || !prevBtn || !nextBtn) {
+        console.error(`Carousel elements not found for ${type}`);
+        return;
+    }
+    
+    const slides = wrapper.querySelectorAll('.carousel-item');
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    if (totalSlides <= 1) {
+        // Hide arrows if only one slide
+        document.querySelector(`.${type}-arrows`).classList.remove('show');
+        return;
+    }
+    
+    // Auto-play functionality
+    let autoPlayInterval;
+    
+    function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayInterval = setInterval(() => {
+            nextSlide();
+        }, 4000);
+    }
+    
+    function stopAutoPlay() {
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+        }
+    }
+    
+    function updateCarousel() {
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Update button states
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+        
+        // Add visual feedback for disabled buttons
+        if (currentSlide === 0) {
+            prevBtn.style.opacity = '0.5';
+        } else {
+            prevBtn.style.opacity = '1';
+        }
+        
+        if (currentSlide === totalSlides - 1) {
+            nextBtn.style.opacity = '0.5';
+        } else {
+            nextBtn.style.opacity = '1';
+        }
+    }
+    
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0; // Loop back to first slide
+        }
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = totalSlides - 1; // Loop to last slide
+        }
+        updateCarousel();
+    }
+    
+    // Remove existing event listeners to prevent duplicates
+    const newPrevBtn = prevBtn.cloneNode(true);
+    const newNextBtn = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    
+    // Add event listeners
+    newNextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        nextSlide();
+        startAutoPlay();
+    });
+    
+    newPrevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        prevSlide();
+        startAutoPlay();
+    });
+    
+    // Pause autoplay on hover
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+    
+    // Touch support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    wrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoPlay();
+    });
+    
+    wrapper.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+        startAutoPlay();
+    });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - next slide
+                nextSlide();
+            } else {
+                // Swipe right - previous slide
+                prevSlide();
+            }
+        }
+    }
+    
+    // Initialize
+    updateCarousel();
+    startAutoPlay();
+}
+            // Global variables
 let currentTheme = {};
 let servicesData = [];
 let pricingData = [];
@@ -91,7 +264,7 @@ async function loadHeroData() {
     }
 }
 
-// Load about section data
+// Load about section data with image sizing
 async function loadAboutData() {
     try {
         const response = await fetch('_data/about.json');
@@ -101,7 +274,22 @@ async function loadAboutData() {
         document.getElementById('aboutText').textContent = aboutData.text;
         
         if (aboutData.image) {
-            document.getElementById('aboutImage').src = aboutData.image;
+            const img = document.getElementById('aboutImage');
+            img.src = aboutData.image;
+            
+            // Apply image settings if available
+            if (aboutData.imageSettings) {
+                if (aboutData.imageSettings.width) {
+                    img.style.width = aboutData.imageSettings.width + 'px';
+                }
+                if (aboutData.imageSettings.height) {
+                    img.style.height = aboutData.imageSettings.height + 'px';
+                    img.style.objectFit = 'cover';
+                }
+                if (aboutData.imageSettings.borderRadius) {
+                    img.style.borderRadius = aboutData.imageSettings.borderRadius + 'px';
+                }
+            }
         }
     } catch (error) {
         console.error('Error loading about data:', error);
@@ -133,34 +321,11 @@ function renderServices() {
         servicesData.forEach((service, index) => {
             wrapper.appendChild(createServiceItem(service, index));
         });
+        // Hide arrows if not needed
+        document.querySelector('.services-arrows').classList.remove('show');
     } else {
         // Create carousel
-        wrapper.className = 'carousel-container';
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'carousel-wrapper';
-        
-        // Create slides (4 services per slide)
-        for (let i = 0; i < servicesData.length; i += 4) {
-            const slide = document.createElement('div');
-            slide.className = 'carousel-item';
-            
-            const grid = document.createElement('div');
-            grid.className = 'services-wrapper';
-            
-            const slideServices = servicesData.slice(i, i + 4);
-            slideServices.forEach((service, index) => {
-                grid.appendChild(createServiceItem(service, i + index));
-            });
-            
-            slide.appendChild(grid);
-            carouselWrapper.appendChild(slide);
-        }
-        
-        wrapper.appendChild(carouselWrapper);
-        
-        // Show carousel arrows
-        document.querySelector('.services-arrows').classList.add('show');
-        initCarousel('services');
+        setupCarousel('services', servicesData, 4, createServiceItem);
     }
 }
 
@@ -207,34 +372,11 @@ function renderPricing() {
         pricingData.forEach((plan, index) => {
             wrapper.appendChild(createPricingCard(plan, index));
         });
+        // Hide arrows if not needed
+        document.querySelector('.pricing-arrows').classList.remove('show');
     } else {
         // Create carousel
-        wrapper.className = 'carousel-container';
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'carousel-wrapper';
-        
-        // Create slides (3 plans per slide)
-        for (let i = 0; i < pricingData.length; i += 3) {
-            const slide = document.createElement('div');
-            slide.className = 'carousel-item';
-            
-            const grid = document.createElement('div');
-            grid.className = 'pricing-wrapper';
-            
-            const slidePlans = pricingData.slice(i, i + 3);
-            slidePlans.forEach((plan, index) => {
-                grid.appendChild(createPricingCard(plan, i + index));
-            });
-            
-            slide.appendChild(grid);
-            carouselWrapper.appendChild(slide);
-        }
-        
-        wrapper.appendChild(carouselWrapper);
-        
-        // Show carousel arrows
-        document.querySelector('.pricing-arrows').classList.add('show');
-        initCarousel('pricing');
+        setupCarousel('pricing', pricingData, 3, createPricingCard);
     }
 }
 
@@ -284,47 +426,36 @@ function renderClients() {
         clientsData.forEach((client, index) => {
             wrapper.appendChild(createClientItem(client, index));
         });
+        // Hide arrows if not needed
+        document.querySelector('.clients-arrows').classList.remove('show');
     } else {
         // Create carousel
-        wrapper.className = 'carousel-container';
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'carousel-wrapper';
-        
-        // Create slides (3 clients per slide)
-        for (let i = 0; i < clientsData.length; i += 3) {
-            const slide = document.createElement('div');
-            slide.className = 'carousel-item';
-            
-            const grid = document.createElement('div');
-            grid.className = 'clients-wrapper';
-            
-            const slideClients = clientsData.slice(i, i + 3);
-            slideClients.forEach((client, index) => {
-                grid.appendChild(createClientItem(client, i + index));
-            });
-            
-            slide.appendChild(grid);
-            carouselWrapper.appendChild(slide);
-        }
-        
-        wrapper.appendChild(carouselWrapper);
-        
-        // Show carousel arrows
-        document.querySelector('.clients-arrows').classList.add('show');
-        initCarousel('clients');
+        setupCarousel('clients', clientsData, 3, createClientItem);
     }
 }
 
-// Create client item element
+// Create client item element with sizing
 function createClientItem(client, index) {
     const item = document.createElement('div');
     item.className = 'client-item';
     item.setAttribute('data-aos', 'fade-up');
     item.setAttribute('data-aos-delay', (index % 3) * 100);
     
+    // Apply custom sizing if available
+    let logoStyle = '';
+    let websiteStyle = '';
+    
+    if (client.logoSize) {
+        logoStyle = `width: ${client.logoSize.width || 120}px; height: ${client.logoSize.height || 80}px;`;
+    }
+    
+    if (client.websiteSize) {
+        websiteStyle = `height: ${client.websiteSize.height || 200}px;`;
+    }
+    
     item.innerHTML = `
-        <img src="${client.logo}" alt="${client.name} Logo" class="client-logo">
-        <img src="${client.websiteImage}" alt="${client.name} Website" class="client-website">
+        <img src="${client.logo}" alt="${client.name} Logo" class="client-logo" style="${logoStyle}">
+        <img src="${client.websiteImage}" alt="${client.name} Website" class="client-website" style="${websiteStyle}">
         <div class="client-name">${client.name}</div>
     `;
     
@@ -356,47 +487,31 @@ function renderTestimonials() {
         testimonialsData.forEach((testimonial, index) => {
             wrapper.appendChild(createTestimonialItem(testimonial, index));
         });
+        // Hide arrows if not needed
+        document.querySelector('.testimonials-arrows').classList.remove('show');
     } else {
         // Create carousel
-        wrapper.className = 'carousel-container';
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'carousel-wrapper';
-        
-        // Create slides (3 testimonials per slide)
-        for (let i = 0; i < testimonialsData.length; i += 3) {
-            const slide = document.createElement('div');
-            slide.className = 'carousel-item';
-            
-            const grid = document.createElement('div');
-            grid.className = 'testimonials-wrapper';
-            
-            const slideTestimonials = testimonialsData.slice(i, i + 3);
-            slideTestimonials.forEach((testimonial, index) => {
-                grid.appendChild(createTestimonialItem(testimonial, i + index));
-            });
-            
-            slide.appendChild(grid);
-            carouselWrapper.appendChild(slide);
-        }
-        
-        wrapper.appendChild(carouselWrapper);
-        
-        // Show carousel arrows
-        document.querySelector('.testimonials-arrows').classList.add('show');
-        initCarousel('testimonials');
+        setupCarousel('testimonials', testimonialsData, 3, createTestimonialItem);
     }
 }
 
-// Create testimonial item element
+// Create testimonial item element with sizing
 function createTestimonialItem(testimonial, index) {
     const item = document.createElement('div');
     item.className = 'testimonial-item';
     item.setAttribute('data-aos', 'fade-up');
     item.setAttribute('data-aos-delay', (index % 3) * 100);
     
+    // Apply custom photo sizing if available
+    let photoStyle = '';
+    if (testimonial.photoSize) {
+        const size = testimonial.photoSize.size || 60;
+        photoStyle = `width: ${size}px; height: ${size}px;`;
+    }
+    
     item.innerHTML = `
         <div class="testimonial-header">
-            <img src="${testimonial.image}" alt="${testimonial.name}" class="testimonial-image">
+            <img src="${testimonial.image}" alt="${testimonial.name}" class="testimonial-image" style="${photoStyle}">
             <div class="testimonial-name">${testimonial.name}</div>
         </div>
         <div class="testimonial-comment">"${testimonial.comment}"</div>
