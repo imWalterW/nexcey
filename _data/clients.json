@@ -1,19 +1,9 @@
 {
   "clients": [
     {
-      "name": "Tech Startup Inc",
-      "logo": "",
-      "websiteImage": ""
-    },
-    {
-      "name": "Fashion Boutique",
-      "logo": "", 
-      "websiteImage": ""
-    },
-    {
-      "name": "Restaurant Chain",
-      "logo": "",
-      "websiteImage": ""
+      "name": "Abix Facilities Management",
+      "logo": "https://abixfm.com/wp-content/uploads/2023/07/Logo.png",
+      "websiteImage": "/assets/uploads/abixfm.png"
     }
   ]
 }
