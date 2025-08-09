@@ -34,7 +34,8 @@ function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
     }
     
     // Initialize carousel
-    init// Load footer data
+    initCarousel(type);
+}// Load footer data
 async function loadFooterData() {
     try {
         const response = await fetch('_data/footer.json');
