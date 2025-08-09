@@ -84,6 +84,26 @@ collections:
               - { label: "Image", name: "image", widget: "image" }
               - { label: "Comment", name: "comment", widget: "text" }
 
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "Theme Settings"
+        name: "theme"
+        file: "_data/theme.json"
+        fields:
+          - label: "Primary Color"
+            name: "primaryColor"
+            widget: "color"
+            default: "#522cb5"
+          - label: "Secondary Color"  
+            name: "secondaryColor"
+            widget: "color"
+            default: "#6c5ce7"
+          - label: "Accent Color (Green)"
+            name: "accentColor"
+            widget: "color"
+            default: "#4CAF50"
+
   - name: "footer"
     label: "Footer"
     files:
