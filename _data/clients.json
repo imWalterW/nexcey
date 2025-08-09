@@ -2,29 +2,88 @@
   "title": "Our Clients",
   "clients": [
     {
-      "name": "TechCorp Solutions",
-      "logo": "assets/images/clients/techcorp-logo.png",
-      "websiteImage": "assets/images/clients/techcorp-website.jpg"
+      "name": "Abix Facilities Management",
+      "logo": "/assets/images/uploads/abixfm.png",
+      "websiteImage": "/assets/images/uploads/abix.png",
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      }
     },
     {
-      "name": "Green Earth Organic",
-      "logo": "assets/images/clients/greenearth-logo.png",
-      "websiteImage": "assets/images/clients/greenearth-website.jpg"
+      "name": "Denime LK",
+      "logo": "/assets/images/uploads/denime-logo.png",
+      "websiteImage": "/assets/images/uploads/denimelk.png",
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      }
     },
     {
-      "name": "Urban Fashion Hub",
-      "logo": "assets/images/clients/urbanfashion-logo.png",
-      "websiteImage": "assets/images/clients/urbanfashion-website.jpg"
+      "name": "Maxa Technical Services",
+      "logo": "/assets/images/uploads/client_8.png",
+      "websiteImage": "/assets/images/uploads/maxa.png",
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      }
     },
     {
-      "name": "Fitness Plus Gym",
-      "logo": "assets/images/clients/fitnessplus-logo.png",
-      "websiteImage": "assets/images/clients/fitnessplus-website.jpg"
+      "name": "Ceilan Solutions",
+      "logo": "/assets/images/uploads/client_4.png",
+      "websiteImage": "/assets/images/uploads/ceilan.png",
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      }
     },
     {
-      "name": "Delicious Bites Restaurant",
-      "logo": "assets/images/clients/deliciousbites-logo.png",
-      "websiteImage": "assets/images/clients/deliciousbites-website.jpg"
+      "name": "Nilnara Villa",
+      "logo": "/assets/images/uploads/logo.png",
+      "websiteImage": "/assets/images/uploads/nilnara.png",
+      "logoSize": {
+        "width": 120,
+        "height": 120
+      },
+      "websiteSize": {
+        "height": 200
+      }
+    },
+    {
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      },
+      "name": "Nicol Designs",
+      "logo": "/assets/images/uploads/nicol.png",
+      "websiteImage": "/assets/images/uploads/nicolpng.png"
+    },
+    {
+      "logoSize": {
+        "width": 120,
+        "height": 80
+      },
+      "websiteSize": {
+        "height": 200
+      },
+      "name": "KTJ Ceylon",
+      "logo": "/assets/images/uploads/ktj-logo-150x150.png",
+      "websiteImage": "/assets/images/uploads/ktj.png"
     }
   ]
 }
