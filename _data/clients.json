@@ -2,18 +2,18 @@
   "clients": [
     {
       "name": "Tech Startup Inc",
-      "logo": "assets/uploads/client1-logo.jpg",
-      "websiteImage": "assets/uploads/client1-website.jpg"
+      "logo": "",
+      "websiteImage": ""
     },
     {
       "name": "Fashion Boutique",
-      "logo": "assets/uploads/client2-logo.jpg", 
-      "websiteImage": "assets/uploads/client2-website.jpg"
+      "logo": "", 
+      "websiteImage": ""
     },
     {
       "name": "Restaurant Chain",
-      "logo": "assets/uploads/client3-logo.jpg",
-      "websiteImage": "assets/uploads/client3-website.jpg"
+      "logo": "",
+      "websiteImage": ""
     }
   ]
 }
