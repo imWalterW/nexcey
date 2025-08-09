@@ -1,5 +1,10 @@
 {
   "title": "About Nexcey",
   "text": "Nexcey is a modern web design studio offering tailor-made website solutions. From stunning landing pages to powerful e-commerce sites, we bring your ideas to life with clean, functional, and engaging designs.",
-  "image": "assets/images/about-image.jpg"
+  "image": "assets/images/about-image.jpg",
+  "imageSettings": {
+    "width": 500,
+    "height": 400,
+    "borderRadius": 10
+  }
 }
