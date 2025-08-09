@@ -1,17 +1,25 @@
 {
-  "title": "Our Services",
   "services": [
     {
       "name": "Landing Pages",
-      "icon": "fas fa-rocket",
-      "description": "High-converting landing pages that capture leads and drive sales with stunning designs."
+      "icon": "fas fa-laptop",
+      "description": "High-converting single-page websites designed to capture leads and drive action."
     },
     {
       "name": "Portfolio Websites",
-      "icon": "fas fa-palette",
-      "description": "Showcase your work beautifully with custom portfolio websites that impress clients."
+      "icon": "fas fa-briefcase",
+      "description": "Showcase your work with stunning portfolio sites that highlight your expertise."
     },
     {
       "name": "Business Websites",
-      "icon": "fas fa-briefcase",
-      "description": "Professional business websites that establish credibility and grow your online presence."
+      "icon": "fas fa-chart-line",
+      "description": "Professional corporate websites that establish credibility and drive growth."
+    },
+    {
+      "name": "E-commerce Websites",
+      "icon": "fas fa-shopping-cart",
+      "description": "Full-featured online stores with secure payment processing and inventory management."
+    }
+  ],
+  "title": "Our Services"
+}
