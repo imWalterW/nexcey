@@ -28,7 +28,13 @@ collections:
           - label: "Service Items"
             name: "items"
             widget: "list"
-            field: { label: "Service", name: "service", widget: "string" }
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - label: "Icon"
+                name: "icon"
+                widget: "select"
+                options: ["laptop", "briefcase", "building", "shopping-cart", "globe", "code", "paint-brush", "mobile-alt", "chart-line", "cog"]
 
   - name: "pricing"
     label: "Pricing Plans"
