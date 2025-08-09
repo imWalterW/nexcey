@@ -290,9 +290,16 @@ body {
 
 .services-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     transition: var(--transition);
+}
+
+/* Ensure 4 services in one row on desktop */
+@media (min-width: 1024px) {
+    .services-wrapper {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 .service-item {
@@ -529,40 +536,50 @@ body {
 .contact-info {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .contact-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     padding: 1.5rem;
-    background: var(--gray-100);
+    background: var(--white);
     border-radius: var(--border-radius);
     transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(82, 44, 181, 0.08);
+    border: 1px solid var(--gray-200);
 }
 
 .contact-item:hover {
     background: var(--primary-color);
     color: var(--white);
-    transform: translateX(10px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(82, 44, 181, 0.2);
 }
 
 .contact-icon {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     background: var(--primary-color);
     color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
 .contact-item:hover .contact-icon {
     background: var(--white);
     color: var(--primary-color);
+}
+
+.contact-details {
+    flex: 1;
+    line-height: 1.6;
 }
 
 .contact-form {
@@ -749,12 +766,27 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .services-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 1024px) {
-    .services-wrapper,
-    .pricing-wrapper,
-    .clients-wrapper,
+    .services-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pricing-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .clients-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
     .testimonials-wrapper {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .hero-title {
@@ -763,6 +795,10 @@ body {
     
     .section-title {
         font-size: 2rem;
+    }
+    
+    .container {
+        padding: 0 15px;
     }
 }
 
@@ -822,6 +858,16 @@ body {
         gap: 2rem;
     }
     
+    .contact-item {
+        padding: 1rem;
+    }
+    
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -836,11 +882,16 @@ body {
         padding: 60px 0;
     }
     
-    .container {
-        padding: 0 15px;
+    /* Mobile specific grid layouts */
+    .services-wrapper,
+    .pricing-wrapper,
+    .clients-wrapper,
+    .testimonials-wrapper {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
-    /* Show carousel arrows on mobile */
+    /* Show carousel arrows on mobile when needed */
     .carousel-arrows {
         display: flex !important;
     }
@@ -855,19 +906,29 @@ body {
         font-size: 1.8rem;
     }
     
-    .services-wrapper,
-    .pricing-wrapper,
-    .clients-wrapper,
-    .testimonials-wrapper {
-        grid-template-columns: 1fr;
-    }
-    
     .pricing-card.popular {
         transform: none;
     }
     
     .pricing-card.popular:hover {
         transform: translateY(-10px);
+    }
+    
+    .contact-item {
+        padding: 1rem;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .contact-icon {
+        margin-top: 0;
+    }
+    
+    .service-item,
+    .pricing-card,
+    .client-item,
+    .testimonial-item {
+        padding: 1.5rem;
     }
 }
 
