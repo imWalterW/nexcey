@@ -264,12 +264,12 @@ async function loadContent() {
         }
     }
 
-    // Load Testimonials
+    // Load Testimonials (using same logic as clients)
+    const testimonialsCarousel = document.getElementById('testimonials-carousel');
     try {
         const testimonialsResponse = await fetch('_data/testimonials.json');
         if (testimonialsResponse.ok) {
             const testimonialsData = await testimonialsResponse.json();
-            const testimonialsCarousel = document.getElementById('testimonials-carousel');
             
             if (testimonialsCarousel && testimonialsData.testimonials) {
                 testimonialsCarousel.innerHTML = testimonialsData.testimonials.map(testimonial => `
@@ -285,11 +285,11 @@ async function loadContent() {
                         <p class="testimonial__comment">${testimonial.comment}</p>
                     </div>
                 `).join('');
+                console.log('Testimonials loaded successfully:', testimonialsData.testimonials.length);
             }
         }
     } catch (error) {
         console.log('Loading fallback testimonials');
-        const testimonialsCarousel = document.getElementById('testimonials-carousel');
         if (testimonialsCarousel) {
             testimonialsCarousel.innerHTML = `
                 <div class="testimonial__card">
@@ -312,8 +312,10 @@ async function loadContent() {
                     </div>
                     <h4 class="testimonial__name">Mike Johnson</h4>
                     <p class="testimonial__comment">The team at Nexcey understood our vision perfectly and delivered beyond our expectations.</p>
+                    </div>
                 </div>
             `;
+            console.log('Fallback testimonials loaded');
         }
     }
 
