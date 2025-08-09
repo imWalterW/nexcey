@@ -1,4 +1,40 @@
-// Load footer data
+// Generic carousel setup function
+function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
+    const wrapper = document.getElementById(`${type}sWrapper`);
+    wrapper.className = 'carousel-container';
+    wrapper.innerHTML = ''; // Clear existing content
+    
+    const carouselWrapper = document.createElement('div');
+    carouselWrapper.className = 'carousel-wrapper';
+    carouselWrapper.id = `${type}CarouselWrapper`;
+    
+    // Create slides
+    for (let i = 0; i < data.length; i += itemsPerSlide) {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-item';
+        
+        const grid = document.createElement('div');
+        grid.className = `${type}-wrapper`;
+        
+        const slideData = data.slice(i, i + itemsPerSlide);
+        slideData.forEach((item, index) => {
+            grid.appendChild(createItemFunction(item, i + index));
+        });
+        
+        slide.appendChild(grid);
+        carouselWrapper.appendChild(slide);
+    }
+    
+    wrapper.appendChild(carouselWrapper);
+    
+    // Show carousel arrows
+    const arrowsElement = document.querySelector(`.${type}-arrows`);
+    if (arrowsElement) {
+        arrowsElement.classList.add('show');
+    }
+    
+    // Initialize carousel
+    init// Load footer data
 async function loadFooterData() {
     try {
         const response = await fetch('_data/footer.json');
