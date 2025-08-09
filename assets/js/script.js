@@ -1,36 +1,4 @@
-// Load footer data
-async function loadFooterData() {
-    try {
-        const response = await fetch('_data/footer.json');
-        const footerData = await response.json();
-        
-        document.getElementById('footerEmail').textContent = footerData.email;
-        document.getElementById('footerPhone').textContent = footerData.phone;
-        document.getElementById('footerAddress').textContent = footerData.address;
-        document.getElementById('contactEmail').textContent = footerData.email;
-        document.getElementById('contactPhone').textContent = footerData.phone;
-        document.getElementById('contactAddress').textContent = footerData.address;
-        
-        // Set social links
-        if (footerData.social.facebook) {
-            document.getElementById('socialFacebook').href = footerData.social.facebook;
-        }
-        if (footerData.social.x) {
-            document.getElementById('socialX').href = footerData.social.x;
-        }
-        if (footerData.social.linkedin) {
-            document.getElementById('socialLinkedin').href = footerData.social.linkedin;
-        }
-        if (footerData.social.instagram) {
-            document.getElementById('socialInstagram').href = footerData.social.instagram;
-        }
-        if (footerData.social.whatsapp) {
-            document.getElementById('socialWhatsapp').href = footerData.social.whatsapp;
-        }
-    } catch (error) {
-        console.error('Error loading footer data:', error);
-    }
-}// Generic carousel setup function
+// Generic carousel setup function
 function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
     const wrapper = document.getElementById(`${type}sWrapper`);
     wrapper.className = 'carousel-container';
@@ -67,122 +35,141 @@ function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
     }, 100);
 }
 
-// Initialize carousel functionality with proper event binding
+// Initialize carousel functionality
 function initCarousel(type) {
-    // Wait for DOM elements to be ready
-    setTimeout(() => {
-        const carouselWrapper = document.getElementById(`${type}CarouselWrapper`);
-        const prevBtn = document.getElementById(`${type}sPrev`);
-        const nextBtn = document.getElementById(`${type}sNext`);
-        
-        if (!carouselWrapper || !prevBtn || !nextBtn) {
-            console.log(`Carousel elements not ready for ${type}`);
-            return;
-        }
-        
-        const slides = carouselWrapper.querySelectorAll('.carousel-item');
-        const totalSlides = slides.length;
-        
-        if (totalSlides <= 1) {
-            document.querySelector(`.${type}-arrows`).classList.remove('show');
-            return;
-        }
-        
-        let currentSlide = 0;
-        let autoPlayInterval;
-        
-        function updateCarousel() {
-            const translateX = -currentSlide * 100;
-            carouselWrapper.style.transform = `translateX(${translateX}%)`;
-            
-            // Update button states
-            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
-            nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
-            prevBtn.disabled = currentSlide === 0;
-            nextBtn.disabled = currentSlide === totalSlides - 1;
-        }
-        
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-            } else {
-                currentSlide = 0; // Loop to first
-            }
-            updateCarousel();
-        }
-        
-        function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-            } else {
-                currentSlide = totalSlides - 1; // Loop to last
-            }
-            updateCarousel();
-        }
-        
-        function startAutoPlay() {
-            stopAutoPlay();
-            autoPlayInterval = setInterval(nextSlide, 4000);
-        }
-        
-        function stopAutoPlay() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-            }
-        }
-        
-        // Clear existing listeners and add new ones
-        prevBtn.onclick = null;
-        nextBtn.onclick = null;
-        
-        prevBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            stopAutoPlay();
-            prevSlide();
-            startAutoPlay();
-        };
-        
-        nextBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            stopAutoPlay();
+    const wrapper = document.getElementById(`${type}CarouselWrapper`);
+    const prevBtn = document.getElementById(`${type}sPrev`);
+    const nextBtn = document.getElementById(`${type}sNext`);
+    
+    if (!wrapper || !prevBtn || !nextBtn) {
+        console.error(`Carousel elements not found for ${type}`);
+        return;
+    }
+    
+    const slides = wrapper.querySelectorAll('.carousel-item');
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    if (totalSlides <= 1) {
+        // Hide arrows if only one slide
+        document.querySelector(`.${type}-arrows`).classList.remove('show');
+        return;
+    }
+    
+    // Auto-play functionality
+    let autoPlayInterval;
+    
+    function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayInterval = setInterval(() => {
             nextSlide();
-            startAutoPlay();
-        };
+        }, 4000);
+    }
+    
+    function stopAutoPlay() {
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+        }
+    }
+    
+    function updateCarousel() {
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
         
-        // Hover pause functionality
-        carouselWrapper.onmouseenter = stopAutoPlay;
-        carouselWrapper.onmouseleave = startAutoPlay;
+        // Update button states
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
         
-        // Touch support
-        let touchStartX = 0;
-        carouselWrapper.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            stopAutoPlay();
-        });
+        // Add visual feedback for disabled buttons
+        if (currentSlide === 0) {
+            prevBtn.style.opacity = '0.5';
+        } else {
+            prevBtn.style.opacity = '1';
+        }
         
-        carouselWrapper.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    nextSlide();
-                } else {
-                    prevSlide();
-                }
-            }
-            startAutoPlay();
-        });
-        
-        // Initialize
+        if (currentSlide === totalSlides - 1) {
+            nextBtn.style.opacity = '0.5';
+        } else {
+            nextBtn.style.opacity = '1';
+        }
+    }
+    
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0; // Loop back to first slide
+        }
         updateCarousel();
+    }
+    
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = totalSlides - 1; // Loop to last slide
+        }
+        updateCarousel();
+    }
+    
+    // Remove existing event listeners to prevent duplicates
+    const newPrevBtn = prevBtn.cloneNode(true);
+    const newNextBtn = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    
+    // Add event listeners
+    newNextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        nextSlide();
         startAutoPlay();
+    });
+    
+    newPrevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        prevSlide();
+        startAutoPlay();
+    });
+    
+    // Pause autoplay on hover
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+    
+    // Touch support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    wrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoPlay();
+    });
+    
+    wrapper.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+        startAutoPlay();
+    });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
         
-        console.log(`Carousel initialized for ${type} with ${totalSlides} slides`);
-    }, 200);
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - next slide
+                nextSlide();
+            } else {
+                // Swipe right - previous slide
+                prevSlide();
+            }
+        }
+    }
+    
+    // Initialize
+    updateCarousel();
+    startAutoPlay();
 }
             // Global variables
 let currentTheme = {};
