@@ -91,25 +91,49 @@ async function loadContent() {
             const servicesData = await servicesResponse.json();
             const servicesGrid = document.getElementById('services-grid');
             
-            const serviceIcons = ['🌐', '💼', '🏢', '🛒']; // Default icons
-            
-            servicesGrid.innerHTML = servicesData.items.map((service, index) => `
+            servicesGrid.innerHTML = servicesData.items.map(service => `
                 <div class="service__card">
-                    <div class="service__icon">${serviceIcons[index] || '💻'}</div>
-                    <h3 class="service__title">${service}</h3>
+                    <div class="service__icon">
+                        <i class="fas fa-${service.icon || 'laptop'}"></i>
+                    </div>
+                    <h3 class="service__title">${service.title || service}</h3>
+                    ${service.description ? `<p class="service__description">${service.description}</p>` : ''}
                 </div>
             `).join('');
         }
     } catch (error) {
         // Fallback services
         const servicesGrid = document.getElementById('services-grid');
-        const defaultServices = ['Landing Pages', 'Portfolio Websites', 'Business Websites', 'E-commerce Websites'];
-        const serviceIcons = ['🌐', '💼', '🏢', '🛒'];
+        const defaultServices = [
+            {
+                title: "Landing Pages",
+                description: "High-converting single-page websites designed to capture leads and drive action.",
+                icon: "laptop"
+            },
+            {
+                title: "Portfolio Websites",
+                description: "Showcase your work with stunning portfolio sites that highlight your expertise.",
+                icon: "briefcase"
+            },
+            {
+                title: "Business Websites",
+                description: "Professional corporate websites that establish credibility and drive growth.",
+                icon: "building"
+            },
+            {
+                title: "E-commerce Websites",
+                description: "Full-featured online stores with secure payment processing and inventory management.",
+                icon: "shopping-cart"
+            }
+        ];
         
-        servicesGrid.innerHTML = defaultServices.map((service, index) => `
+        servicesGrid.innerHTML = defaultServices.map(service => `
             <div class="service__card">
-                <div class="service__icon">${serviceIcons[index]}</div>
-                <h3 class="service__title">${service}</h3>
+                <div class="service__icon">
+                    <i class="fas fa-${service.icon}"></i>
+                </div>
+                <h3 class="service__title">${service.title}</h3>
+                <p class="service__description">${service.description}</p>
             </div>
         `).join('');
     }
