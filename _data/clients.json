@@ -1,14 +1,19 @@
 {
   "clients": [
     {
-      "name": "Client A",
-      "logo": "/assets/uploads/client-a-logo.png",
-      "websiteImage": "/assets/uploads/client-a-website.jpg"
+      "name": "Tech Startup Inc",
+      "logo": "assets/uploads/client1-logo.jpg",
+      "websiteImage": "assets/uploads/client1-website.jpg"
     },
     {
-      "name": "Client B",
-      "logo": "/assets/uploads/client-b-logo.png",
-      "websiteImage": "/assets/uploads/client-b-website.jpg"
+      "name": "Fashion Boutique",
+      "logo": "assets/uploads/client2-logo.jpg", 
+      "websiteImage": "assets/uploads/client2-website.jpg"
+    },
+    {
+      "name": "Restaurant Chain",
+      "logo": "assets/uploads/client3-logo.jpg",
+      "websiteImage": "assets/uploads/client3-website.jpg"
     }
   ]
 }
