@@ -39,6 +39,14 @@
         "Advanced SEO Package",
         "Priority Support"
       ]
+    },
+    {
+      "popular": false,
+      "name": "Enterprise",
+      "price": "Contact Us",
+      "features": [
+        "Custom Websites Tailored For Your Business"
+      ]
     }
   ]
 }
