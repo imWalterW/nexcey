@@ -2,8 +2,18 @@
   "clients": [
     {
       "name": "Abix Facilities Management",
-      "logo": "https://abixfm.com/wp-content/uploads/2023/07/Logo.png",
-      "websiteImage": "/assets/uploads/abixfm.png"
+      "logo": "/assets/uploads/abixfm.png",
+      "websiteImage": "/assets/uploads/abix.png"
+    },
+    {
+      "name": "Denime.LK",
+      "logo": "/assets/uploads/denime-logo.png",
+      "websiteImage": "/assets/uploads/denimelk.png"
+    },
+    {
+      "name": "Maxa Technical Services",
+      "logo": "/assets/uploads/client_8.png",
+      "websiteImage": "/assets/uploads/maxa.png"
     }
   ]
 }
