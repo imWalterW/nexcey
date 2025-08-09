@@ -1,14 +1,19 @@
 {
   "testimonials": [
     {
-      "name": "Jane Doe",
-      "image": "/assets/uploads/jane-doe.jpg",
-      "comment": "Nexcey created a stunning and professional website for my business. The process was smooth and the results exceeded my expectations!"
+      "name": "John Doe",
+      "image": "assets/uploads/testimonial1.jpg",
+      "comment": "Nexcey created an amazing website for my business. The design is modern and the service was exceptional!"
     },
     {
-      "name": "John Smith",
-      "image": "/assets/uploads/john-smith.jpg",
-      "comment": "The team at Nexcey is fantastic! They are highly skilled and responsive. My new website has significantly increased my online traffic."
+      "name": "Jane Smith", 
+      "image": "assets/uploads/testimonial2.jpg",
+      "comment": "Professional, creative, and delivered on time. I highly recommend Nexcey for web design services."
+    },
+    {
+      "name": "Mike Johnson",
+      "image": "assets/uploads/testimonial3.jpg",
+      "comment": "The team at Nexcey understood our vision perfectly and delivered beyond our expectations."
     }
   ]
 }
