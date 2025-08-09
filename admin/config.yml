@@ -28,7 +28,7 @@ collections:
           - label: "Service Items"
             name: "items"
             widget: "list"
-            field: { widget: "string" }
+            field: { label: "Service", name: "service", widget: "string" }
 
   - name: "pricing"
     label: "Pricing Plans"
@@ -46,7 +46,7 @@ collections:
               - label: "Features"
                 name: "features"
                 widget: "list"
-                field: { widget: "string" }
+                field: { label: "Feature", name: "feature", widget: "string" }
 
   - name: "clients"
     label: "Clients"
