@@ -1,16 +1,17 @@
 [build]
-  command = "echo 'No build command needed for this static site.'"
-  publish = "dist"  # Or your main directory if not using a build process
-
-[context.production]
   publish = "."
+  command = "echo 'No build command needed for static site'"
 
+# Redirect rules for single page app
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Form handling
+[build.environment]
+  NODE_VERSION = "18"
+
+# Enable Identity and Git Gateway
+[template.environment]
+  NETLIFY_CMS_MANUAL_INIT = "true"
