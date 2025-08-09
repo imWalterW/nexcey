@@ -129,15 +129,35 @@
     <!-- Contact Section -->
     <section class="contact section" id="contact-us">
         <div class="contact__container container">
-            <h2 class="section__title">Contact Us</h2>
+            <div class="contact__info">
+                <h2 class="section__title">Contact Us</h2>
+                <div class="contact__info-card">
+                    <div class="contact__info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact__info-text" id="footer-email">info@nexcey.com</div>
+                </div>
+                <div class="contact__info-card">
+                    <div class="contact__info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact__info-text" id="footer-phone">+94 72 445 2222</div>
+                </div>
+                <div class="contact__info-card">
+                    <div class="contact__info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact__info-text" id="footer-address">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</div>
+                </div>
+            </div>
             <form class="contact__form" id="contact-form" name="contact" method="POST" data-netlify="true">
                 <div class="contact__inputs">
-                    <input type="text" name="name" placeholder="Name" class="contact__input" required>
-                    <input type="email" name="email" placeholder="Email" class="contact__input" required>
-                    <input type="tel" name="phone" placeholder="Phone" class="contact__input" required>
+                    <input type="text" name="name" placeholder="Your Name" class="contact__input" required>
+                    <input type="email" name="email" placeholder="Your Email" class="contact__input" required>
+                    <input type="tel" name="phone" placeholder="Your Phone" class="contact__input" required>
                 </div>
-                <textarea name="message" placeholder="Message" class="contact__textarea" required></textarea>
-                <button type="submit" class="button contact__button">Send Message</button>
+                <textarea name="message" placeholder="Your Message" class="contact__textarea" required></textarea>
+                <button type="submit" class="contact__button">Send Message</button>
             </form>
         </div>
     </section>
