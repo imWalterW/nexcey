@@ -416,12 +416,15 @@ img {
 
 .service__card {
   background: white;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .service__card:hover {
@@ -438,15 +441,24 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto var(--mb-1);
+  margin: 0 auto var(--mb-1-5);
   font-size: 2rem;
   color: white;
 }
 
 .service__title {
   font-size: var(--h3-font-size);
-  margin-bottom: var(--mb-0-5);
+  margin-bottom: var(--mb-1);
   color: var(--text-color);
+  font-weight: var(--font-semi-bold);
+}
+
+.service__description {
+  color: var(--text-color-light);
+  line-height: 1.6;
+  font-size: var(--normal-font-size);
+  flex-grow: 1;
+  margin: 0;
 }
 
 /* ===== PRICING SECTION ===== */
