@@ -1,42 +1,34 @@
-// Simple, working JavaScript - no overcomplicated BS
-let servicesData = [];
-let pricingData = [];
-let clientsData = [];
-let testimonialsData = [];
-
-// Initialize everything when page loads
+// Clean, working JavaScript - no bullshit
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize AOS
-    AOS.init({
-        duration: 1000,
-        once: true,
-        offset: 100
-    });
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    }
     
     // Load all data
     loadAllData();
-    
-    // Initialize mobile navigation
     initMobileNav();
-    
-    // Initialize contact form
     initContactForm();
-    
-    // Initialize header scroll effect
     initHeaderScroll();
 });
 
 // Load all data
 async function loadAllData() {
     try {
-        await loadTheme();
-        await loadHeroData();
-        await loadAboutData();
-        await loadServicesData();
-        await loadPricingData();
-        await loadClientsData();
-        await loadTestimonialsData();
-        await loadFooterData();
+        await Promise.all([
+            loadTheme(),
+            loadHeroData(),
+            loadAboutData(),
+            loadServicesData(),
+            loadPricingData(),
+            loadClientsData(),
+            loadTestimonialsData(),
+            loadFooterData()
+        ]);
     } catch (error) {
         console.error('Error loading data:', error);
     }
@@ -51,12 +43,14 @@ async function loadTheme() {
         if (theme.primaryColor) {
             document.documentElement.style.setProperty('--primary-color', theme.primaryColor);
         }
-        if (theme.logo) {
-            document.getElementById('headerLogo').src = theme.logo;
-            document.getElementById('footerLogo').src = theme.logo;
-        }
+        
+        const headerLogo = document.getElementById('headerLogo');
+        const footerLogo = document.getElementById('footerLogo');
+        
+        if (theme.logo && headerLogo) headerLogo.src = theme.logo;
+        if (theme.logo && footerLogo) footerLogo.src = theme.logo;
     } catch (error) {
-        console.error('Error loading theme:', error);
+        console.error('Theme loading failed:', error);
     }
 }
 
@@ -66,12 +60,17 @@ async function loadHeroData() {
         const response = await fetch('_data/hero.json');
         const hero = await response.json();
         
-        document.getElementById('heroTitle').textContent = hero.title;
-        document.getElementById('heroSubtitle').textContent = hero.subtitle;
-        document.getElementById('heroCtaText').textContent = hero.ctaText;
-        document.getElementById('heroCtaButton').href = hero.ctaLink;
+        const title = document.getElementById('heroTitle');
+        const subtitle = document.getElementById('heroSubtitle');
+        const ctaText = document.getElementById('heroCtaText');
+        const ctaButton = document.getElementById('heroCtaButton');
+        
+        if (title) title.textContent = hero.title;
+        if (subtitle) subtitle.textContent = hero.subtitle;
+        if (ctaText) ctaText.textContent = hero.ctaText;
+        if (ctaButton) ctaButton.href = hero.ctaLink;
     } catch (error) {
-        console.error('Error loading hero:', error);
+        console.error('Hero loading failed:', error);
     }
 }
 
@@ -81,13 +80,15 @@ async function loadAboutData() {
         const response = await fetch('_data/about.json');
         const about = await response.json();
         
-        document.getElementById('aboutTitle').textContent = about.title;
-        document.getElementById('aboutText').textContent = about.text;
-        if (about.image) {
-            document.getElementById('aboutImage').src = about.image;
-        }
+        const title = document.getElementById('aboutTitle');
+        const text = document.getElementById('aboutText');
+        const image = document.getElementById('aboutImage');
+        
+        if (title) title.textContent = about.title;
+        if (text) text.textContent = about.text;
+        if (image && about.image) image.src = about.image;
     } catch (error) {
-        console.error('Error loading about:', error);
+        console.error('About loading failed:', error);
     }
 }
 
@@ -96,21 +97,25 @@ async function loadServicesData() {
     try {
         const response = await fetch('_data/services.json');
         const data = await response.json();
-        servicesData = data.services;
         
-        document.getElementById('servicesTitle').textContent = data.title;
-        renderServices();
+        const title = document.getElementById('servicesTitle');
+        const wrapper = document.getElementById('servicesWrapper');
+        
+        if (title) title.textContent = data.title;
+        if (wrapper && data.services) {
+            renderServices(data.services, wrapper);
+        }
     } catch (error) {
-        console.error('Error loading services:', error);
+        console.error('Services loading failed:', error);
     }
 }
 
-// Render services - SIMPLE
-function renderServices() {
-    const wrapper = document.getElementById('servicesWrapper');
+// Render services
+function renderServices(services, wrapper) {
     wrapper.innerHTML = '';
+    wrapper.className = 'services-wrapper';
     
-    servicesData.forEach((service, index) => {
+    services.forEach((service, index) => {
         const item = document.createElement('div');
         item.className = 'service-item';
         item.setAttribute('data-aos', 'fade-up');
@@ -127,9 +132,9 @@ function renderServices() {
         wrapper.appendChild(item);
     });
     
-    // If more than 4 services, initialize carousel
-    if (servicesData.length > 4) {
-        initSimpleCarousel('services', 4);
+    // Create carousel if more than 4 services
+    if (services.length > 4) {
+        createCarousel('services', wrapper, 4);
     }
 }
 
@@ -138,21 +143,25 @@ async function loadPricingData() {
     try {
         const response = await fetch('_data/pricing.json');
         const data = await response.json();
-        pricingData = data.plans;
         
-        document.getElementById('pricingTitle').textContent = data.title;
-        renderPricing();
+        const title = document.getElementById('pricingTitle');
+        const wrapper = document.getElementById('pricingWrapper');
+        
+        if (title) title.textContent = data.title;
+        if (wrapper && data.plans) {
+            renderPricing(data.plans, wrapper);
+        }
     } catch (error) {
-        console.error('Error loading pricing:', error);
+        console.error('Pricing loading failed:', error);
     }
 }
 
-// Render pricing - SIMPLE with buttons
-function renderPricing() {
-    const wrapper = document.getElementById('pricingWrapper');
+// Render pricing
+function renderPricing(plans, wrapper) {
     wrapper.innerHTML = '';
+    wrapper.className = 'pricing-wrapper';
     
-    pricingData.forEach((plan, index) => {
+    plans.forEach((plan, index) => {
         const card = document.createElement('div');
         card.className = `pricing-card ${plan.popular ? 'popular' : ''}`;
         card.setAttribute('data-aos', 'fade-up');
@@ -171,9 +180,9 @@ function renderPricing() {
         wrapper.appendChild(card);
     });
     
-    // If more than 3 plans, initialize carousel
-    if (pricingData.length > 3) {
-        initSimpleCarousel('pricing', 3);
+    // Create carousel if more than 3 plans
+    if (plans.length > 3) {
+        createCarousel('pricing', wrapper, 3);
     }
 }
 
@@ -182,21 +191,25 @@ async function loadClientsData() {
     try {
         const response = await fetch('_data/clients.json');
         const data = await response.json();
-        clientsData = data.clients;
         
-        document.getElementById('clientsTitle').textContent = data.title;
-        renderClients();
+        const title = document.getElementById('clientsTitle');
+        const wrapper = document.getElementById('clientsWrapper');
+        
+        if (title) title.textContent = data.title;
+        if (wrapper && data.clients) {
+            renderClients(data.clients, wrapper);
+        }
     } catch (error) {
-        console.error('Error loading clients:', error);
+        console.error('Clients loading failed:', error);
     }
 }
 
-// Render clients - SIMPLE
-function renderClients() {
-    const wrapper = document.getElementById('clientsWrapper');
+// Render clients
+function renderClients(clients, wrapper) {
     wrapper.innerHTML = '';
+    wrapper.className = 'clients-wrapper';
     
-    clientsData.forEach((client, index) => {
+    clients.forEach((client, index) => {
         const item = document.createElement('div');
         item.className = 'client-item';
         item.setAttribute('data-aos', 'fade-up');
@@ -211,9 +224,9 @@ function renderClients() {
         wrapper.appendChild(item);
     });
     
-    // If more than 3 clients, initialize carousel
-    if (clientsData.length > 3) {
-        initSimpleCarousel('clients', 3);
+    // Create carousel if more than 3 clients
+    if (clients.length > 3) {
+        createCarousel('clients', wrapper, 3);
     }
 }
 
@@ -222,21 +235,25 @@ async function loadTestimonialsData() {
     try {
         const response = await fetch('_data/testimonials.json');
         const data = await response.json();
-        testimonialsData = data.testimonials;
         
-        document.getElementById('testimonialsTitle').textContent = data.title;
-        renderTestimonials();
+        const title = document.getElementById('testimonialsTitle');
+        const wrapper = document.getElementById('testimonialsWrapper');
+        
+        if (title) title.textContent = data.title;
+        if (wrapper && data.testimonials) {
+            renderTestimonials(data.testimonials, wrapper);
+        }
     } catch (error) {
-        console.error('Error loading testimonials:', error);
+        console.error('Testimonials loading failed:', error);
     }
 }
 
-// Render testimonials - SIMPLE
-function renderTestimonials() {
-    const wrapper = document.getElementById('testimonialsWrapper');
+// Render testimonials
+function renderTestimonials(testimonials, wrapper) {
     wrapper.innerHTML = '';
+    wrapper.className = 'testimonials-wrapper';
     
-    testimonialsData.forEach((testimonial, index) => {
+    testimonials.forEach((testimonial, index) => {
         const item = document.createElement('div');
         item.className = 'testimonial-item';
         item.setAttribute('data-aos', 'fade-up');
@@ -253,9 +270,9 @@ function renderTestimonials() {
         wrapper.appendChild(item);
     });
     
-    // If more than 3 testimonials, initialize carousel
-    if (testimonialsData.length > 3) {
-        initSimpleCarousel('testimonials', 3);
+    // Create carousel if more than 3 testimonials
+    if (testimonials.length > 3) {
+        createCarousel('testimonials', wrapper, 3);
     }
 }
 
@@ -265,117 +282,124 @@ async function loadFooterData() {
         const response = await fetch('_data/footer.json');
         const footer = await response.json();
         
-        document.getElementById('footerEmail').textContent = footer.email;
-        document.getElementById('footerPhone').textContent = footer.phone;
-        document.getElementById('footerAddress').textContent = footer.address;
-        document.getElementById('contactEmail').textContent = footer.email;
-        document.getElementById('contactPhone').textContent = footer.phone;
-        document.getElementById('contactAddress').textContent = footer.address;
+        const elements = {
+            footerEmail: footer.email,
+            footerPhone: footer.phone,
+            footerAddress: footer.address,
+            contactEmail: footer.email,
+            contactPhone: footer.phone,
+            contactAddress: footer.address
+        };
+        
+        Object.entries(elements).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        });
         
         // Set social links
-        if (footer.social.facebook) document.getElementById('socialFacebook').href = footer.social.facebook;
-        if (footer.social.x) document.getElementById('socialX').href = footer.social.x;
-        if (footer.social.linkedin) document.getElementById('socialLinkedin').href = footer.social.linkedin;
-        if (footer.social.instagram) document.getElementById('socialInstagram').href = footer.social.instagram;
-        if (footer.social.whatsapp) document.getElementById('socialWhatsapp').href = footer.social.whatsapp;
+        const socialLinks = {
+            socialFacebook: footer.social.facebook,
+            socialX: footer.social.x,
+            socialLinkedin: footer.social.linkedin,
+            socialInstagram: footer.social.instagram,
+            socialWhatsapp: footer.social.whatsapp
+        };
+        
+        Object.entries(socialLinks).forEach(([id, href]) => {
+            const element = document.getElementById(id);
+            if (element && href) element.href = href;
+        });
     } catch (error) {
-        console.error('Error loading footer:', error);
+        console.error('Footer loading failed:', error);
     }
 }
 
-// SIMPLE MANUAL CAROUSEL - NO AUTO-PLAY BULLSHIT
-function initSimpleCarousel(type, itemsPerSlide) {
-    const wrapper = document.getElementById(`${type}sWrapper`);
+// Create manual carousel
+function createCarousel(type, wrapper, itemsPerSlide) {
     const items = Array.from(wrapper.children);
     const totalItems = items.length;
+    const totalSlides = Math.ceil(totalItems / itemsPerSlide);
     
-    if (totalItems <= itemsPerSlide) return;
+    if (totalSlides <= 1) return;
     
-    // Clear wrapper
+    // Create carousel structure
     wrapper.innerHTML = '';
     wrapper.className = 'carousel-wrapper';
     
-    const container = document.createElement('div');
-    container.className = 'carousel-container';
-    container.style.display = 'flex';
-    container.style.transition = 'transform 0.3s ease';
+    const track = document.createElement('div');
+    track.className = 'carousel-track';
+    track.style.cssText = `
+        display: flex;
+        transition: transform 0.4s ease;
+        width: ${totalSlides * 100}%;
+    `;
     
     // Create slides
-    const totalSlides = Math.ceil(totalItems / itemsPerSlide);
     for (let i = 0; i < totalSlides; i++) {
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
-        slide.style.width = '100%';
-        slide.style.flexShrink = '0';
-        slide.style.display = 'grid';
-        slide.style.gap = '1.5rem';
+        slide.style.cssText = `
+            width: ${100 / totalSlides}%;
+            display: grid;
+            grid-template-columns: repeat(${Math.min(itemsPerSlide, 3)}, 1fr);
+            gap: 1.5rem;
+            flex-shrink: 0;
+        `;
         
-        // Set grid columns based on type
-        if (type === 'services') {
-            slide.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        } else {
-            slide.style.gridTemplateColumns = 'repeat(3, 1fr)';
-        }
-        
-        // Add items to this slide
         const slideItems = items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide);
         slideItems.forEach(item => slide.appendChild(item));
-        
-        container.appendChild(slide);
+        track.appendChild(slide);
     }
     
-    wrapper.appendChild(container);
+    wrapper.appendChild(track);
     
+    // Show arrows
+    const arrows = document.querySelector(`.${type}-arrows`);
+    if (arrows) arrows.classList.add('show');
+    
+    // Initialize carousel controls
     let currentSlide = 0;
     
-    function goToSlide(slideIndex) {
-        currentSlide = slideIndex;
-        container.style.transform = `translateX(-${slideIndex * 100}%)`;
+    function updateCarousel() {
+        track.style.transform = `translateX(-${currentSlide * (100 / totalSlides)}%)`;
         
-        // Update arrows
         const prevBtn = document.getElementById(`${type}sPrev`);
         const nextBtn = document.getElementById(`${type}sNext`);
         
-        if (prevBtn && nextBtn) {
-            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
-            nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
+        if (prevBtn) {
             prevBtn.disabled = currentSlide === 0;
+            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
+        }
+        
+        if (nextBtn) {
             nextBtn.disabled = currentSlide === totalSlides - 1;
+            nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
         }
     }
     
-    function nextSlide() {
-        if (currentSlide < totalSlides - 1) {
-            goToSlide(currentSlide + 1);
-        }
-    }
-    
-    function prevSlide() {
-        if (currentSlide > 0) {
-            goToSlide(currentSlide - 1);
-        }
-    }
-    
-    // Add arrow event listeners
+    // Add event listeners
     const prevBtn = document.getElementById(`${type}sPrev`);
     const nextBtn = document.getElementById(`${type}sNext`);
     
-    if (prevBtn && nextBtn) {
-        document.querySelector(`.${type}-arrows`).classList.add('show');
-        
-        prevBtn.onclick = (e) => {
-            e.preventDefault();
-            prevSlide();
-        };
-        
-        nextBtn.onclick = (e) => {
-            e.preventDefault();
-            nextSlide();
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            }
         };
     }
     
-    // Initialize first slide
-    goToSlide(0);
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        };
+    }
+    
+    updateCarousel();
 }
 
 // Mobile navigation
@@ -383,34 +407,36 @@ function initMobileNav() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
     
-    navToggle.addEventListener('click', () => {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-    
-    // Close on link click
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
-    });
+        
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+    }
 }
 
 // Contact form
 function initContactForm() {
     const form = document.getElementById('contactForm');
+    if (!form) return;
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const submitBtn = form.querySelector('.submit-btn');
-        const originalText = submitBtn.innerHTML;
+        if (!submitBtn) return;
         
+        const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = 'Sending...';
         submitBtn.disabled = true;
         
-        // Simulate sending
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         alert('Thank you! We will contact you soon.');
@@ -424,14 +450,13 @@ function initContactForm() {
 // Header scroll effect
 function initHeaderScroll() {
     const header = document.getElementById('header');
+    if (!header) return;
     
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
             header.style.background = 'rgba(255, 255, 255, 0.98)';
-            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
         } else {
             header.style.background = 'rgba(255, 255, 255, 0.95)';
-            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
         }
     });
 }
