@@ -1,6 +1,12 @@
 // Generic carousel setup function
 function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
     const wrapper = document.getElementById(`${type}sWrapper`);
+    
+    if (!wrapper) {
+        console.error(`Wrapper element not found for ${type}sWrapper`);
+        return;
+    }
+    
     wrapper.className = 'carousel-container';
     wrapper.innerHTML = ''; // Clear existing content
     
@@ -18,7 +24,11 @@ function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
         
         const slideData = data.slice(i, i + itemsPerSlide);
         slideData.forEach((item, index) => {
-            grid.appendChild(createItemFunction(item, i + index));
+            try {
+                grid.appendChild(createItemFunction(item, i + index));
+            } catch (error) {
+                console.error(`Error creating ${type} item:`, error);
+            }
         });
         
         slide.appendChild(grid);
@@ -363,6 +373,11 @@ async function loadServicesData() {
 // Render services section
 function renderServices() {
     const wrapper = document.getElementById('servicesWrapper');
+    if (!wrapper) {
+        console.error('Services wrapper not found');
+        return;
+    }
+    
     wrapper.innerHTML = '';
     
     if (servicesData.length <= 4) {
@@ -372,7 +387,10 @@ function renderServices() {
             wrapper.appendChild(createServiceItem(service, index));
         });
         // Hide arrows if not needed
-        document.querySelector('.services-arrows').classList.remove('show');
+        const arrowsElement = document.querySelector('.services-arrows');
+        if (arrowsElement) {
+            arrowsElement.classList.remove('show');
+        }
     } else {
         // Create carousel
         setupCarousel('services', servicesData, 4, createServiceItem);
@@ -414,6 +432,11 @@ async function loadPricingData() {
 // Render pricing section
 function renderPricing() {
     const wrapper = document.getElementById('pricingWrapper');
+    if (!wrapper) {
+        console.error('Pricing wrapper not found');
+        return;
+    }
+    
     wrapper.innerHTML = '';
     
     if (pricingData.length <= 3) {
@@ -423,7 +446,10 @@ function renderPricing() {
             wrapper.appendChild(createPricingCard(plan, index));
         });
         // Hide arrows if not needed
-        document.querySelector('.pricing-arrows').classList.remove('show');
+        const arrowsElement = document.querySelector('.pricing-arrows');
+        if (arrowsElement) {
+            arrowsElement.classList.remove('show');
+        }
     } else {
         // Create carousel
         setupCarousel('pricing', pricingData, 3, createPricingCard);
@@ -468,6 +494,11 @@ async function loadClientsData() {
 // Render clients section
 function renderClients() {
     const wrapper = document.getElementById('clientsWrapper');
+    if (!wrapper) {
+        console.error('Clients wrapper not found');
+        return;
+    }
+    
     wrapper.innerHTML = '';
     
     if (clientsData.length <= 3) {
@@ -477,7 +508,10 @@ function renderClients() {
             wrapper.appendChild(createClientItem(client, index));
         });
         // Hide arrows if not needed
-        document.querySelector('.clients-arrows').classList.remove('show');
+        const arrowsElement = document.querySelector('.clients-arrows');
+        if (arrowsElement) {
+            arrowsElement.classList.remove('show');
+        }
     } else {
         // Create carousel
         setupCarousel('clients', clientsData, 3, createClientItem);
@@ -529,6 +563,11 @@ async function loadTestimonialsData() {
 // Render testimonials section
 function renderTestimonials() {
     const wrapper = document.getElementById('testimonialsWrapper');
+    if (!wrapper) {
+        console.error('Testimonials wrapper not found');
+        return;
+    }
+    
     wrapper.innerHTML = '';
     
     if (testimonialsData.length <= 3) {
@@ -538,7 +577,10 @@ function renderTestimonials() {
             wrapper.appendChild(createTestimonialItem(testimonial, index));
         });
         // Hide arrows if not needed
-        document.querySelector('.testimonials-arrows').classList.remove('show');
+        const arrowsElement = document.querySelector('.testimonials-arrows');
+        if (arrowsElement) {
+            arrowsElement.classList.remove('show');
+        }
     } else {
         // Create carousel
         setupCarousel('testimonials', testimonialsData, 3, createTestimonialItem);
