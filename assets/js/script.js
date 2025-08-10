@@ -283,43 +283,39 @@ async function loadFooterData() {
     }
 }
 
-// Simple carousel that actually works
+// SIMPLE MANUAL CAROUSEL - NO AUTO-PLAY BULLSHIT
 function initSimpleCarousel(type, itemsPerSlide) {
     const wrapper = document.getElementById(`${type}sWrapper`);
     const items = Array.from(wrapper.children);
     const totalItems = items.length;
     
-    console.log(`Initializing carousel for ${type}: ${totalItems} items, ${itemsPerSlide} per slide`);
+    if (totalItems <= itemsPerSlide) return;
     
-    if (totalItems <= itemsPerSlide) {
-        console.log(`Not enough items for carousel (${totalItems} <= ${itemsPerSlide})`);
-        return;
-    }
-    
-    // Clear wrapper and create carousel structure
+    // Clear wrapper
     wrapper.innerHTML = '';
     wrapper.className = 'carousel-wrapper';
     
     const container = document.createElement('div');
     container.className = 'carousel-container';
-    container.style.cssText = `
-        display: flex;
-        transition: transform 0.5s ease;
-        width: ${Math.ceil(totalItems / itemsPerSlide) * 100}%;
-    `;
+    container.style.display = 'flex';
+    container.style.transition = 'transform 0.3s ease';
     
     // Create slides
     const totalSlides = Math.ceil(totalItems / itemsPerSlide);
     for (let i = 0; i < totalSlides; i++) {
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
-        slide.style.cssText = `
-            width: ${100 / totalSlides}%;
-            display: grid;
-            grid-template-columns: repeat(${itemsPerSlide}, 1fr);
-            gap: 1.5rem;
-            flex-shrink: 0;
-        `;
+        slide.style.width = '100%';
+        slide.style.flexShrink = '0';
+        slide.style.display = 'grid';
+        slide.style.gap = '1.5rem';
+        
+        // Set grid columns based on type
+        if (type === 'services') {
+            slide.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        } else {
+            slide.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        }
         
         // Add items to this slide
         const slideItems = items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide);
@@ -331,14 +327,10 @@ function initSimpleCarousel(type, itemsPerSlide) {
     wrapper.appendChild(container);
     
     let currentSlide = 0;
-    let autoInterval;
     
     function goToSlide(slideIndex) {
         currentSlide = slideIndex;
-        const translateX = -(slideIndex * (100 / totalSlides));
-        container.style.transform = `translateX(${translateX}%)`;
-        
-        console.log(`Going to slide ${slideIndex}, translateX: ${translateX}%`);
+        container.style.transform = `translateX(-${slideIndex * 100}%)`;
         
         // Update arrows
         const prevBtn = document.getElementById(`${type}sPrev`);
@@ -347,29 +339,20 @@ function initSimpleCarousel(type, itemsPerSlide) {
         if (prevBtn && nextBtn) {
             prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
             nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
         }
     }
     
     function nextSlide() {
-        currentSlide = currentSlide >= totalSlides - 1 ? 0 : currentSlide + 1;
-        goToSlide(currentSlide);
+        if (currentSlide < totalSlides - 1) {
+            goToSlide(currentSlide + 1);
+        }
     }
     
     function prevSlide() {
-        currentSlide = currentSlide <= 0 ? totalSlides - 1 : currentSlide - 1;
-        goToSlide(currentSlide);
-    }
-    
-    function startAuto() {
-        stopAuto();
-        autoInterval = setInterval(nextSlide, 4000);
-        console.log('Auto-play started');
-    }
-    
-    function stopAuto() {
-        if (autoInterval) {
-            clearInterval(autoInterval);
-            console.log('Auto-play stopped');
+        if (currentSlide > 0) {
+            goToSlide(currentSlide - 1);
         }
     }
     
@@ -379,52 +362,20 @@ function initSimpleCarousel(type, itemsPerSlide) {
     
     if (prevBtn && nextBtn) {
         document.querySelector(`.${type}-arrows`).classList.add('show');
-        console.log('Arrows shown');
         
         prevBtn.onclick = (e) => {
             e.preventDefault();
-            console.log('Previous clicked');
-            stopAuto();
             prevSlide();
-            startAuto();
         };
         
         nextBtn.onclick = (e) => {
             e.preventDefault();
-            console.log('Next clicked');
-            stopAuto();
             nextSlide();
-            startAuto();
         };
     }
     
-    // Pause on hover
-    container.onmouseenter = stopAuto;
-    container.onmouseleave = startAuto;
-    
-    // Touch support
-    let startX = 0;
-    container.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-        stopAuto();
-    });
-    
-    container.addEventListener('touchend', e => {
-        const endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
-        
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) nextSlide();
-            else prevSlide();
-        }
-        startAuto();
-    });
-    
-    // Initialize
+    // Initialize first slide
     goToSlide(0);
-    startAuto();
-    
-    console.log(`Carousel initialized with ${totalSlides} slides`);
 }
 
 // Mobile navigation
