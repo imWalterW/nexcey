@@ -1,245 +1,12 @@
-// Generic carousel setup function
-function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
-    const wrapper = document.getElementById(`${type}sWrapper`);
-    
-    if (!wrapper) {
-        console.error(`Wrapper element not found for ${type}sWrapper`);
-        return;
-    }
-    
-    wrapper.className = 'carousel-container';
-    wrapper.innerHTML = ''; // Clear existing content
-    
-    const carouselWrapper = document.createElement('div');
-    carouselWrapper.className = 'carousel-wrapper';
-    carouselWrapper.id = `${type}CarouselWrapper`;
-    
-    // Create slides
-    for (let i = 0; i < data.length; i += itemsPerSlide) {
-        const slide = document.createElement('div');
-        slide.className = 'carousel-item';
-        
-        const grid = document.createElement('div');
-        grid.className = `${type}-wrapper`;
-        
-        const slideData = data.slice(i, i + itemsPerSlide);
-        slideData.forEach((item, index) => {
-            try {
-                grid.appendChild(createItemFunction(item, i + index));
-            } catch (error) {
-                console.error(`Error creating ${type} item:`, error);
-            }
-        });
-        
-        slide.appendChild(grid);
-        carouselWrapper.appendChild(slide);
-    }
-    
-    wrapper.appendChild(carouselWrapper);
-    
-    // Show carousel arrows
-    const arrowsElement = document.querySelector(`.${type}-arrows`);
-    if (arrowsElement) {
-        arrowsElement.classList.add('show');
-    }
-    
-    // Initialize carousel
-    initCarousel(type);
-}// Load footer data
-async function loadFooterData() {
-    try {
-        const response = await fetch('_data/footer.json');
-        const footerData = await response.json();
-        
-        document.getElementById('footerEmail').textContent = footerData.email;
-        document.getElementById('footerPhone').textContent = footerData.phone;
-        document.getElementById('footerAddress').textContent = footerData.address;
-        document.getElementById('contactEmail').textContent = footerData.email;
-        document.getElementById('contactPhone').textContent = footerData.phone;
-        document.getElementById('contactAddress').textContent = footerData.address;
-        
-        // Set social links
-        if (footerData.social.facebook) {
-            document.getElementById('socialFacebook').href = footerData.social.facebook;
-        }
-        if (footerData.social.x) {
-            document.getElementById('socialX').href = footerData.social.x;
-        }
-        if (footerData.social.linkedin) {
-            document.getElementById('socialLinkedin').href = footerData.social.linkedin;
-        }
-        if (footerData.social.instagram) {
-            document.getElementById('socialInstagram').href = footerData.social.instagram;
-        }
-        if (footerData.social.whatsapp) {
-            document.getElementById('socialWhatsapp').href = footerData.social.whatsapp;
-        }
-    } catch (error) {
-        console.error('Error loading footer data:', error);
-    }
-}// Generic carousel setup function
-function setupCarousel(type, data, itemsPerSlide, createItemFunction) {
-    const wrapper = document.getElementById(`${type}sWrapper`);
-    wrapper.className = 'carousel-container';
-    
-    const carouselWrapper = document.createElement('div');
-    carouselWrapper.className = 'carousel-wrapper';
-    carouselWrapper.id = `${type}CarouselWrapper`;
-    
-    // Create slides
-    for (let i = 0; i < data.length; i += itemsPerSlide) {
-        const slide = document.createElement('div');
-        slide.className = 'carousel-item';
-        
-        const grid = document.createElement('div');
-        grid.className = `${type}-wrapper`;
-        
-        const slideData = data.slice(i, i + itemsPerSlide);
-        slideData.forEach((item, index) => {
-            grid.appendChild(createItemFunction(item, i + index));
-        });
-        
-        slide.appendChild(grid);
-        carouselWrapper.appendChild(slide);
-    }
-    
-    wrapper.appendChild(carouselWrapper);
-    
-    // Show carousel arrows
-    document.querySelector(`.${type}-arrows`).classList.add('show');
-    
-    // Initialize carousel with a small delay to ensure DOM is ready
-    setTimeout(() => {
-        initCarousel(type);
-    }, 100);
-}
-
-// Initialize carousel functionality with proper event binding
-function initCarousel(type) {
-    // Wait for DOM elements to be ready
-    setTimeout(() => {
-        const carouselWrapper = document.getElementById(`${type}CarouselWrapper`);
-        const prevBtn = document.getElementById(`${type}sPrev`);
-        const nextBtn = document.getElementById(`${type}sNext`);
-        
-        if (!carouselWrapper || !prevBtn || !nextBtn) {
-            console.log(`Carousel elements not ready for ${type}`);
-            return;
-        }
-        
-        const slides = carouselWrapper.querySelectorAll('.carousel-item');
-        const totalSlides = slides.length;
-        
-        if (totalSlides <= 1) {
-            document.querySelector(`.${type}-arrows`).classList.remove('show');
-            return;
-        }
-        
-        let currentSlide = 0;
-        let autoPlayInterval;
-        
-        function updateCarousel() {
-            const translateX = -currentSlide * 100;
-            carouselWrapper.style.transform = `translateX(${translateX}%)`;
-            
-            // Update button states
-            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
-            nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
-            prevBtn.disabled = currentSlide === 0;
-            nextBtn.disabled = currentSlide === totalSlides - 1;
-        }
-        
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-            } else {
-                currentSlide = 0; // Loop to first
-            }
-            updateCarousel();
-        }
-        
-        function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-            } else {
-                currentSlide = totalSlides - 1; // Loop to last
-            }
-            updateCarousel();
-        }
-        
-        function startAutoPlay() {
-            stopAutoPlay();
-            autoPlayInterval = setInterval(nextSlide, 4000);
-        }
-        
-        function stopAutoPlay() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-            }
-        }
-        
-        // Clear existing listeners and add new ones
-        prevBtn.onclick = null;
-        nextBtn.onclick = null;
-        
-        prevBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            stopAutoPlay();
-            prevSlide();
-            startAutoPlay();
-        };
-        
-        nextBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            stopAutoPlay();
-            nextSlide();
-            startAutoPlay();
-        };
-        
-        // Hover pause functionality
-        carouselWrapper.onmouseenter = stopAutoPlay;
-        carouselWrapper.onmouseleave = startAutoPlay;
-        
-        // Touch support
-        let touchStartX = 0;
-        carouselWrapper.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            stopAutoPlay();
-        });
-        
-        carouselWrapper.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    nextSlide();
-                } else {
-                    prevSlide();
-                }
-            }
-            startAutoPlay();
-        });
-        
-        // Initialize
-        updateCarousel();
-        startAutoPlay();
-        
-        console.log(`Carousel initialized for ${type} with ${totalSlides} slides`);
-    }, 200);
-}
-            // Global variables
-let currentTheme = {};
+// Simple, working JavaScript - no overcomplicated BS
 let servicesData = [];
 let pricingData = [];
 let clientsData = [];
 let testimonialsData = [];
 
-// Initialize AOS (Animate On Scroll)
+// Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS
     AOS.init({
         duration: 1000,
         once: true,
@@ -252,9 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize mobile navigation
     initMobileNav();
     
-    // Initialize smooth scrolling
-    initSmoothScrolling();
-    
     // Initialize contact form
     initContactForm();
     
@@ -262,97 +26,68 @@ document.addEventListener('DOMContentLoaded', function() {
     initHeaderScroll();
 });
 
-// Load all data from JSON files
+// Load all data
 async function loadAllData() {
     try {
-        await Promise.all([
-            loadTheme(),
-            loadHeroData(),
-            loadAboutData(),
-            loadServicesData(),
-            loadPricingData(),
-            loadClientsData(),
-            loadTestimonialsData(),
-            loadFooterData()
-        ]);
+        await loadTheme();
+        await loadHeroData();
+        await loadAboutData();
+        await loadServicesData();
+        await loadPricingData();
+        await loadClientsData();
+        await loadTestimonialsData();
+        await loadFooterData();
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
 
-// Load theme configuration
+// Load theme
 async function loadTheme() {
     try {
         const response = await fetch('_data/theme.json');
-        currentTheme = await response.json();
-        applyTheme();
+        const theme = await response.json();
+        
+        if (theme.primaryColor) {
+            document.documentElement.style.setProperty('--primary-color', theme.primaryColor);
+        }
+        if (theme.logo) {
+            document.getElementById('headerLogo').src = theme.logo;
+            document.getElementById('footerLogo').src = theme.logo;
+        }
     } catch (error) {
         console.error('Error loading theme:', error);
     }
 }
 
-// Apply theme to CSS variables
-function applyTheme() {
-    if (currentTheme.primaryColor) {
-        document.documentElement.style.setProperty('--primary-color', currentTheme.primaryColor);
-        document.documentElement.style.setProperty('--primary-light', lightenColor(currentTheme.primaryColor, 20));
-        document.documentElement.style.setProperty('--primary-dark', darkenColor(currentTheme.primaryColor, 20));
-    }
-    
-    if (currentTheme.logo) {
-        document.getElementById('headerLogo').src = currentTheme.logo;
-        document.getElementById('footerLogo').src = currentTheme.logo;
-    }
-    
-    if (currentTheme.favicon) {
-        document.querySelector('link[rel="icon"]').href = currentTheme.favicon;
-    }
-}
-
-// Load hero section data
+// Load hero data
 async function loadHeroData() {
     try {
         const response = await fetch('_data/hero.json');
-        const heroData = await response.json();
+        const hero = await response.json();
         
-        document.getElementById('heroTitle').textContent = heroData.title;
-        document.getElementById('heroSubtitle').textContent = heroData.subtitle;
-        document.getElementById('heroCtaText').textContent = heroData.ctaText;
-        document.getElementById('heroCtaButton').href = heroData.ctaLink;
+        document.getElementById('heroTitle').textContent = hero.title;
+        document.getElementById('heroSubtitle').textContent = hero.subtitle;
+        document.getElementById('heroCtaText').textContent = hero.ctaText;
+        document.getElementById('heroCtaButton').href = hero.ctaLink;
     } catch (error) {
-        console.error('Error loading hero data:', error);
+        console.error('Error loading hero:', error);
     }
 }
 
-// Load about section data with image sizing
+// Load about data
 async function loadAboutData() {
     try {
         const response = await fetch('_data/about.json');
-        const aboutData = await response.json();
+        const about = await response.json();
         
-        document.getElementById('aboutTitle').textContent = aboutData.title;
-        document.getElementById('aboutText').textContent = aboutData.text;
-        
-        if (aboutData.image) {
-            const img = document.getElementById('aboutImage');
-            img.src = aboutData.image;
-            
-            // Apply image settings if available
-            if (aboutData.imageSettings) {
-                if (aboutData.imageSettings.width) {
-                    img.style.width = aboutData.imageSettings.width + 'px';
-                }
-                if (aboutData.imageSettings.height) {
-                    img.style.height = aboutData.imageSettings.height + 'px';
-                    img.style.objectFit = 'cover';
-                }
-                if (aboutData.imageSettings.borderRadius) {
-                    img.style.borderRadius = aboutData.imageSettings.borderRadius + 'px';
-                }
-            }
+        document.getElementById('aboutTitle').textContent = about.title;
+        document.getElementById('aboutText').textContent = about.text;
+        if (about.image) {
+            document.getElementById('aboutImage').src = about.image;
         }
     } catch (error) {
-        console.error('Error loading about data:', error);
+        console.error('Error loading about:', error);
     }
 }
 
@@ -366,53 +101,36 @@ async function loadServicesData() {
         document.getElementById('servicesTitle').textContent = data.title;
         renderServices();
     } catch (error) {
-        console.error('Error loading services data:', error);
+        console.error('Error loading services:', error);
     }
 }
 
-// Render services section
+// Render services - SIMPLE
 function renderServices() {
     const wrapper = document.getElementById('servicesWrapper');
-    if (!wrapper) {
-        console.error('Services wrapper not found');
-        return;
-    }
-    
     wrapper.innerHTML = '';
     
-    if (servicesData.length <= 4) {
-        // Show all services in grid
-        wrapper.className = 'services-wrapper';
-        servicesData.forEach((service, index) => {
-            wrapper.appendChild(createServiceItem(service, index));
-        });
-        // Hide arrows if not needed
-        const arrowsElement = document.querySelector('.services-arrows');
-        if (arrowsElement) {
-            arrowsElement.classList.remove('show');
-        }
-    } else {
-        // Create carousel
-        setupCarousel('services', servicesData, 4, createServiceItem);
+    servicesData.forEach((service, index) => {
+        const item = document.createElement('div');
+        item.className = 'service-item';
+        item.setAttribute('data-aos', 'fade-up');
+        item.setAttribute('data-aos-delay', index * 100);
+        
+        item.innerHTML = `
+            <div class="service-icon">
+                <i class="${service.icon}"></i>
+            </div>
+            <h3>${service.name}</h3>
+            <p>${service.description}</p>
+        `;
+        
+        wrapper.appendChild(item);
+    });
+    
+    // If more than 4 services, initialize carousel
+    if (servicesData.length > 4) {
+        initSimpleCarousel('services', 4);
     }
-}
-
-// Create service item element
-function createServiceItem(service, index) {
-    const item = document.createElement('div');
-    item.className = 'service-item';
-    item.setAttribute('data-aos', 'fade-up');
-    item.setAttribute('data-aos-delay', (index % 4) * 100);
-    
-    item.innerHTML = `
-        <div class="service-icon">
-            <i class="${service.icon}"></i>
-        </div>
-        <h3>${service.name}</h3>
-        <p>${service.description}</p>
-    `;
-    
-    return item;
 }
 
 // Load pricing data
@@ -425,56 +143,37 @@ async function loadPricingData() {
         document.getElementById('pricingTitle').textContent = data.title;
         renderPricing();
     } catch (error) {
-        console.error('Error loading pricing data:', error);
+        console.error('Error loading pricing:', error);
     }
 }
 
-// Render pricing section
+// Render pricing - SIMPLE
 function renderPricing() {
     const wrapper = document.getElementById('pricingWrapper');
-    if (!wrapper) {
-        console.error('Pricing wrapper not found');
-        return;
-    }
-    
     wrapper.innerHTML = '';
     
-    if (pricingData.length <= 3) {
-        // Show all plans in grid
-        wrapper.className = 'pricing-wrapper';
-        pricingData.forEach((plan, index) => {
-            wrapper.appendChild(createPricingCard(plan, index));
-        });
-        // Hide arrows if not needed
-        const arrowsElement = document.querySelector('.pricing-arrows');
-        if (arrowsElement) {
-            arrowsElement.classList.remove('show');
-        }
-    } else {
-        // Create carousel
-        setupCarousel('pricing', pricingData, 3, createPricingCard);
+    pricingData.forEach((plan, index) => {
+        const card = document.createElement('div');
+        card.className = `pricing-card ${plan.popular ? 'popular' : ''}`;
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-aos-delay', index * 100);
+        
+        const features = plan.features.map(f => `<li>${f}</li>`).join('');
+        
+        card.innerHTML = `
+            ${plan.popular ? '<div class="popular-badge">Most Popular</div>' : ''}
+            <h3>${plan.name}</h3>
+            <div class="price">${plan.price}</div>
+            <ul class="pricing-features">${features}</ul>
+        `;
+        
+        wrapper.appendChild(card);
+    });
+    
+    // If more than 3 plans, initialize carousel
+    if (pricingData.length > 3) {
+        initSimpleCarousel('pricing', 3);
     }
-}
-
-// Create pricing card element
-function createPricingCard(plan, index) {
-    const card = document.createElement('div');
-    card.className = `pricing-card ${plan.popular ? 'popular' : ''}`;
-    card.setAttribute('data-aos', 'fade-up');
-    card.setAttribute('data-aos-delay', (index % 3) * 100);
-    
-    const featuresHtml = plan.features.map(feature => `<li>${feature}</li>`).join('');
-    
-    card.innerHTML = `
-        ${plan.popular ? '<div class="popular-badge">Most Popular</div>' : ''}
-        <h3>${plan.name}</h3>
-        <div class="price">${plan.price}</div>
-        <ul class="pricing-features">
-            ${featuresHtml}
-        </ul>
-    `;
-    
-    return card;
 }
 
 // Load clients data
@@ -487,63 +186,34 @@ async function loadClientsData() {
         document.getElementById('clientsTitle').textContent = data.title;
         renderClients();
     } catch (error) {
-        console.error('Error loading clients data:', error);
+        console.error('Error loading clients:', error);
     }
 }
 
-// Render clients section
+// Render clients - SIMPLE
 function renderClients() {
     const wrapper = document.getElementById('clientsWrapper');
-    if (!wrapper) {
-        console.error('Clients wrapper not found');
-        return;
-    }
-    
     wrapper.innerHTML = '';
     
-    if (clientsData.length <= 3) {
-        // Show all clients in grid
-        wrapper.className = 'clients-wrapper';
-        clientsData.forEach((client, index) => {
-            wrapper.appendChild(createClientItem(client, index));
-        });
-        // Hide arrows if not needed
-        const arrowsElement = document.querySelector('.clients-arrows');
-        if (arrowsElement) {
-            arrowsElement.classList.remove('show');
-        }
-    } else {
-        // Create carousel
-        setupCarousel('clients', clientsData, 3, createClientItem);
+    clientsData.forEach((client, index) => {
+        const item = document.createElement('div');
+        item.className = 'client-item';
+        item.setAttribute('data-aos', 'fade-up');
+        item.setAttribute('data-aos-delay', index * 100);
+        
+        item.innerHTML = `
+            <img src="${client.logo}" alt="${client.name}" class="client-logo">
+            <img src="${client.websiteImage}" alt="${client.name} Website" class="client-website">
+            <div class="client-name">${client.name}</div>
+        `;
+        
+        wrapper.appendChild(item);
+    });
+    
+    // If more than 3 clients, initialize carousel
+    if (clientsData.length > 3) {
+        initSimpleCarousel('clients', 3);
     }
-}
-
-// Create client item element with sizing
-function createClientItem(client, index) {
-    const item = document.createElement('div');
-    item.className = 'client-item';
-    item.setAttribute('data-aos', 'fade-up');
-    item.setAttribute('data-aos-delay', (index % 3) * 100);
-    
-    // Apply custom sizing if available
-    let logoStyle = '';
-    let websiteStyle = '';
-    
-    if (client.logoSize) {
-        logoStyle = `width: ${client.logoSize.width || 120}px; height: ${client.logoSize.height || 80}px;`;
-    }
-    
-    if (client.websiteSize) {
-        websiteStyle = `height: ${client.websiteSize.height || 200}px;`;
-    }
-    
-    item.innerHTML = `
-        <img src="${client.logo}" alt="${client.name} Logo" class="client-logo" style="${logoStyle}">
-        <img src="${client.websiteImage}" alt="${client.name} Website" class="client-website" style="${websiteStyle}">
-        <div class="client-name">${client.name}</div>
-    `;
-    
-    return item;
 }
 
 // Load testimonials data
@@ -556,166 +226,180 @@ async function loadTestimonialsData() {
         document.getElementById('testimonialsTitle').textContent = data.title;
         renderTestimonials();
     } catch (error) {
-        console.error('Error loading testimonials data:', error);
+        console.error('Error loading testimonials:', error);
     }
 }
 
-// Render testimonials section
+// Render testimonials - SIMPLE
 function renderTestimonials() {
     const wrapper = document.getElementById('testimonialsWrapper');
-    if (!wrapper) {
-        console.error('Testimonials wrapper not found');
-        return;
-    }
-    
     wrapper.innerHTML = '';
     
-    if (testimonialsData.length <= 3) {
-        // Show all testimonials in grid
-        wrapper.className = 'testimonials-wrapper';
-        testimonialsData.forEach((testimonial, index) => {
-            wrapper.appendChild(createTestimonialItem(testimonial, index));
-        });
-        // Hide arrows if not needed
-        const arrowsElement = document.querySelector('.testimonials-arrows');
-        if (arrowsElement) {
-            arrowsElement.classList.remove('show');
-        }
-    } else {
-        // Create carousel
-        setupCarousel('testimonials', testimonialsData, 3, createTestimonialItem);
+    testimonialsData.forEach((testimonial, index) => {
+        const item = document.createElement('div');
+        item.className = 'testimonial-item';
+        item.setAttribute('data-aos', 'fade-up');
+        item.setAttribute('data-aos-delay', index * 100);
+        
+        item.innerHTML = `
+            <div class="testimonial-header">
+                <img src="${testimonial.image}" alt="${testimonial.name}" class="testimonial-image">
+                <div class="testimonial-name">${testimonial.name}</div>
+            </div>
+            <div class="testimonial-comment">"${testimonial.comment}"</div>
+        `;
+        
+        wrapper.appendChild(item);
+    });
+    
+    // If more than 3 testimonials, initialize carousel
+    if (testimonialsData.length > 3) {
+        initSimpleCarousel('testimonials', 3);
     }
-}
-
-// Create testimonial item element with sizing
-function createTestimonialItem(testimonial, index) {
-    const item = document.createElement('div');
-    item.className = 'testimonial-item';
-    item.setAttribute('data-aos', 'fade-up');
-    item.setAttribute('data-aos-delay', (index % 3) * 100);
-    
-    // Apply custom photo sizing if available
-    let photoStyle = '';
-    if (testimonial.photoSize) {
-        const size = testimonial.photoSize.size || 60;
-        photoStyle = `width: ${size}px; height: ${size}px;`;
-    }
-    
-    item.innerHTML = `
-        <div class="testimonial-header">
-            <img src="${testimonial.image}" alt="${testimonial.name}" class="testimonial-image" style="${photoStyle}">
-            <div class="testimonial-name">${testimonial.name}</div>
-        </div>
-        <div class="testimonial-comment">"${testimonial.comment}"</div>
-    `;
-    
-    return item;
 }
 
 // Load footer data
 async function loadFooterData() {
     try {
         const response = await fetch('_data/footer.json');
-        const footerData = await response.json();
+        const footer = await response.json();
         
-        document.getElementById('footerEmail').textContent = footerData.email;
-        document.getElementById('footerPhone').textContent = footerData.phone;
-        document.getElementById('footerAddress').textContent = footerData.address;
-        document.getElementById('contactEmail').textContent = footerData.email;
-        document.getElementById('contactPhone').textContent = footerData.phone;
-        document.getElementById('contactAddress').textContent = footerData.address;
+        document.getElementById('footerEmail').textContent = footer.email;
+        document.getElementById('footerPhone').textContent = footer.phone;
+        document.getElementById('footerAddress').textContent = footer.address;
+        document.getElementById('contactEmail').textContent = footer.email;
+        document.getElementById('contactPhone').textContent = footer.phone;
+        document.getElementById('contactAddress').textContent = footer.address;
         
         // Set social links
-        if (footerData.social.facebook) {
-            document.getElementById('socialFacebook').href = footerData.social.facebook;
-        }
-        if (footerData.social.x) {
-            document.getElementById('socialX').href = footerData.social.x;
-        }
-        if (footerData.social.linkedin) {
-            document.getElementById('socialLinkedin').href = footerData.social.linkedin;
-        }
-        if (footerData.social.instagram) {
-            document.getElementById('socialInstagram').href = footerData.social.instagram;
-        }
-        if (footerData.social.whatsapp) {
-            document.getElementById('socialWhatsapp').href = footerData.social.whatsapp;
-        }
+        if (footer.social.facebook) document.getElementById('socialFacebook').href = footer.social.facebook;
+        if (footer.social.x) document.getElementById('socialX').href = footer.social.x;
+        if (footer.social.linkedin) document.getElementById('socialLinkedin').href = footer.social.linkedin;
+        if (footer.social.instagram) document.getElementById('socialInstagram').href = footer.social.instagram;
+        if (footer.social.whatsapp) document.getElementById('socialWhatsapp').href = footer.social.whatsapp;
     } catch (error) {
-        console.error('Error loading footer data:', error);
+        console.error('Error loading footer:', error);
     }
 }
 
-// Initialize carousel functionality
-function initCarousel(type) {
-    const wrapper = document.querySelector(`#${type}sWrapper .carousel-wrapper`);
-    const prevBtn = document.getElementById(`${type}sPrev`);
-    const nextBtn = document.getElementById(`${type}sNext`);
-    const slides = wrapper.querySelectorAll('.carousel-item');
+// Simple carousel that actually works
+function initSimpleCarousel(type, itemsPerSlide) {
+    const wrapper = document.getElementById(`${type}sWrapper`);
+    const items = wrapper.children;
+    const totalItems = items.length;
+    
+    if (totalItems <= itemsPerSlide) return;
+    
+    // Create carousel structure
+    wrapper.className = 'carousel-wrapper';
+    const container = document.createElement('div');
+    container.className = 'carousel-container';
+    container.style.overflow = 'hidden';
+    
+    // Move all items into container
+    while (wrapper.firstChild) {
+        container.appendChild(wrapper.firstChild);
+    }
+    wrapper.appendChild(container);
+    
+    // Set container width
+    const totalSlides = Math.ceil(totalItems / itemsPerSlide);
+    container.style.width = `${totalSlides * 100}%`;
+    container.style.display = 'flex';
+    container.style.transition = 'transform 0.5s ease';
+    
+    // Set item widths
+    Array.from(container.children).forEach(item => {
+        item.style.width = `${100 / totalSlides}%`;
+        item.style.flex = 'none';
+    });
     
     let currentSlide = 0;
-    const totalSlides = slides.length;
+    let autoInterval;
     
-    // Auto-play functionality
-    let autoPlayInterval;
-    
-    function startAutoPlay() {
-        autoPlayInterval = setInterval(() => {
-            nextSlide();
-        }, 4000);
-    }
-    
-    function stopAutoPlay() {
-        clearInterval(autoPlayInterval);
-    }
-    
-    function updateCarousel() {
-        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-        prevBtn.disabled = currentSlide === 0;
-        nextBtn.disabled = currentSlide === totalSlides - 1;
+    function goToSlide(slideIndex) {
+        currentSlide = slideIndex;
+        container.style.transform = `translateX(-${currentSlide * (100 / totalSlides)}%)`;
+        
+        // Update arrows
+        const prevBtn = document.getElementById(`${type}sPrev`);
+        const nextBtn = document.getElementById(`${type}sNext`);
+        
+        if (prevBtn && nextBtn) {
+            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
+            nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
+        }
     }
     
     function nextSlide() {
-        if (currentSlide < totalSlides - 1) {
-            currentSlide++;
-        } else {
-            currentSlide = 0; // Loop back to first slide
-        }
-        updateCarousel();
+        currentSlide = currentSlide >= totalSlides - 1 ? 0 : currentSlide + 1;
+        goToSlide(currentSlide);
     }
     
     function prevSlide() {
-        if (currentSlide > 0) {
-            currentSlide--;
-        } else {
-            currentSlide = totalSlides - 1; // Loop to last slide
-        }
-        updateCarousel();
+        currentSlide = currentSlide <= 0 ? totalSlides - 1 : currentSlide - 1;
+        goToSlide(currentSlide);
     }
     
-    // Event listeners
-    nextBtn.addEventListener('click', () => {
-        stopAutoPlay();
-        nextSlide();
-        startAutoPlay();
+    function startAuto() {
+        stopAuto();
+        autoInterval = setInterval(nextSlide, 4000);
+    }
+    
+    function stopAuto() {
+        if (autoInterval) clearInterval(autoInterval);
+    }
+    
+    // Add arrow event listeners
+    const prevBtn = document.getElementById(`${type}sPrev`);
+    const nextBtn = document.getElementById(`${type}sNext`);
+    
+    if (prevBtn && nextBtn) {
+        document.querySelector(`.${type}-arrows`).classList.add('show');
+        
+        prevBtn.onclick = (e) => {
+            e.preventDefault();
+            stopAuto();
+            prevSlide();
+            startAuto();
+        };
+        
+        nextBtn.onclick = (e) => {
+            e.preventDefault();
+            stopAuto();
+            nextSlide();
+            startAuto();
+        };
+    }
+    
+    // Pause on hover
+    container.onmouseenter = stopAuto;
+    container.onmouseleave = startAuto;
+    
+    // Touch support
+    let startX = 0;
+    container.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        stopAuto();
     });
     
-    prevBtn.addEventListener('click', () => {
-        stopAutoPlay();
-        prevSlide();
-        startAutoPlay();
+    container.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+        }
+        startAuto();
     });
-    
-    // Pause autoplay on hover
-    wrapper.addEventListener('mouseenter', stopAutoPlay);
-    wrapper.addEventListener('mouseleave', startAutoPlay);
     
     // Initialize
-    updateCarousel();
-    startAutoPlay();
+    goToSlide(0);
+    startAuto();
 }
 
-// Initialize mobile navigation
+// Mobile navigation
 function initMobileNav() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
@@ -725,7 +409,7 @@ function initMobileNav() {
         navMenu.classList.toggle('active');
     });
     
-    // Close menu when clicking on a link
+    // Close on link click
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             navToggle.classList.remove('active');
@@ -734,23 +418,7 @@ function initMobileNav() {
     });
 }
 
-// Initialize smooth scrolling
-function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// Initialize contact form
+// Contact form
 function initContactForm() {
     const form = document.getElementById('contactForm');
     
@@ -760,32 +428,21 @@ function initContactForm() {
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.innerHTML;
         
-        // Show loading state
-        submitBtn.innerHTML = '<div class="loading"></div> Sending...';
+        submitBtn.innerHTML = 'Sending...';
         submitBtn.disabled = true;
         
-        // Get form data
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
+        // Simulate sending
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        try {
-            // Simulate form submission (replace with actual form handler)
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Show success message
-            alert('Thank you for your message! We will get back to you soon.');
-            form.reset();
-        } catch (error) {
-            alert('Sorry, there was an error sending your message. Please try again.');
-        } finally {
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
+        alert('Thank you! We will contact you soon.');
+        form.reset();
+        
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
     });
 }
 
-// Initialize header scroll effect
+// Header scroll effect
 function initHeaderScroll() {
     const header = document.getElementById('header');
     
@@ -798,27 +455,4 @@ function initHeaderScroll() {
             header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
         }
     });
-}
-
-// Utility functions for color manipulation
-function lightenColor(color, percent) {
-    const num = parseInt(color.replace("#", ""), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
-}
-
-function darkenColor(color, percent) {
-    const num = parseInt(color.replace("#", ""), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) - amt;
-    const G = (num >> 8 & 0x00FF) - amt;
-    const B = (num & 0x0000FF) - amt;
-    return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
-        (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
-        (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
 }
