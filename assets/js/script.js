@@ -147,7 +147,7 @@ async function loadPricingData() {
     }
 }
 
-// Render pricing - SIMPLE
+// Render pricing - SIMPLE with buttons
 function renderPricing() {
     const wrapper = document.getElementById('pricingWrapper');
     wrapper.innerHTML = '';
@@ -165,6 +165,7 @@ function renderPricing() {
             <h3>${plan.name}</h3>
             <div class="price">${plan.price}</div>
             <ul class="pricing-features">${features}</ul>
+            <button class="pricing-btn">Choose Plan</button>
         `;
         
         wrapper.appendChild(card);
@@ -285,41 +286,59 @@ async function loadFooterData() {
 // Simple carousel that actually works
 function initSimpleCarousel(type, itemsPerSlide) {
     const wrapper = document.getElementById(`${type}sWrapper`);
-    const items = wrapper.children;
+    const items = Array.from(wrapper.children);
     const totalItems = items.length;
     
-    if (totalItems <= itemsPerSlide) return;
+    console.log(`Initializing carousel for ${type}: ${totalItems} items, ${itemsPerSlide} per slide`);
     
-    // Create carousel structure
+    if (totalItems <= itemsPerSlide) {
+        console.log(`Not enough items for carousel (${totalItems} <= ${itemsPerSlide})`);
+        return;
+    }
+    
+    // Clear wrapper and create carousel structure
+    wrapper.innerHTML = '';
     wrapper.className = 'carousel-wrapper';
+    
     const container = document.createElement('div');
     container.className = 'carousel-container';
-    container.style.overflow = 'hidden';
+    container.style.cssText = `
+        display: flex;
+        transition: transform 0.5s ease;
+        width: ${Math.ceil(totalItems / itemsPerSlide) * 100}%;
+    `;
     
-    // Move all items into container
-    while (wrapper.firstChild) {
-        container.appendChild(wrapper.firstChild);
-    }
-    wrapper.appendChild(container);
-    
-    // Set container width
+    // Create slides
     const totalSlides = Math.ceil(totalItems / itemsPerSlide);
-    container.style.width = `${totalSlides * 100}%`;
-    container.style.display = 'flex';
-    container.style.transition = 'transform 0.5s ease';
+    for (let i = 0; i < totalSlides; i++) {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        slide.style.cssText = `
+            width: ${100 / totalSlides}%;
+            display: grid;
+            grid-template-columns: repeat(${itemsPerSlide}, 1fr);
+            gap: 1.5rem;
+            flex-shrink: 0;
+        `;
+        
+        // Add items to this slide
+        const slideItems = items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide);
+        slideItems.forEach(item => slide.appendChild(item));
+        
+        container.appendChild(slide);
+    }
     
-    // Set item widths
-    Array.from(container.children).forEach(item => {
-        item.style.width = `${100 / totalSlides}%`;
-        item.style.flex = 'none';
-    });
+    wrapper.appendChild(container);
     
     let currentSlide = 0;
     let autoInterval;
     
     function goToSlide(slideIndex) {
         currentSlide = slideIndex;
-        container.style.transform = `translateX(-${currentSlide * (100 / totalSlides)}%)`;
+        const translateX = -(slideIndex * (100 / totalSlides));
+        container.style.transform = `translateX(${translateX}%)`;
+        
+        console.log(`Going to slide ${slideIndex}, translateX: ${translateX}%`);
         
         // Update arrows
         const prevBtn = document.getElementById(`${type}sPrev`);
@@ -344,10 +363,14 @@ function initSimpleCarousel(type, itemsPerSlide) {
     function startAuto() {
         stopAuto();
         autoInterval = setInterval(nextSlide, 4000);
+        console.log('Auto-play started');
     }
     
     function stopAuto() {
-        if (autoInterval) clearInterval(autoInterval);
+        if (autoInterval) {
+            clearInterval(autoInterval);
+            console.log('Auto-play stopped');
+        }
     }
     
     // Add arrow event listeners
@@ -356,9 +379,11 @@ function initSimpleCarousel(type, itemsPerSlide) {
     
     if (prevBtn && nextBtn) {
         document.querySelector(`.${type}-arrows`).classList.add('show');
+        console.log('Arrows shown');
         
         prevBtn.onclick = (e) => {
             e.preventDefault();
+            console.log('Previous clicked');
             stopAuto();
             prevSlide();
             startAuto();
@@ -366,6 +391,7 @@ function initSimpleCarousel(type, itemsPerSlide) {
         
         nextBtn.onclick = (e) => {
             e.preventDefault();
+            console.log('Next clicked');
             stopAuto();
             nextSlide();
             startAuto();
@@ -397,6 +423,8 @@ function initSimpleCarousel(type, itemsPerSlide) {
     // Initialize
     goToSlide(0);
     startAuto();
+    
+    console.log(`Carousel initialized with ${totalSlides} slides`);
 }
 
 // Mobile navigation
