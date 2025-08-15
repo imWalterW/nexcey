@@ -1,10 +1,15 @@
 {
-  "primary":"#522cb5",
-  "primaryLight":"#7c52d6",
-  "primaryDark":"#3d2088",
-  "secondary":"#f8f9fa",
-  "textDark":"#2c3e50",
-  "textLight":"#6c757d",
-  "white":"#ffffff",
-  "typography":{"googleFont":"Inter","bodyFontSize":"15px"}
+  "primary": "#522cb5",
+  "primaryLight": "#7c52d6",
+  "primaryDark": "#3d2088",
+  "secondary": "#f8f9fa",
+  "textDark": "#2c3e50",
+  "textLight": "#6c757d",
+  "white": "#ffffff",
+  "fontFamily": "Arial, sans-serif",
+  "bodyFontSize": "15px",
+  "autoplayEnabled": true,
+  "autoplayInterval": 4000,
+  "pauseOnHover": true,
+  "loop": true
 }

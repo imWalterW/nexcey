@@ -1,19 +1,36 @@
-# Nexcey Web Design Service
 
-Single‑page, JSON‑driven site with Netlify CMS.
+# Nexcey Web Design Service — Static Site + Netlify CMS
 
-## Run locally
+**Stack:** HTML5, CSS3, Vanilla JS, Netlify CMS (Git Gateway + Identity).
+
+## Quick Start (Local Preview)
 ```bash
-python -m http.server 5000
-# then visit http://localhost:5000
+python -m http.server 8080
+# open http://localhost:8080
 ```
-> You can also double‑click `index.html` — the page will still render because it has inline JSON fallbacks.
 
 ## Deploy to Netlify
-1. Push this folder to GitHub.
-2. New site from Git → select repo → Deploy.
-3. Enable **Identity** and **Git Gateway** in Site settings.
-4. Visit `/admin/` to log in and edit content.
+1. Push this folder to a GitHub repo.
+2. Create a new site in Netlify and connect the repo.
+3. In Netlify **Site settings → Identity**: Enable Identity, set **Invite only**.
+4. In Identity → **Services**: Enable **Git Gateway**.
+5. Invite yourself via Identity.
+6. Visit `/admin/` to log in and edit content.
 
-## Editing content
-All copy, lists, and images live in `/data/*.json` (also editable via CMS).
+## CMS Notes
+- All content lives in `/data/*.json` and images in `/assets/images/uploads/`.
+- Font Awesome 6.4.0 is loaded in `<head>` before any icons.
+- AOS animations are enabled; disable via `/data/theme.json` (set autoplay or change font).
+
+## Contact Form
+- Uses Netlify Forms with front-end validation. Submissions appear under **Forms** in Netlify.
+
+## Carousels
+- Manual arrows and autoplay with pause-on-hover.
+- Services: grid ≤4, else carousel.
+- Pricing: grid ≤3, else carousel.
+- Clients: grid ≤3, else carousel.
+- Testimonials: grid ≤3, else carousel.
+
+## Customize Theme
+Edit `/data/theme.json` to change colors, fonts (Google-font-like names allowed), and carousel behavior.

@@ -1,422 +1,384 @@
-/* ---------- Helpers & Data Loading ---------- */
-const isFileProtocol = location.protocol === 'file:';
-const $ = (sel, ctx=document) => ctx.querySelector(sel);
-const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
-async function loadJSON(path) {
-  if (isFileProtocol) return null; // will use seed
-  try {
-    const res = await fetch(path, { cache: 'no-cache' });
-    if (!res.ok) throw new Error('Fetch failed: ' + path);
-    return await res.json();
-  } catch (e) {
-    console.warn('Falling back to seed for', path, e);
-    return null;
-  }
-}
+// Global config (can be overridden via /data/theme.json)
+const THEME = {
+  primary: "#522cb5",
+  primaryLight: "#7c52d6",
+  primaryDark: "#3d2088",
+  secondary: "#f8f9fa",
+  textDark: "#2c3e50",
+  textLight: "#6c757d",
+  white: "#ffffff",
+  fontFamily: "Arial, sans-serif",
+  bodyFontSize: "15px",
+  autoplayEnabled: true,
+  autoplayInterval: 4000,
+  pauseOnHover: true,
+  loop: true
+};
 
-function getSeed() {
-  try {
-    return JSON.parse($('#seed-data')?.textContent || '{}');
-  } catch { return {}; }
-}
+// Utility
+const $ = (s, ctx=document) => ctx.querySelector(s);
+const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
+const safe = (v, d="") => (v===undefined || v===null) ? d : v;
 
-/* ---------- Apply Theme ---------- */
-function applyTheme(theme) {
-  if (!theme) return;
-  document.documentElement.style.setProperty('--primary', theme.primary || '#522cb5');
-  document.documentElement.style.setProperty('--primary-light', theme.primaryLight || '#7c52d6');
-  document.documentElement.style.setProperty('--primary-dark', theme.primaryDark || '#3d2088');
-  document.documentElement.style.setProperty('--secondary', theme.secondary || '#f8f9fa');
-  document.documentElement.style.setProperty('--text', theme.textDark || '#2c3e50');
-  document.documentElement.style.setProperty('--text-light', theme.textLight || '#6c757d');
+// Sticky header
+const header = document.getElementById("site-header");
+window.addEventListener("scroll", () => {
+  if(window.scrollY > 10) header.classList.add("scrolled");
+  else header.classList.remove("scrolled");
+});
 
-  if (theme.typography?.googleFont) {
-    const f = theme.typography.googleFont.replace(/\s+/g, '+') + ':wght@400;600;800';
-    const link = document.createElement('link');
-    link.href = `https://fonts.googleapis.com/css2?family=${f}&display=swap`;
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-    document.body.style.fontFamily = `${theme.typography.googleFont}, Arial, sans-serif`;
-  }
-  if (theme.typography?.bodyFontSize) {
-    document.body.style.fontSize = theme.typography.bodyFontSize;
-  }
-}
+// Mobile menu
+$("#hamburger").addEventListener("click", ()=> {
+  $("#menu").classList.toggle("open");
+});
 
-/* ---------- Renderers ---------- */
-function renderHero(data) {
-  if (!data) return;
-  $('#hero-title').textContent = data.title || '';
-  $('#hero-subtitle').textContent = data.subtitle || '';
-  const cta = $('#hero-cta');
-  if (data.cta?.text) cta.textContent = data.cta.text;
-  if (data.cta?.link) cta.href = data.cta.link;
-}
+// Smooth anchor close on click (mobile)
+$("#menu").addEventListener("click", (e)=>{
+  if(e.target.tagName === "A") $("#menu").classList.remove("open");
+});
 
-function renderAbout(data) {
-  if (!data) return;
-  $('#about-title').textContent = data.title || '';
-  $('#about-text').textContent = data.text || '';
-  if (data.image) $('#about-image').src = data.image;
-}
-
-function serviceItemTpl(s) {
-  return `
-    <div class="carousel-item">
-      <div class="service-card">
-        <i class="${s.icon || 'fas fa-rocket'}" aria-hidden="true"></i>
-        <h3>${s.name || ''}</h3>
-        <p>${s.description || ''}</p>
-      </div>
-    </div>`;
-}
-
-function planItemTpl(p) {
-  const popular = p.popular ? ' popular' : '';
-  const feats = (p.features || []).map(f => `<li>${(f.feature || f)}</li>`).join('');
-  return `
-    <div class="carousel-item">
-      <div class="price-card${popular}">
-        <div class="name"><strong>${p.name || ''}</strong></div>
-        <div class="price">${p.price || ''}</div>
-        <ul>${feats}</ul>
-        <button class="btn ${p.popular ? 'btn-white' : 'btn-primary'}">Choose Plan</button>
-      </div>
-    </div>`;
-}
-
-function clientItemTpl(c) {
-  const logo = c.logo || c.websiteImage || 'assets/images/uploads/logo-placeholder.png';
-  return `
-    <div class="carousel-item">
-      <div class="client-card">
-        <img src="${logo}" alt="${c.name || 'Client'}" />
-        <div class="name">${c.name || ''}</div>
-        ${c.websiteUrl ? `<a class="btn btn-primary" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit Website</a>` : ''}
-      </div>
-    </div>`;
-}
-
-function testimonialItemTpl(t) {
-  const img = t.image || 'assets/images/uploads/user-placeholder.jpg';
-  const who = [t.name, t.position, t.company].filter(Boolean).join(' · ');
-  return `
-    <div class="carousel-item">
-      <div class="testimonial-card">
-        <div class="testimonial-top">
-          <img src="${img}" alt="${t.name || 'User'}" />
-          <div class="meta">
-            <div><strong>${t.name || ''}</strong></div>
-            <small>${[t.position, t.company].filter(Boolean).join(' · ')}</small>
-          </div>
-        </div>
-        <p>“${t.comment || ''}”</p>
-      </div>
-    </div>`;
-}
-
-/* ---------- Carousel (one-by-one, responsive) ---------- */
-class OneByOneCarousel {
-  constructor(root) {
-    this.root = root;
-    this.track = $('.carousel-track', root);
-    this.prevBtn = $('.carousel-btn.prev', root);
-    this.nextBtn = $('.carousel-btn.next', root);
-    this.autoplayMs = parseInt(root.dataset.autoplay || '0', 10) || 0;
-
-    this.visibleDesktop = parseInt(root.dataset.visibleDesktop || '4', 10);
-    this.visibleTablet = parseInt(root.dataset.visibleTablet || '2', 10);
-    this.visibleMobile = parseInt(root.dataset.visibleMobile || '1', 10);
-
-    this.items = [];
-    this.clonesHead = 0;
-    this.clonesTail = 0;
+// Carousel engine
+class Carousel {
+  constructor({rootId, trackId, prevId, nextId, itemsPerSlideDesktop=4, itemsPerSlideTablet=2, itemsPerSlideMobile=1, interval=4000, pauseOnHover=true, loop=true}){
+    this.root = document.getElementById(rootId);
+    this.track = document.getElementById(trackId);
+    this.prevBtn = document.getElementById(prevId);
+    this.nextBtn = document.getElementById(nextId);
+    this.interval = interval;
+    this.pauseOnHover = pauseOnHover;
+    this.loop = loop;
     this.index = 0;
-    this.itemWidth = 0;
+    this.itemsPerSlideDesktop = itemsPerSlideDesktop;
+    this.itemsPerSlideTablet = itemsPerSlideTablet;
+    this.itemsPerSlideMobile = itemsPerSlideMobile;
     this.timer = null;
-
-    this.onResize = this.onResize.bind(this);
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
-    this.onTransitionEnd = this.onTransitionEnd.bind(this);
-    this.onMouseEnter = this.onMouseEnter.bind(this);
-    this.onMouseLeave = this.onMouseLeave.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
+    this.itemWidth = 0;
+    this.items = [];
+    this.userInteracted = false;
+    this.bind();
   }
-
-  get visibleCount() {
-    const w = window.innerWidth;
-    if (w < 768) return this.visibleMobile;
-    if (w < 1200) return this.visibleTablet;
-    return this.visibleDesktop;
-  }
-
-  mount() {
-    this.items = $$('.carousel-item', this.track);
-    if (this.items.length === 0) return;
-
-    // Remove any previous clones
-    this.track.innerHTML = '';
-    const originals = this.items.map(n => n);
-    // Determine visible
-    const vis = this.visibleCount;
-
-    // Clone head/tail for infinite effect
-    const headClones = originals.slice(0, vis).map(n => n.cloneNode(true));
-    const tailClones = originals.slice(-vis).map(n => n.cloneNode(true));
-
-    this.clonesHead = headClones.length;
-    this.clonesTail = tailClones.length;
-
-    // Append: tail clones + originals + head clones
-    tailClones.forEach(n => this.track.appendChild(n));
-    originals.forEach(n => this.track.appendChild(n));
-    headClones.forEach(n => this.track.appendChild(n));
-
-    this.items = $$('.carousel-item', this.track);
-    this.index = this.clonesTail; // start at first real item
-    this.applySizes();
-    this.goTo(this.index, false);
-
-    // Events
-    window.addEventListener('resize', this.onResize, { passive:true });
-    this.track.addEventListener('transitionend', this.onTransitionEnd);
-    this.prevBtn.addEventListener('click', this.prev);
-    this.nextBtn.addEventListener('click', this.next);
-    this.root.addEventListener('mouseenter', this.onMouseEnter);
-    this.root.addEventListener('mouseleave', this.onMouseLeave);
-
-    // Touch
-    this.root.addEventListener('touchstart', this.onTouchStart, { passive:true });
-
-    // Autoplay
-    if (this.autoplayMs && this.items.length > this.visibleCount) {
-      this.startAutoplay();
+  bind(){
+    if(this.prevBtn) this.prevBtn.addEventListener("click", ()=> this.prev());
+    if(this.nextBtn) this.nextBtn.addEventListener("click", ()=> this.next());
+    if(this.pauseOnHover && this.root){
+      this.root.addEventListener("mouseenter", ()=> this.stop());
+      this.root.addEventListener("mouseleave", ()=> { if(!this.userInteracted) this.start(); });
     }
-
-    // Hide controls if not needed
-    const total = this.items.length - (this.clonesHead + this.clonesTail);
-    const visNow = this.visibleCount;
-    const controls = $('.carousel-controls', this.root);
-    controls.style.display = total <= visNow ? 'none' : 'flex';
-  }
-
-  applySizes() {
-    const vis = this.visibleCount;
-    const gap = parseFloat(getComputedStyle(this.track).columnGap || 18) || 18;
-    const trackWidth = this.root.clientWidth;
-    this.itemWidth = Math.floor((trackWidth - (gap * (vis - 1))) / vis);
-    this.items.forEach(it => {
-      it.style.flex = `0 0 ${this.itemWidth}px`;
-      it.style.maxWidth = `${this.itemWidth}px`;
+    // touch support
+    let startX = 0;
+    this.root.addEventListener("touchstart", (e)=> { startX = e.touches[0].clientX; }, {passive:true});
+    this.root.addEventListener("touchend", (e)=> {
+      const dx = e.changedTouches[0].clientX - startX;
+      if(Math.abs(dx) > 40){ dx < 0 ? this.next() : this.prev(); }
     });
+    window.addEventListener("resize", ()=> this.layout());
   }
-
-  onResize() {
-    // Rebuild completely to update clones for new visible count
-    this.unmount();
-    this.mount();
+  setItems(items){
+    this.items = items;
+    this.layout();
   }
-
-  goTo(i, animate=true) {
-    this.track.style.transition = animate ? 'transform .4s ease' : 'none';
-    const x = -i * (this.itemWidth + 18); // 18px gap set in CSS
-    this.track.style.transform = `translate3d(${x}px,0,0)`;
-    this.index = i;
+  itemsPerView(){
+    const w = window.innerWidth;
+    if(w < 768) return this.itemsPerSlideMobile;
+    if(w < 1200) return this.itemsPerSlideTablet;
+    return this.itemsPerSlideDesktop;
   }
-
-  next() {
-    this.stopAutoplay(true);
-    this.goTo(this.index + 1, true);
+  layout(){
+    const n = this.itemsPerView();
+    this.itemWidth = this.root.clientWidth / n - 18; // minus gap
+    this.items.forEach(el => el.style.minWidth = `${this.itemWidth}px`);
+    this.goto(this.index);
   }
-
-  prev() {
-    this.stopAutoplay(true);
-    this.goTo(this.index - 1, true);
+  goto(i){
+    const maxIndex = Math.max(0, this.items.length - this.itemsPerView());
+    this.index = Math.max(0, Math.min(i, maxIndex));
+    const x = - (this.itemWidth + 18) * this.index; // include gap
+    this.track.style.transform = `translateX(${x}px)`;
   }
+  next(){
+    this.userInteracted = true;
+    if(this.index + this.itemsPerView() < this.items.length) this.goto(this.index + 1);
+    else if(this.loop) this.goto(0);
+    this.stop();
+  }
+  prev(){
+    this.userInteracted = true;
+    if(this.index > 0) this.goto(this.index - 1);
+    else if(this.loop) this.goto(this.items.length);
+    this.stop();
+  }
+  start(){
+    if(this.timer) return;
+    this.timer = setInterval(()=> this.next(), this.interval);
+  }
+  stop(){
+    if(this.timer){ clearInterval(this.timer); this.timer = null; }
+  }
+}
 
-  onTransitionEnd() {
-    const vis = this.visibleCount;
-    const total = this.items.length;
-    const firstReal = this.clonesTail;
-    const lastReal = total - this.clonesHead - 1;
+// Render helpers
+function serviceCard(svc){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `
+    <div class="icon"><i class="${svc.icon || 'fas fa-rocket'}"></i></div>
+    <h3>${svc.name || 'Service name'}</h3>
+    <p>${svc.description || 'Service description'}</p>
+  `;
+  return div;
+}
+function priceCard(plan){
+  const div = document.createElement("div");
+  div.className = "card";
+  const badge = plan.popular ? `<span class="badge">Most Popular</span>` : "";
+  div.innerHTML = `
+    ${badge}
+    <h3>${plan.name || 'Plan'}</h3>
+    <div class="price">${plan.price || '$XXX'}</div>
+    <ul>${(plan.features||[]).map(f=>`<li><i class="fas fa-check"></i> ${f}</li>`).join('')}</ul>
+    <button class="btn btn-white plan-cta"><i class="fas fa-check-circle"></i> <span>${(plan.ctaButton && plan.ctaButton.text) || 'Choose Plan'}</span></button>
+  `;
+  return div;
+}
+function clientCard(c){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px">
+      <img class="client-logo" src="${c.logo || '/assets/images/logo.png'}" alt="${c.name || 'Client'}"/>
+      <strong>${c.name || ''}</strong>
+    </div>
+    ${c.websiteImage ? `<img class="client-site" src="${c.websiteImage}" alt="${c.name || 'Client site'}"/>` : ''}
+    ${c.websiteUrl ? `<div style="margin-top:10px"><a href="${c.websiteUrl}" class="btn btn-white" target="_blank" rel="noopener"><i class="fas fa-up-right-from-square"></i> <span>Visit Website</span></a></div>` : ''}
+  `;
+  return div;
+}
+function testimonialCard(t){
+  const div = document.createElement("div");
+  div.className = "card testimonial";
+  const who = t.displayFormat === "Name, Position at Company"
+    ? `${t.name || ''}, ${t.position || ''}${t.company ? ' at ' + t.company : ''}`
+    : `${t.name || ''} - ${t.position || ''}`;
+  div.innerHTML = `
+    <div class="person">
+      <img src="${t.image || '/assets/images/logo.png'}" alt="${t.name || 'Client'}"/>
+      <div>
+        <div style="font-weight:800">${who}</div>
+        ${t.company && t.displayFormat!=="Name, Position at Company" ? `<div style="color:#6c757d">${t.company}</div>`:''}
+      </div>
+    </div>
+    <p>${t.comment || ''}</p>
+  `;
+  return div;
+}
 
-    if (this.index > lastReal) {
-      this.goTo(firstReal, false);
+// Load JSON and render
+async function loadJSON(path){
+  const res = await fetch(path);
+  if(!res.ok) throw new Error(`Failed to load ${path}`);
+  return res.json();
+}
+
+async function boot(){
+  try{
+    // Theme
+    const theme = await loadJSON("/data/theme.json").catch(()=> ({}));
+    const t = {...THEME, ...theme};
+    document.documentElement.style.setProperty("--primary", t.primary);
+    document.documentElement.style.setProperty("--primaryLight", t.primaryLight);
+    document.documentElement.style.setProperty("--primaryDark", t.primaryDark);
+    document.body.style.fontFamily = t.fontFamily;
+    document.body.style.fontSize = t.bodyFontSize;
+
+    // Hero
+    const hero = await loadJSON("/data/hero.json");
+    $("#hero-title").textContent = hero.content.title || "Web Design that Drives Results";
+    $("#hero-subtitle").textContent = hero.content.subtitle || "Modern, responsive websites tailored to your brand.";
+    const cta = $("#hero-cta");
+    cta.querySelector("span").textContent = hero.content.ctaButton?.text || "Get Started";
+    cta.setAttribute("href", hero.content.ctaButton?.link || "#contact");
+
+    // About
+    const about = await loadJSON("/data/about.json");
+    $("#about-title").textContent = about.content.title || "About Nexcey";
+    $("#about-text").textContent = about.content.text || "Company description text";
+    if(about.content.image) $("#about-image").src = about.content.image;
+    else $("#about-image").src = "/assets/images/logo.png";
+
+    // Services
+    const servicesData = await loadJSON("/data/services.json");
+    $("#services-title").textContent = servicesData.content.title || "Our Services";
+    const services = servicesData.content.services || [];
+    const gridS = $("#services-grid");
+    const carS = $("#services-carousel");
+    if(services.length <= 4){
+      // grid
+      services.forEach(s => gridS.appendChild(serviceCard(s)));
+      gridS.classList.remove("hidden");
+      carS.classList.add("hidden");
+    }else{
+      // carousel
+      const track = $("#services-track");
+      track.innerHTML = "";
+      services.forEach(s => track.appendChild(serviceCard(s)));
+      const items = Array.from(track.children);
+      const car = new Carousel({
+        rootId:"services-carousel",
+        trackId:"services-track",
+        prevId:"services-prev",
+        nextId:"services-next",
+        itemsPerSlideDesktop:4, itemsPerSlideTablet:2, itemsPerSlideMobile:1,
+        interval: t.autoplayInterval, pauseOnHover: t.pauseOnHover, loop: t.loop
+      });
+      car.setItems(items);
+      if(t.autoplayEnabled) car.start();
+      gridS.classList.add("hidden");
+      carS.classList.remove("hidden");
     }
-    if (this.index < firstReal) {
-      this.goTo(lastReal, false);
+
+    // Pricing
+    const pricingData = await loadJSON("/data/pricing.json");
+    $("#pricing-title").textContent = pricingData.content.title || "Pricing Plans";
+    const plans = pricingData.content.plans || [];
+    const gridP = $("#pricing-grid");
+    const carP = $("#pricing-carousel");
+    if(plans.length <= 3){
+      plans.forEach(p => gridP.appendChild(priceCard(p)));
+      gridP.classList.remove("hidden");
+      carP.classList.add("hidden");
+    }else{
+      const track = $("#pricing-track");
+      track.innerHTML = "";
+      plans.forEach(p => track.appendChild(priceCard(p)));
+      const items = Array.from(track.children);
+      const car = new Carousel({
+        rootId:"pricing-carousel",
+        trackId:"pricing-track",
+        prevId:"pricing-prev",
+        nextId:"pricing-next",
+        itemsPerSlideDesktop:3, itemsPerSlideTablet:2, itemsPerSlideMobile:1,
+        interval: t.autoplayInterval, pauseOnHover: t.pauseOnHover, loop: t.loop
+      });
+      car.setItems(items);
+      if(t.autoplayEnabled) car.start();
+      gridP.classList.add("hidden");
+      carP.classList.remove("hidden");
     }
-  }
 
-  startAutoplay() {
-    this.stopAutoplay();
-    this.timer = setInterval(() => this.goTo(this.index + 1, true), this.autoplayMs);
-  }
-
-  stopAutoplay(manual=false) {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
+    // Clients
+    const clientsData = await loadJSON("/data/clients.json");
+    $("#clients-title").textContent = clientsData.content.title || "Our Clients";
+    const clients = clientsData.content.clients || [];
+    const gridC = $("#clients-grid");
+    const carC = $("#clients-carousel");
+    if(clients.length <= 3){
+      clients.forEach(c => gridC.appendChild(clientCard(c)));
+      gridC.classList.remove("hidden");
+      carC.classList.add("hidden");
+    }else{
+      const track = $("#clients-track");
+      track.innerHTML = "";
+      clients.forEach(c => track.appendChild(clientCard(c)));
+      const items = Array.from(track.children);
+      const car = new Carousel({
+        rootId:"clients-carousel",
+        trackId:"clients-track",
+        prevId:"clients-prev",
+        nextId:"clients-next",
+        itemsPerSlideDesktop:3, itemsPerSlideTablet:2, itemsPerSlideMobile:1,
+        interval: t.autoplayInterval, pauseOnHover: t.pauseOnHover, loop: t.loop
+      });
+      car.setItems(items);
+      if(t.autoplayEnabled) car.start();
+      gridC.classList.add("hidden");
+      carC.classList.remove("hidden");
     }
-    if (manual && this.autoplayMs) {
-      // resume after manual navigation
-      setTimeout(() => this.startAutoplay(), this.autoplayMs + 500);
+
+    // Testimonials
+    const testiData = await loadJSON("/data/testimonials.json");
+    $("#testimonials-title").textContent = testiData.content.title || "What Our Clients Say";
+    const testimonials = testiData.content.testimonials || [];
+    const gridT = $("#testimonials-grid");
+    const carT = $("#testimonials-carousel");
+    if(testimonials.length <= 3){
+      testimonials.forEach(t => gridT.appendChild(testimonialCard(t)));
+      gridT.classList.remove("hidden");
+      carT.classList.add("hidden");
+    }else{
+      const track = $("#testimonials-track");
+      track.innerHTML = "";
+      testimonials.forEach(t => track.appendChild(testimonialCard(t)));
+      const items = Array.from(track.children);
+      const car = new Carousel({
+        rootId:"testimonials-carousel",
+        trackId:"testimonials-track",
+        prevId:"testimonials-prev",
+        nextId:"testimonials-next",
+        itemsPerSlideDesktop:3, itemsPerSlideTablet:2, itemsPerSlideMobile:1,
+        interval: t.autoplayInterval, pauseOnHover: t.pauseOnHover, loop: t.loop
+      });
+      car.setItems(items);
+      if(t.autoplayEnabled) car.start();
+      gridT.classList.add("hidden");
+      carT.classList.remove("hidden");
     }
+
+    // Contact cards + footer from footer.json
+    const footerData = await loadJSON("/data/footer.json");
+    // contact left cards
+    const cc = $("#contact-cards");
+    (footerData.contactInfo || []).forEach(item => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `<i class="${item.icon || 'fas fa-circle-info'}"></i><span>${item.value || ''}</span>`;
+      cc.appendChild(div);
+    });
+    // footer middle contact info
+    const mid = $("#footer-middle");
+    (footerData.contactInfo || []).forEach(item => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<i class="${item.icon || 'fas fa-circle-info'}"></i><span>${item.value || ''}</span>`;
+      mid.appendChild(row);
+    });
+    // footer right socials
+    const right = $("#footer-right");
+    (footerData.socialLinks || []).forEach(s => {
+      const a = document.createElement("a");
+      a.href = s.url || "#";
+      a.target = "_blank"; a.rel="noopener";
+      a.innerHTML = `<i class="${s.icon || 'fab fa-globe'}"></i>`;
+      right.appendChild(a);
+    });
+    $("#copyright").textContent = footerData.copyrightText || "© Nexcey. All rights reserved.";
+
+    // AOS
+    AOS.init({ once:true, duration:600, easing:"ease" });
+
+    // Contact validation
+    const form = $("#contact-form");
+    form.addEventListener("submit", (e)=>{
+      let ok = true;
+      const name = $("#name"), email=$("#email"), message=$("#message");
+      // reset errors
+      $$(".error").forEach(el=> el.classList.remove("error"));
+      $$(".error-msg").forEach(el=> el.remove());
+      // name
+      if(!name.value.trim()){ ok=false; name.classList.add("error"); name.insertAdjacentHTML("afterend", `<div class="error-msg">Name is required.</div>`); }
+      // email
+      const emailVal = email.value.trim();
+      if(!emailVal || !/^\S+@\S+\.\S+$/.test(emailVal)){ ok=false; email.classList.add("error"); email.insertAdjacentHTML("afterend", `<div class="error-msg">Valid email is required.</div>`); }
+      // message
+      if(!message.value.trim()){ ok=false; message.classList.add("error"); message.insertAdjacentHTML("afterend", `<div class="error-msg">Message is required.</div>`); }
+      if(!ok){ e.preventDefault(); alert("Please correct the highlighted fields."); }
+      else { alert("Thanks! Your message has been submitted."); }
+    });
+
+  }catch(err){
+    console.error(err);
+    alert("Error initializing site: " + err.message);
   }
-
-  onMouseEnter(){ this.stopAutoplay(); }
-  onMouseLeave(){ if (this.autoplayMs) this.startAutoplay(); }
-
-  onTouchStart(e){
-    const startX = e.touches[0].clientX;
-    const startTime = Date.now();
-    const move = (ev)=>{
-      // noop; no dragging for simplicity
-    };
-    const end = (ev)=>{
-      const dx = (ev.changedTouches?.[0]?.clientX || 0) - startX;
-      const dt = Date.now() - startTime;
-      const threshold = 30; // small flick
-      if (Math.abs(dx) > threshold || dt < 200) {
-        dx < 0 ? this.next() : this.prev();
-      }
-      window.removeEventListener('touchmove', move);
-      window.removeEventListener('touchend', end);
-    };
-    window.addEventListener('touchmove', move, { passive:true });
-    window.addEventListener('touchend', end, { passive:true });
-  }
-
-  unmount(){
-    window.removeEventListener('resize', this.onResize);
-    this.track.removeEventListener('transitionend', this.onTransitionEnd);
-    this.prevBtn.removeEventListener('click', this.prev);
-    this.nextBtn.removeEventListener('click', this.next);
-    this.root.removeEventListener('mouseenter', this.onMouseEnter);
-    this.root.removeEventListener('mouseleave', this.onMouseLeave);
-    this.root.removeEventListener('touchstart', this.onTouchStart);
-  }
 }
 
-/* ---------- Build Lists ---------- */
-function populateServices(services) {
-  const track = $('#services .carousel-track');
-  track.innerHTML = '';
-  services.items.forEach(s => track.insertAdjacentHTML('beforeend', serviceItemTpl(s)));
-  new OneByOneCarousel($('#services .carousel')).mount();
-}
-
-function populatePricing(pricing) {
-  const track = $('#pricing .carousel-track');
-  track.innerHTML = '';
-  pricing.plans.forEach(p => track.insertAdjacentHTML('beforeend', planItemTpl(p)));
-  new OneByOneCarousel($('#pricing .carousel')).mount();
-}
-
-function populateClients(clients) {
-  const track = $('#clients .carousel-track');
-  track.innerHTML = '';
-  clients.items.forEach(c => track.insertAdjacentHTML('beforeend', clientItemTpl(c)));
-  new OneByOneCarousel($('#clients .carousel')).mount();
-}
-
-function populateTestimonials(tests) {
-  const track = $('#testimonials .carousel-track');
-  track.innerHTML = '';
-  tests.items.forEach(t => track.insertAdjacentHTML('beforeend', testimonialItemTpl(t)));
-  new OneByOneCarousel($('#testimonials .carousel')).mount();
-}
-
-/* ---------- Form Validation (more spacing already in CSS) ---------- */
-function initForm() {
-  const form = $('#contact-form');
-  if (!form) return;
-  form.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const name = $('#name'), email = $('#email'), message = $('#message');
-    let ok = true;
-    const setErr = (input, msg) => { ok = false; $(`.error[data-for="${input.id}"]`).textContent = msg; input.setAttribute('aria-invalid','true'); };
-    const clearErr = (input) => { $(`.error[data-for="${input.id}"]`).textContent = ''; input.removeAttribute('aria-invalid'); };
-
-    // Name
-    if (!name.value.trim()) setErr(name, 'Name is required'); else clearErr(name);
-    // Email
-    const emailVal = email.value.trim();
-    if (!emailVal) setErr(email, 'Email is required');
-    else if (!/^\S+@\S+\.\S+$/.test(emailVal)) setErr(email, 'Enter a valid email');
-    else clearErr(email);
-    // Message
-    if (!message.value.trim()) setErr(message, 'Message is required'); else clearErr(message);
-
-    if (ok) {
-      alert('Thanks! Your message has been sent (demo).');
-      form.reset();
-    }
-  });
-}
-
-/* ---------- Nav Toggle ---------- */
-function initNav() {
-  const btn = $('#nav-toggle');
-  const menu = $('#nav-menu');
-  btn.addEventListener('click', ()=>{
-    const open = menu.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  $$('#nav-menu a').forEach(a => a.addEventListener('click', ()=> menu.classList.remove('open')));
-}
-
-/* ---------- Init ---------- */
-(async function init() {
-  AOS.init({ once:true, duration:700 });
-
-  // Load all content (prefer remote JSON, fallback to seed)
-  const seed = getSeed();
-  const [theme, hero, about, services, pricing, clients, testimonials, footer] = await Promise.all([
-    loadJSON('data/theme.json').then(j=> j || seed.theme),
-    loadJSON('data/hero.json').then(j=> j || seed.hero),
-    loadJSON('data/about.json').then(j=> j || seed.about),
-    loadJSON('data/services.json').then(j=> j || seed.services),
-    loadJSON('data/pricing.json').then(j=> j || seed.pricing),
-    loadJSON('data/clients.json').then(j=> j || seed.clients),
-    loadJSON('data/testimonials.json').then(j=> j || seed.testimonials),
-    loadJSON('data/footer.json').then(j=> j || seed.footer),
-  ]);
-
-  applyTheme(theme);
-  renderHero(hero);
-  renderAbout(about);
-  $('#services-title').textContent = services?.title || 'Our Services';
-  $('#pricing-title').textContent = pricing?.title || 'Pricing Plans';
-  $('#clients-title').textContent = clients?.title || 'Our Clients';
-  $('#testimonials-title').textContent = testimonials?.title || 'What Our Clients Say';
-
-  populateServices(services);
-  populatePricing(pricing);
-  populateClients(clients);
-  populateTestimonials(testimonials);
-
-  if (footer?.contact) {
-    const fc = $('#footer-contact');
-    fc.innerHTML =
-      `<div class="row"><i class="fas fa-envelope"></i><span>${footer.contact.email}</span></div>
-       <div class="row"><i class="fas fa-phone"></i><span>${footer.contact.phone}</span></div>
-       <div class="row"><i class="fas fa-map-marker-alt"></i><span>${footer.contact.address}</span></div>`;
-  }
-  if (footer?.social) {
-    const fs = $('#footer-social');
-    fs.innerHTML = footer.social.map(s => {
-      const iconMap = {
-        'facebook':'fab fa-facebook-f','x-twitter':'fab fa-x-twitter','linkedin':'fab fa-linkedin-in',
-        'instagram':'fab fa-instagram','whatsapp':'fab fa-whatsapp'
-      };
-      return `<a href="${s.url || '#'}" target="_blank" rel="noopener"><i class="${iconMap[s.platform]||'fas fa-link'}"></i></a>`
-    }).join('');
-  }
-  if (footer?.copyright) $('#footer-copy').textContent = footer.copyright;
-
-  initForm();
-  initNav();
-})();
+document.addEventListener("DOMContentLoaded", boot);

@@ -1,85 +1,152 @@
+
 backend:
   name: git-gateway
   branch: main
 
-media_folder: "static/images/uploads"
-public_folder: "/images/uploads"
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
 
-site_url: "https://nexcey.com"
-display_url: "https://nexcey.com"
+publish_mode: editorial_workflow
 
 collections:
+  - name: "theme"
+    label: "Theme Settings"
+    files:
+      - file: "data/theme.json"
+        label: "Theme"
+        name: "theme"
+        fields:
+          - {label: Primary Color, name: primary, widget: string, default: "#522cb5"}
+          - {label: Primary Light, name: primaryLight, widget: string, default: "#7c52d6"}
+          - {label: Primary Dark, name: primaryDark, widget: string, default: "#3d2088"}
+          - {label: Body Font Size, name: bodyFontSize, widget: string, default: "15px"}
+          - {label: Font Family, name: fontFamily, widget: select, options: ["Arial, sans-serif","Open Sans","Roboto","Lato","Montserrat","Poppins","Source Sans Pro","Raleway","Ubuntu","Nunito","Inter"], default: "Arial, sans-serif"}
+          - {label: Autoplay Enabled, name: autoplayEnabled, widget: boolean, default: true}
+          - {label: Autoplay Interval (ms), name: autoplayInterval, widget: number, default: 4000, min: 2000, max: 8000}
+          - {label: Pause On Hover, name: pauseOnHover, widget: boolean, default: true}
+          - {label: Loop Carousels, name: loop, widget: boolean, default: true}
+
   - name: "hero"
-    label: "Hero Section"
-    folder: "content/hero"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "title", label: "Title", widget: "string" }
-      - { name: "subtitle", label: "Subtitle", widget: "string" }
-      - { name: "button_text", label: "Button Text", widget: "string" }
-      - { name: "button_link", label: "Button Link", widget: "string" }
-      - { name: "background_image", label: "Background Image", widget: "image" }
+    label: "Hero"
+    files:
+      - file: "data/hero.json"
+        label: "Hero Section"
+        name: "hero"
+        fields:
+          - {label: Title, name: content.title, widget: string}
+          - {label: Subtitle, name: content.subtitle, widget: string}
+          - label: CTA Button
+            name: content.ctaButton
+            widget: object
+            fields:
+              - {label: Text, name: text, widget: string, default: "Get Started"}
+              - {label: Link, name: link, widget: string, default: "#contact"}
 
   - name: "about"
-    label: "About Section"
-    folder: "content/about"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "heading", label: "Heading", widget: "string" }
-      - { name: "body", label: "Body", widget: "markdown" }
-      - { name: "image", label: "Image", widget: "image" }
+    label: "About"
+    files:
+      - file: "data/about.json"
+        label: "About Section"
+        name: "about"
+        fields:
+          - {label: Title, name: content.title, widget: string}
+          - {label: Text, name: content.text, widget: text}
+          - {label: Image, name: content.image, widget: image, required: false}
 
   - name: "services"
     label: "Services"
-    folder: "content/services"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "title", label: "Title", widget: "string" }
-      - { name: "description", label: "Description", widget: "text" }
-      - { name: "icon", label: "Icon (SVG or Image)", widget: "image" }
+    files:
+      - file: "data/services.json"
+        label: "Services List"
+        name: "services"
+        fields:
+          - {label: Title, name: content.title, widget: string, default: "Our Services"}
+          - label: Services
+            name: content.services
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Icon (Font Awesome classes), name: icon, widget: string, default: "fas fa-rocket"}
+              - {label: Description, name: description, widget: text}
 
   - name: "pricing"
-    label: "Pricing Plans"
-    folder: "content/pricing"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "plan", label: "Plan Name", widget: "string" }
-      - { name: "price", label: "Price", widget: "string" }
-      - { name: "features", label: "Features", widget: "list" }
-      - { name: "button_text", label: "Button Text", widget: "string" }
-      - { name: "button_link", label: "Button Link", widget: "string" }
+    label: "Pricing"
+    files:
+      - file: "data/pricing.json"
+        label: "Pricing Plans"
+        name: "pricing"
+        fields:
+          - {label: Title, name: content.title, widget: string, default: "Pricing Plans"}
+          - label: Plans
+            name: content.plans
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Price, name: price, widget: string, default: "$XXX"}
+              - {label: Popular, name: popular, widget: boolean, default: false}
+              - label: Features
+                name: features
+                widget: list
+                field: {label: Feature, name: feature, widget: string}
+              - label: CTA Button
+                name: ctaButton
+                widget: object
+                fields:
+                  - {label: Text, name: text, widget: string, default: "Choose Plan"}
 
-  - name: "portfolio"
-    label: "Portfolio"
-    folder: "content/portfolio"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "project_name", label: "Project Name", widget: "string" }
-      - { name: "image", label: "Image", widget: "image" }
-      - { name: "link", label: "Project Link", widget: "string", required: false }
+  - name: "clients"
+    label: "Clients"
+    files:
+      - file: "data/clients.json"
+        label: "Client Showcase"
+        name: "clients"
+        fields:
+          - {label: Title, name: content.title, widget: string, default: "Our Clients"}
+          - label: Clients
+            name: content.clients
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Logo, name: logo, widget: image, required: false}
+              - {label: Website Image, name: websiteImage, widget: image, required: false}
+              - {label: Website URL, name: websiteUrl, widget: string, required: false}
 
   - name: "testimonials"
     label: "Testimonials"
-    folder: "content/testimonials"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "author", label: "Name", widget: "string" }
-      - { name: "role", label: "Role/Company", widget: "string" }
-      - { name: "quote", label: "Testimonial", widget: "text" }
-      - { name: "image", label: "Image", widget: "image" }
+    files:
+      - file: "data/testimonials.json"
+        label: "Testimonial Cards"
+        name: "testimonials"
+        fields:
+          - {label: Title, name: content.title, widget: string, default: "What Our Clients Say"}
+          - label: Testimonials
+            name: content.testimonials
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Position, name: position, widget: string, required: false}
+              - {label: Company, name: company, widget: string, required: false}
+              - {label: Photo, name: image, widget: image, required: false}
+              - {label: Comment, name: comment, widget: text}
+              - {label: Display Format, name: displayFormat, widget: select, options: ["Name - Position","Name, Position at Company"], default: "Name - Position"}
 
-  - name: "contact"
-    label: "Contact Info"
-    folder: "content/contact"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { name: "address", label: "Address", widget: "string" }
-      - { name: "phone", label: "Phone", widget: "string" }
-      - { name: "email", label: "Email", widget: "string" }
+  - name: "footer"
+    label: "Footer & Contact"
+    files:
+      - file: "data/footer.json"
+        label: "Footer & Contact"
+        name: "footer"
+        fields:
+          - label: Contact Info
+            name: contactInfo
+            widget: list
+            fields:
+              - {label: Icon (Font Awesome), name: icon, widget: string, default: "fas fa-envelope"}
+              - {label: Value, name: value, widget: string}
+          - label: Social Links
+            name: socialLinks
+            widget: list
+            fields:
+              - {label: Icon (Font Awesome), name: icon, widget: string, default: "fab fa-facebook-f"}
+              - {label: URL, name: url, widget: string}
+          - {label: Copyright Text, name: copyrightText, widget: string, default: "© 2024 Nexcey. All rights reserved."}

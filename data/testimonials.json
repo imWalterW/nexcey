@@ -1,10 +1,41 @@
 {
-  "title":"What Our Clients Say",
-  "items":[
-    {"name":"Jane Doe","position":"CEO","company":"Acme","image":"assets/images/uploads/user1.jpg","comment":"Nexcey transformed our web presence."},
-    {"name":"John Smith","position":"CTO","company":"Globex","image":"assets/images/uploads/user2.jpg","comment":"Fast, reliable, and great UX."},
-    {"name":"Aisha Khan","position":"Founder","company":"Initech","image":"assets/images/uploads/user3.jpg","comment":"Our conversions doubled."},
-    {"name":"Carlos Ruiz","position":"Marketing Lead","company":"Soylent","image":"assets/images/uploads/user4.jpg","comment":"Smooth process end-to-end."},
-    {"name":"Mina Lee","position":"PM","company":"Umbrella","image":"assets/images/uploads/user5.jpg","comment":"Strong attention to detail."}
-  ]
+  "id": "testimonials",
+  "type": "testimonial-cards-with-carousel",
+  "content": {
+    "title": "What Our Clients Say",
+    "testimonials": [
+      {
+        "name": "Jane Doe",
+        "position": "Founder",
+        "company": "Acme Co",
+        "image": "",
+        "comment": "Nexcey exceeded our expectations with a stunning site.",
+        "displayFormat": "Name - Position"
+      },
+      {
+        "name": "John Smith",
+        "position": "CTO",
+        "company": "Globex",
+        "image": "",
+        "comment": "Great communication and fast delivery.",
+        "displayFormat": "Name - Position"
+      },
+      {
+        "name": "Amira Khan",
+        "position": "Marketing Lead",
+        "company": "Initech",
+        "image": "",
+        "comment": "Our conversions improved noticeably after launch.",
+        "displayFormat": "Name - Position"
+      },
+      {
+        "name": "Chen Li",
+        "position": "Owner",
+        "company": "Umbrella",
+        "image": "",
+        "comment": "Smooth process from design to deployment.",
+        "displayFormat": "Name - Position"
+      }
+    ]
+  }
 }

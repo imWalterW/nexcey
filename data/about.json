@@ -1,5 +1,9 @@
 {
-  "title":"About Nexcey",
-  "text":"We build clean, fast, and responsive websites that convert visitors into customers.",
-  "image":"assets/images/uploads/about-placeholder.jpg"
+  "id": "about",
+  "type": "text-with-image",
+  "content": {
+    "title": "About Nexcey",
+    "text": "We craft modern, responsive websites that convert visitors into customers.",
+    "image": ""
+  }
 }

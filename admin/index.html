@@ -1,26 +1,27 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Nexcey CMS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Netlify Identity Widget -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.10.192/dist/netlify-cms.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; margin:0; }
-  </style>
-</head>
-<body>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => document.location.href = '/admin/');
-        }
-      });
-    }
-  </script>
-</body>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nexcey CMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <!-- Netlify Identity Widget MUST be in head -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+      body{font-family: Arial, sans-serif}
+      .hint{padding:10px; background:#f4f6f9; border-radius:10px; margin:10px 0}
+    </style>
+  </head>
+  <body>
+    <div class="hint">
+      <strong>Login tips:</strong>
+      <ol>
+        <li>Enable <em>Identity</em> and <em>Invite Only</em> in Netlify dashboard.</li>
+        <li>Enable <em>Git Gateway</em> under Identity &gt; Services.</li>
+        <li>Visit <code>/admin/</code> and sign up with your invite email.</li>
+      </ol>
+    </div>
+    <!-- Netlify CMS App -->
+    <script src="https://unpkg.com/netlify-cms@^2.9.0/dist/netlify-cms.js"></script>
+  </body>
 </html>

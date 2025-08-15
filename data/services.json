@@ -1,11 +1,39 @@
 {
-  "title":"Our Services",
-  "items":[
-    {"name":"Web Design","icon":"fas fa-palette","description":"Beautiful, modern, brand-aligned designs."},
-    {"name":"Business Websites","icon":"fas fa-briefcase","description":"Professional sites that build trust."},
-    {"name":"eCommerce","icon":"fas fa-shopping-cart","description":"Sell online with a smooth UX."},
-    {"name":"Performance","icon":"fas fa-rocket","description":"Speed and SEO best practices."},
-    {"name":"Maintenance","icon":"fas fa-screwdriver-wrench","description":"Updates, backups, and fixes."},
-    {"name":"Analytics","icon":"fas fa-chart-line","description":"Insights that drive decisions."}
-  ]
+  "id": "services",
+  "type": "icon-grid-with-carousel",
+  "content": {
+    "title": "Our Services",
+    "services": [
+      {
+        "name": "Custom Web Design",
+        "icon": "fas fa-palette",
+        "description": "Tailored designs that reflect your brand."
+      },
+      {
+        "name": "Business Websites",
+        "icon": "fas fa-briefcase",
+        "description": "Professional sites to showcase your services."
+      },
+      {
+        "name": "E\u2011commerce",
+        "icon": "fas fa-shopping-cart",
+        "description": "Online stores optimized for conversions."
+      },
+      {
+        "name": "Performance & SEO",
+        "icon": "fas fa-rocket",
+        "description": "Fast-loading and search-friendly."
+      },
+      {
+        "name": "Branding & UI Kits",
+        "icon": "fas fa-swatchbook",
+        "description": "Consistent visuals and components."
+      },
+      {
+        "name": "Maintenance & Support",
+        "icon": "fas fa-screwdriver-wrench",
+        "description": "Keep your site secure and updated."
+      }
+    ]
+  }
 }

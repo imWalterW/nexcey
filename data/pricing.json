@@ -1,9 +1,62 @@
 {
-  "title":"Pricing Plans",
-  "plans":[
-    {"name":"Starter","price":"$299","popular":false,"features":["1-page site","Basic SEO","Email support"]},
-    {"name":"Business","price":"$899","popular":true,"features":["Up to 8 pages","On-page SEO","Priority support"]},
-    {"name":"eCommerce","price":"$1499","popular":false,"features":["Store setup","Payment gateway","Training"]},
-    {"name":"Custom","price":"$—","popular":false,"features":["Scalable to your needs","Integrations","Consultation"]}
-  ]
+  "id": "pricing",
+  "type": "pricing-cards-with-carousel",
+  "content": {
+    "title": "Pricing Plans",
+    "plans": [
+      {
+        "name": "Starter",
+        "price": "$499",
+        "popular": false,
+        "features": [
+          "Single page",
+          "Mobile responsive",
+          "Contact form"
+        ],
+        "ctaButton": {
+          "text": "Choose Plan"
+        }
+      },
+      {
+        "name": "Business",
+        "price": "$999",
+        "popular": true,
+        "features": [
+          "Up to 5 pages",
+          "CMS editing",
+          "On-page SEO",
+          "Performance tuning"
+        ],
+        "ctaButton": {
+          "text": "Choose Plan"
+        }
+      },
+      {
+        "name": "E\u2011commerce",
+        "price": "$1,799",
+        "popular": false,
+        "features": [
+          "Catalog & cart",
+          "Payment integration",
+          "Training & docs"
+        ],
+        "ctaButton": {
+          "text": "Choose Plan"
+        }
+      },
+      {
+        "name": "Care Plan",
+        "price": "$69/mo",
+        "popular": false,
+        "features": [
+          "Backups & updates",
+          "Security checks",
+          "Minor edits"
+        ],
+        "ctaButton": {
+          "text": "Subscribe"
+        }
+      }
+    ]
+  }
 }

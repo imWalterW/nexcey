@@ -1,5 +1,13 @@
 {
-  "title":"Web Design that Drives Results",
-  "subtitle":"Modern, responsive websites tailored to your brand.",
-  "cta":{"text":"Get Started","link":"#contact"}
+  "id": "hero",
+  "type": "hero-banner",
+  "background": "gradient-purple",
+  "content": {
+    "title": "Web Design that Drives Results",
+    "subtitle": "Modern, responsive websites tailored to your brand.",
+    "ctaButton": {
+      "text": "Get Started",
+      "link": "#contact"
+    }
+  }
 }

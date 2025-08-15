@@ -1,10 +1,33 @@
 {
-  "title":"Our Clients",
-  "items":[
-    {"name":"Acme Corp","logo":"assets/images/uploads/logo-acme.png","websiteImage":"assets/images/uploads/site-acme.jpg","websiteUrl":"#"},
-    {"name":"Globex","logo":"assets/images/uploads/logo-globex.png","websiteImage":"assets/images/uploads/site-globex.jpg","websiteUrl":"#"},
-    {"name":"Soylent","logo":"assets/images/uploads/logo-soylent.png","websiteImage":"assets/images/uploads/site-soylent.jpg","websiteUrl":"#"},
-    {"name":"Initech","logo":"assets/images/uploads/logo-initech.png","websiteImage":"assets/images/uploads/site-initech.jpg","websiteUrl":"#"},
-    {"name":"Umbrella","logo":"assets/images/uploads/logo-umbrella.png","websiteImage":"assets/images/uploads/site-umbrella.jpg","websiteUrl":"#"}
-  ]
+  "id": "clients",
+  "type": "client-showcase-with-carousel",
+  "content": {
+    "title": "Our Clients",
+    "clients": [
+      {
+        "name": "Acme Co",
+        "logo": "",
+        "websiteImage": "",
+        "websiteUrl": ""
+      },
+      {
+        "name": "Globex",
+        "logo": "",
+        "websiteImage": "",
+        "websiteUrl": ""
+      },
+      {
+        "name": "Initech",
+        "logo": "",
+        "websiteImage": "",
+        "websiteUrl": ""
+      },
+      {
+        "name": "Umbrella",
+        "logo": "",
+        "websiteImage": "",
+        "websiteUrl": ""
+      }
+    ]
+  }
 }

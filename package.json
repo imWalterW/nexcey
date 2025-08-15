@@ -1,9 +1,9 @@
 {
-  "name": "nexcey-web-design-service",
+  "name": "nexcey-web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "python -m http.server 5000",
-    "serve": "python -m http.server 5000"
+    "start": "python -m http.server 8080",
+    "build": "echo 'Static site \u2013 nothing to build'"
   }
 }
