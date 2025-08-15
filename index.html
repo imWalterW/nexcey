@@ -1,249 +1,599 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexcey Web Design Service</title>
-    
-    <!-- Cache Control -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Nexcey - Web Design Agency</title>
+<meta content="Modern, responsive web design and development services by Nexcey." name="description"/>
+<link href="/assets/images/favicon.ico" rel="icon"/>
+<!-- Google Font dynamically injected by script.js based on data/theme.json -->
+<!-- Font Awesome -->
+<link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pO12HkGd8FfM9p6a4r6H9+zR5y9oJrK3n2c7z2iZlN1Yv1m+c5QZ3C4H2d9n4S2iC1mD9nHnU6q7zQF0zF5xkA==" referrerpolicy="no-referrer" rel="stylesheet"/>
+<!-- AOS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#522cb5;
+  --primary-light:#7c52d6;
+  --primary-dark:#3d2088;
+  --secondary:#f8f9fa;
+  --text-dark:#2c3e50;
+  --text-light:#6c757d;
+  --white:#ffffff;
+  --radius:10px;
+  --shadow:0 10px 25px rgba(82,44,181,0.12);
+  --transition:0.3s ease;
+  --body-size:15px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family: var(--font, Arial, sans-serif);
+  font-size:var(--body-size); color:var(--text-dark); background:#fff;
+}
+
+/* Container */
+.container{width:min(1100px, 92%); margin-inline:auto}
+
+/* Header */
+.header{position:sticky; top:0; background:rgba(255,255,255,0.75); backdrop-filter:saturate(140%) blur(8px); z-index:1000; transition:background 0.3s}
+.header.scrolled{background:rgba(255,255,255,0.95)}
+.header-inner{display:flex; align-items:center; justify-content:space-between; padding:0.8rem 0}
+.logo{height:40px}
+.nav ul{display:flex; gap:1rem; list-style:none; margin:0; padding:0}
+.nav a{text-decoration:none; color:var(--text-dark); font-weight:600; font-size:14px; padding:0.4rem 0.6rem; border-radius:8px}
+.nav a:hover{color:var(--primary)}
+
+.hamburger{display:none; background:none; border:none; cursor:pointer}
+.hamburger span{display:block; width:24px; height:2px; background:#333; margin:5px 0; transition:var(--transition)}
+
+/* Sections */
+.section{padding:72px 0}
+.section-title{font-size:2rem; margin:0 0 1rem 0}
+
+/* Hero */
+.hero{background:linear-gradient(135deg, var(--primary), var(--primary-light)); color:#fff; position:relative}
+.hero-inner{display:grid; place-items:center; min-height:64vh; text-align:center}
+.hero h1{font-size:3rem; margin:0 0 0.6rem 0}
+.hero p{font-size:1.2rem; opacity:0.95; margin:0 0 1.2rem 0}
+.scroll-indicator{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); opacity:0.7}
+
+/* Grid helpers */
+.grid-2{display:grid; grid-template-columns:1.1fr 0.9fr; gap:2rem; align-items:center}
+.grid{display:grid; gap:1rem}
+.grid.services-cards{grid-template-columns:repeat(4,1fr)}
+.grid.pricing-cards{grid-template-columns:repeat(3,1fr)}
+.grid.clients-cards{grid-template-columns:repeat(3,1fr)}
+.grid.testimonials-cards{grid-template-columns:repeat(3,1fr)}
+
+/* Cards */
+.card{background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:1.2rem}
+.card .icon{font-size:2rem; color:var(--primary)}
+
+/* Buttons */
+.btn{display:inline-flex; align-items:center; gap:0.5rem; border-radius:12px; padding:0.8rem 1.1rem; text-decoration:none; font-weight:700; transition:transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition); box-shadow:0 8px 20px rgba(82,44,181,.18)}
+.btn-primary{background:var(--primary); color:#fff}
+.btn-primary:hover{background:var(--primary-dark); transform:translateY(-2px)}
+.btn-white{background:#fff; color:var(--primary)}
+.btn-white:hover{background:var(--primary-dark); color:#fff; transform:translateY(-3px)}
+
+/* About */
+.about{background:#f7f7fb}
+.about-image img{width:100%; height:auto; border-radius:14px; box-shadow:var(--shadow)}
+
+/* Carousel */
+.responsive-wrap{position:relative}
+.carousel{display:none; position:relative}
+.carousel-track{display:flex; gap:1rem; overflow:hidden; scroll-behavior:smooth}
+.carousel-card{min-width:calc(25% - 0.75rem)}
+.carousel-arrow{position:absolute; top:50%; transform:translateY(-50%); border:none; background:#fff; border-radius:50%; width:42px; height:42px; box-shadow:var(--shadow); cursor:pointer}
+.carousel-arrow.prev{left:-12px}
+.carousel-arrow.next{right:-12px}
+.carousel-arrow:hover{background:var(--primary); color:#fff}
+
+/* Specific cards */
+.service-card .icon{font-size:3rem}
+.pricing-card .price{font-size:1.4rem; font-weight:800; margin:0.6rem 0}
+.pricing-card.popular{background:linear-gradient(135deg, var(--primary), var(--primary-light)); color:#fff}
+.client-card img.logo{max-height:48px}
+.client-card img.site{width:100%; height:180px; object-fit:cover; border-radius:10px; margin-top:0.8rem}
+.testimonial-card .avatar{width:64px; height:64px; border-radius:50%; object-fit:cover}
+
+/* Contact */
+.contact .contact-cards{display:grid; gap:1rem}
+.contact .contact-card{display:flex; gap:0.8rem; align-items:flex-start}
+.contact .contact-card i{font-size:1.2rem; color:var(--primary)}
+.form-group{display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.8rem}
+input, textarea{padding:0.7rem 0.8rem; border:1px solid #e6e6ef; border-radius:10px; outline:none}
+input:focus, textarea:focus{border-color:var(--primary)}
+textarea{min-height:120px}
+.hidden{display:none}
+
+/* Footer */
+.footer{background:#222; color:#ddd; padding:2rem 0 1rem}
+.footer-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; align-items:center}
+.footer-logo{height:36px; filter:invert(1) brightness(2)}
+.footer-middle ul{list-style:none; padding:0; margin:0}
+.footer-middle li{margin:0.3rem 0}
+.footer-right a{display:inline-flex; justify-content:center; align-items:center; width:36px; height:36px; border-radius:50%; background:var(--primary); color:#fff; margin-right:0.4rem; text-decoration:none}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1); margin-top:1rem; padding-top:0.8rem; text-align:center}
+
+/* Responsive */
+@media (max-width: 991px){
+  .grid-2{grid-template-columns:1fr}
+  .grid.services-cards{grid-template-columns:repeat(2,1fr)}
+  .grid.pricing-cards{grid-template-columns:repeat(2,1fr)}
+  .grid.clients-cards{grid-template-columns:repeat(2,1fr)}
+  .grid.testimonials-cards{grid-template-columns:repeat(2,1fr)}
+  .carousel-card{min-width:calc(50% - 0.5rem)}
+  .nav{display:none; position:absolute; right:1rem; top:64px; background:#fff; padding:0.8rem; border-radius:12px; box-shadow:var(--shadow)}
+  .nav.open{display:block}
+  .hamburger{display:block}
+}
+@media (max-width: 640px){
+  .grid.services-cards,.grid.pricing-cards,.grid.clients-cards,.grid.testimonials-cards{grid-template-columns:1fr}
+  .carousel-card{min-width:100%}
+}
+</style></head>
 <body>
-    <!-- Header -->
-    <header class="header" id="header">
-        <nav class="navbar">
-            <div class="nav-brand">
-                <img src="assets/images/logo.png" alt="Nexcey Logo" class="logo" id="headerLogo">
-            </div>
-            <div class="nav-toggle" id="navToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about-us" class="nav-link">About Us</a></li>
-                <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#pricing" class="nav-link">Pricing</a></li>
-                <li><a href="#clients" class="nav-link">Clients</a></li>
-                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
-                <li><a href="#contact-us" class="nav-link">Contact Us</a></li>
-            </ul>
-        </nav>
-    </header>
+<header class="header" id="site-header">
+<div class="container header-inner">
+<a class="logo-link" href="#">
+<img alt="Nexcey Logo" class="logo" src="/assets/images/logo.png"/>
+</a>
+<nav class="nav" id="main-nav">
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About Us</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#clients">Clients</a></li>
+<li><a href="#testimonials">Testimonials</a></li>
+<li><a href="#contact">Contact Us</a></li>
+</ul>
+</nav>
+<button aria-expanded="false" aria-label="Open menu" class="hamburger" id="hamburger">
+<span></span><span></span><span></span>
+</button>
+</div>
+</header>
+<main>
+<!-- HERO -->
+<section class="section hero" data-section="hero" id="home">
+<div class="container hero-inner">
+<div class="hero-content" data-aos="fade-up">
+<h1 id="hero-title"></h1>
+<p id="hero-subtitle"></p>
+<a class="btn btn-white" id="hero-cta"></a>
+</div>
+</div>
+<div class="scroll-indicator"><i class="fa-solid fa-angles-down"></i></div>
+</section>
+<!-- ABOUT -->
+<section class="section about" data-section="about" id="about">
+<div class="container grid-2">
+<div class="about-text" data-aos="fade-right">
+<h2 id="about-title"></h2>
+<p id="about-text"></p>
+</div>
+<div class="about-image" data-aos="fade-left">
+<img alt="About Nexcey" id="about-image"/>
+</div>
+</div>
+</section>
+<!-- SERVICES -->
+<section class="section services" data-section="services" id="services">
+<div class="container">
+<h2 class="section-title"></h2>
+<div class="responsive-wrap" id="services-wrap">
+<div class="grid" id="services-grid"></div>
+<div class="carousel" id="services-carousel">
+<button aria-label="Previous" class="carousel-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
+<div class="carousel-track" id="services-track"></div>
+<button aria-label="Next" class="carousel-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+</div>
+</div>
+</section>
+<!-- PRICING -->
+<section class="section pricing" data-section="pricing" id="pricing">
+<div class="container">
+<h2 class="section-title"></h2>
+<div class="responsive-wrap" id="pricing-wrap">
+<div class="grid" id="pricing-grid"></div>
+<div class="carousel" id="pricing-carousel">
+<button aria-label="Previous" class="carousel-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
+<div class="carousel-track" id="pricing-track"></div>
+<button aria-label="Next" class="carousel-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+</div>
+</div>
+</section>
+<!-- CLIENTS -->
+<section class="section clients" data-section="clients" id="clients">
+<div class="container">
+<h2 class="section-title"></h2>
+<div class="responsive-wrap" id="clients-wrap">
+<div class="grid" id="clients-grid"></div>
+<div class="carousel" id="clients-carousel">
+<button aria-label="Previous" class="carousel-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
+<div class="carousel-track" id="clients-track"></div>
+<button aria-label="Next" class="carousel-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+</div>
+</div>
+</section>
+<!-- TESTIMONIALS -->
+<section class="section testimonials" data-section="testimonials" id="testimonials">
+<div class="container">
+<h2 class="section-title"></h2>
+<div class="responsive-wrap" id="testimonials-wrap">
+<div class="grid" id="testimonials-grid"></div>
+<div class="carousel" id="testimonials-carousel">
+<button aria-label="Previous" class="carousel-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
+<div class="carousel-track" id="testimonials-track"></div>
+<button aria-label="Next" class="carousel-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+</div>
+</div>
+</section>
+<!-- CONTACT -->
+<section class="section contact" data-section="contact" id="contact">
+<div class="container grid-2">
+<div class="contact-info" data-aos="fade-right">
+<h2 class="section-title">Contact Us</h2>
+<div class="contact-cards" id="contact-cards"></div>
+</div>
+<div class="contact-form" data-aos="fade-left">
+<form data-netlify="true" id="contact-form" method="POST" name="contact" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="contact"/>
+<p class="hidden">
+<label>Don’t fill this out if you're human: <input name="bot-field"/></label>
+</p>
+<div class="form-group">
+<label for="name">Name *</label>
+<input id="name" name="name" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="email">Email *</label>
+<input id="email" name="email" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="phone">Phone</label>
+<input id="phone" name="phone" type="tel"/>
+</div>
+<div class="form-group">
+<label for="message">Message *</label>
+<textarea id="message" name="message" required=""></textarea>
+</div>
+<button class="btn btn-primary" type="submit">
+<i class="fa-solid fa-paper-plane"></i> Send Message
+            </button>
+</form>
+</div>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="container footer-grid">
+<div class="footer-left">
+<img alt="Nexcey Logo" class="footer-logo" src="/assets/images/logo.png"/>
+</div>
+<div class="footer-middle" id="footer-middle"></div>
+<div class="footer-right" id="footer-right"></div>
+</div>
+<div class="container footer-bottom">
+<p id="copyright"></p>
+</div>
+</footer>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+// Helper to load JSON
+async function loadJSON(path){ const r = await fetch(path); if(!r.ok) throw new Error(`Failed to load ${path}`); return r.json(); }
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content" data-aos="fade-up">
-            <h1 class="hero-title" id="heroTitle">Web Design that Drives Results</h1>
-            <p class="hero-subtitle" id="heroSubtitle">Modern, responsive websites tailored to your brand.</p>
-            <a href="#contact-us" class="cta-button" id="heroCtaButton">
-                <span id="heroCtaText">Get Started</span>
-                <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-        <div class="hero-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-        </div>
-    </section>
+// Dynamic Google Font loader from theme.json
+function injectGoogleFont(fontName){
+  if(!fontName) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}:wght@400;600;700;800&display=swap`;
+  document.head.appendChild(link);
+  document.documentElement.style.setProperty('--font', `'${fontName}', Arial, sans-serif`);
+}
 
-    <!-- About Section -->
-    <section id="about-us" class="about section-padding">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text" data-aos="fade-right">
-                    <h2 id="aboutTitle">About Nexcey</h2>
-                    <p id="aboutText">Nexcey is a modern web design studio offering tailor-made website solutions. From stunning landing pages to powerful e-commerce sites, we bring your ideas to life with clean, functional, and engaging designs.</p>
-                </div>
-                <div class="about-image" data-aos="fade-left">
-                    <img src="assets/images/about-image.jpg" alt="About Nexcey" id="aboutImage">
-                </div>
-            </div>
-        </div>
-    </section>
+// Header behavior
+function initHeader(){
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 12) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+  });
+  // Mobile nav
+  const hamburger = document.getElementById('hamburger');
+  const nav = document.getElementById('main-nav');
+  hamburger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+}
 
-    <!-- Services Section -->
-    <section id="services" class="services section-padding">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" id="servicesTitle">Our Services</h2>
-            <div class="services-container">
-                <div class="services-wrapper" id="servicesWrapper">
-                    <!-- Services will be loaded dynamically -->
-                </div>
-                <div class="carousel-arrows services-arrows">
-                    <button class="arrow-btn prev-btn" id="servicesPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="arrow-btn next-btn" id="servicesNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+// Smooth anchors
+function initSmoothAnchors(){
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+}
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing section-padding">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" id="pricingTitle">Pricing Plans</h2>
-            <div class="pricing-container">
-                <div class="pricing-wrapper" id="pricingWrapper">
-                    <!-- Pricing cards will be loaded dynamically -->
-                </div>
-                <div class="carousel-arrows pricing-arrows">
-                    <button class="arrow-btn prev-btn" id="pricingPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="arrow-btn next-btn" id="pricingNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+// Generic Carousel
+function createCarousel(rootId, items, renderItem, visibleDesktop=4, visibleTablet=2, visibleMobile=1, autoPlayCfg={enabled:true, interval:4000, pauseOnHover:true, resumeAfterManualNavigation:true}){
+  const wrap = document.getElementById(rootId + '-wrap');
+  const grid = document.getElementById(rootId + '-grid');
+  const carousel = document.getElementById(rootId + '-carousel');
+  const track = document.getElementById(rootId + '-track');
+  const prev = carousel?.querySelector('.prev');
+  const next = carousel?.querySelector('.next');
 
-    <!-- Clients Section -->
-    <section id="clients" class="clients section-padding">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" id="clientsTitle">Our Clients</h2>
-            <div class="clients-container">
-                <div class="clients-wrapper" id="clientsWrapper">
-                    <!-- Clients will be loaded dynamically -->
-                </div>
-                <div class="carousel-arrows clients-arrows">
-                    <button class="arrow-btn prev-btn" id="clientsPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="arrow-btn next-btn" id="clientsNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+  const computeVisible = () => {
+    const w = window.innerWidth;
+    if(w <= 640) return visibleMobile;
+    if(w <= 991) return visibleTablet;
+    return visibleDesktop;
+  };
 
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials section-padding">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" id="testimonialsTitle">What Our Clients Say</h2>
-            <div class="testimonials-container">
-                <div class="testimonials-wrapper" id="testimonialsWrapper">
-                    <!-- Testimonials will be loaded dynamically -->
-                </div>
-                <div class="carousel-arrows testimonials-arrows">
-                    <button class="arrow-btn prev-btn" id="testimonialsPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="arrow-btn next-btn" id="testimonialsNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+  const renderGrid = () => {
+    grid.classList.add(`${rootId}-cards`);
+    grid.innerHTML = items.map(renderItem).join('');
+  };
 
-    <!-- Contact Section -->
-    <section id="contact-us" class="contact section-padding">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" id="contactTitle">Contact Us</h2>
-            <div class="contact-content">
-                <div class="contact-info" data-aos="fade-right">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-details">
-                            <span id="contactEmail">info@nexcey.com</span>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-details">
-                            <span id="contactPhone">+94 72 445 2222</span>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="contact-details">
-                            <span id="contactAddress">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="contact-form-wrapper" data-aos="fade-left">
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <input type="text" name="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" name="phone" placeholder="Your Phone">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="submit-btn">
-                            Send Message
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+  const renderCarousel = () => {
+    carousel.style.display = 'block';
+    track.innerHTML = items.map(i => `<div class="card carousel-card">${renderItem(i)}</div>`).join('');
+  };
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <img src="assets/images/logo.png" alt="Nexcey Logo" class="footer-logo" id="footerLogo">
-                </div>
-                <div class="footer-contact">
-                    <p><i class="fas fa-envelope"></i> <span id="footerEmail">info@nexcey.com</span></p>
-                    <p><i class="fas fa-phone"></i> <span id="footerPhone">+94 72 445 2222</span></p>
-                    <p><i class="fas fa-map-marker-alt"></i> <span id="footerAddress">203, Somananda MW, Udahamulla, Panadura, Sri Lanka</span></p>
-                </div>
-                <div class="footer-social">
-                    <a href="#" class="social-link" id="socialFacebook" target="_blank">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="social-link" id="socialX" target="_blank">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-                    <a href="#" class="social-link" id="socialLinkedin" target="_blank">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="#" class="social-link" id="socialInstagram" target="_blank">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="social-link" id="socialWhatsapp" target="_blank">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Nexcey. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+  const useGrid = items.length <= computeVisible();
+  if(useGrid){
+    grid.style.display = 'grid'; carousel.style.display = 'none'; renderGrid();
+  }else{
+    grid.style.display = 'none'; renderCarousel();
+  }
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="assets/js/script.js?v=<?php echo time(); ?>"></script>
+  // Carousel logic
+  if(carousel.style.display === 'block'){
+    let index = 0;
+    const maxIndex = Math.max(0, items.length - computeVisible());
+    const scrollToIndex = (i) => {
+      index = Math.max(0, Math.min(i, maxIndex));
+      const card = track.querySelector('.carousel-card');
+      if(!card) return;
+      const cardWidth = card.getBoundingClientRect().width + 16; // including gap
+      track.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+    };
+
+    prev.addEventListener('click', () => { scrollToIndex(index - 1); manualOverride(); });
+    next.addEventListener('click', () => { scrollToIndex(index + 1); manualOverride(); });
+
+    // Touch support
+    let startX = 0;
+    track.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
+    track.addEventListener('touchend', (e)=>{
+      const dx = e.changedTouches[0].clientX - startX;
+      if(Math.abs(dx) > 40){
+        if(dx < 0) scrollToIndex(index + 1); else scrollToIndex(index - 1);
+        manualOverride();
+      }
+    });
+
+    // Auto-play
+    let timer = null;
+    const start = () => {
+      if(!autoPlayCfg.enabled) return;
+      stop();
+      timer = setInterval(()=>{
+        if(index >= maxIndex) index = -1;
+        scrollToIndex(index + 1);
+      }, autoPlayCfg.interval || 4000);
+    };
+    const stop = () => { if(timer){ clearInterval(timer); timer = null; } };
+    const manualOverride = () => {
+      stop();
+      if(autoPlayCfg.resumeAfterManualNavigation) setTimeout(start, 3000);
+    };
+    if(autoPlayCfg.pauseOnHover){
+      track.addEventListener('mouseenter', stop);
+      track.addEventListener('mouseleave', start);
+    }
+    start();
+
+    window.addEventListener('resize', ()=>{ /* re-render on resize for accuracy */
+      // In a full app we'd re-evaluate layout. For simplicity, leave as-is.
+    });
+  }
+}
+
+// Renderers
+function serviceCard(s){ return `
+  <div class="service-card card">
+    <div class="icon"><i class="${s.icon}"></i></div>
+    <h3>${s.name}</h3>
+    <p>${s.description}</p>
+  </div>`;
+}
+
+function pricingCard(p){
+  const features = (p.features||[]).map(f=>`<li>${f}</li>`).join('');
+  const popularClass = p.popular ? 'popular' : '';
+  const badge = p.popular ? `<span class="badge">${'Most Popular'}</span>` : '';
+  return `
+  <div class="pricing-card card ${popularClass}">
+    ${badge}
+    <h3>${p.name}</h3>
+    <p class="price">${p.price}</p>
+    <ul>${features}</ul>
+    <a href="#contact" class="btn ${p.popular ? 'btn-white' : 'btn-primary'}">${(p.ctaButton && p.ctaButton.text) || 'Choose Plan'}</a>
+  </div>`;
+}
+
+function clientCard(c){
+  return `
+  <div class="client-card card">
+    <img class="logo" src="${c.logo}" alt="${c.name} logo" />
+    <img class="site" src="${c.websiteImage}" alt="${c.name} website" />
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem">
+      <strong>${c.name}</strong>
+      <a class="btn btn-primary" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit</a>
+    </div>
+  </div>`;
+}
+
+function testimonialCard(t){
+  const title = t.company ? `${t.name}, ${t.position} at ${t.company}` : `${t.name} — ${t.position}`;
+  return `
+  <div class="testimonial-card card">
+    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.6rem">
+      <img class="avatar" src="${t.image}" alt="${t.name} photo" />
+      <div><strong>${t.name}</strong><div style="font-size:0.9rem; color:var(--text-light)">${title}</div></div>
+    </div>
+    <p>"${t.comment}"</p>
+  </div>`;
+}
+
+// Contact cards
+function buildContactCards(data){
+  const wrap = document.getElementById('contact-cards');
+  const items = [
+    {icon:'fa-solid fa-envelope', label: 'Email', value: data.email},
+    {icon:'fa-solid fa-phone', label: 'Phone', value: data.phone},
+    {icon:'fa-solid fa-map-marker-alt', label: 'Address', value: data.address}
+  ];
+  wrap.innerHTML = items.map(i => `
+    <div class="contact-card card">
+      <i class="${i.icon}"></i>
+      <div><strong>${i.label}</strong><div>${i.value}</div></div>
+    </div>
+  `).join('');
+}
+
+// Form validation
+function initForm(){
+  const form = document.getElementById('contact-form');
+  form.addEventListener('submit', (e)=>{
+    const name = form.querySelector('#name').value.trim();
+    const email = form.querySelector('#email').value.trim();
+    const message = form.querySelector('#message').value.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if(!name || !emailOk || !message){
+      e.preventDefault();
+      alert('Please fill in Name, a valid Email, and Message.');
+    }else{
+      // Let Netlify handle submission. Optionally show a friendly feedback.
+      alert('Thanks! Your message has been sent.');
+    }
+  });
+}
+
+async function init(){
+  try{
+    // Theme
+    const theme = await loadJSON('/data/theme.json');
+    document.querySelector(':root').style.setProperty('--primary', theme.branding.palette.primary);
+    document.querySelector(':root').style.setProperty('--primary-light', theme.branding.palette.primaryLight);
+    document.querySelector(':root').style.setProperty('--primary-dark', theme.branding.palette.primaryDark);
+    document.querySelector(':root').style.setProperty('--text-dark', theme.branding.palette.textDark);
+    document.querySelector(':root').style.setProperty('--text-light', theme.branding.palette.textLight);
+    document.querySelector(':root').style.setProperty('--body-size', theme.typography.bodySize || '15px');
+    injectGoogleFont(theme.typography.googleFont);
+
+    // Header logo
+    const logo = document.querySelector('.logo');
+    if(theme.branding.logo) logo.src = theme.branding.logo;
+    const footerLogo = document.querySelector('.footer-logo');
+    if(theme.branding.logo) footerLogo.src = theme.branding.logo;
+
+    // HERO
+    const hero = await loadJSON('/data/hero.json');
+    const hTitle = document.getElementById('hero-title');
+    const hSubtitle = document.getElementById('hero-subtitle');
+    const hCta = document.getElementById('hero-cta');
+    hTitle.textContent = hero.title;
+    hTitle.style.fontSize = hero.titleSize || '3rem';
+    hSubtitle.textContent = hero.subtitle;
+    hSubtitle.style.fontSize = hero.subtitleSize || '1.2rem';
+    hCta.textContent = hero.cta?.text || 'Get Started';
+    hCta.href = hero.cta?.link || '#contact';
+
+    // ABOUT
+    const about = await loadJSON('/data/about.json');
+    document.getElementById('about-title').textContent = about.title;
+    document.getElementById('about-text').textContent = about.text;
+    const aboutImg = document.getElementById('about-image');
+    aboutImg.src = about.image;
+    aboutImg.style.borderRadius = (about.imageSettings?.borderRadius || 10) + 'px';
+
+    // SERVICES
+    const services = await loadJSON('/data/services.json');
+    document.querySelector('#services .section-title').textContent = services.title;
+    createCarousel('services', services.services, serviceCard, 4, 2, 1, services.autoPlay || {});
+
+    // PRICING
+    const pricing = await loadJSON('/data/pricing.json');
+    document.querySelector('#pricing .section-title').textContent = pricing.title;
+    createCarousel('pricing', pricing.plans, pricingCard, 3, 2, 1, pricing.autoPlay || {});
+
+    // CLIENTS
+    const clients = await loadJSON('/data/clients.json');
+    document.querySelector('#clients .section-title').textContent = clients.title;
+    createCarousel('clients', clients.clients, clientCard, 3, 2, 1, clients.autoPlay || {});
+
+    // TESTIMONIALS
+    const testimonials = await loadJSON('/data/testimonials.json');
+    document.querySelector('#testimonials .section-title').textContent = testimonials.title;
+    createCarousel('testimonials', testimonials.testimonials, testimonialCard, 3, 2, 1, testimonials.autoPlay || {});
+
+    // CONTACT
+    const contact = await loadJSON('/data/contact.json');
+    buildContactCards(contact);
+    initForm();
+
+    // Footer
+    const footer = await loadJSON('/data/footer.json');
+    const middle = document.getElementById('footer-middle');
+    const right = document.getElementById('footer-right');
+    const copyright = document.getElementById('copyright');
+    // Middle contacts
+    const list = document.createElement('ul');
+    (footer.middleColumn.contactInfo || []).forEach(ci => {
+      const li = document.createElement('li');
+      li.innerHTML = `<i class="${ci.icon}"></i> ${ci.value}`;
+      list.appendChild(li);
+    });
+    middle.appendChild(list);
+    // Social
+    (footer.rightColumn.socialLinks || []).forEach(s => {
+      const a = document.createElement('a'); a.href=s.url || '#'; a.target="_blank"; a.rel="noopener";
+      a.innerHTML = `<i class="${s.icon}"></i>`; right.appendChild(a);
+    });
+    copyright.textContent = footer.copyrightText || `© ${new Date().getFullYear()} Nexcey. All rights reserved.`;
+
+    // Init AOS
+    AOS.init({ once:true, duration:700, easing:'ease' });
+
+    // Init header and anchors
+    initHeader();
+    initSmoothAnchors();
+  }catch(err){
+    console.error(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>

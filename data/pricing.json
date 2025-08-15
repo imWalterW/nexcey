@@ -1,0 +1,73 @@
+{
+  "title": "Pricing Plans",
+  "titleSize": "2.2rem",
+  "popularPlanHighlight": {
+    "badge": "Most Popular",
+    "specialBackground": "purple-gradient",
+    "textColor": "white"
+  },
+  "autoPlay": {
+    "enabled": true,
+    "interval": 4000,
+    "pauseOnHover": true,
+    "resumeAfterManualNavigation": true
+  },
+  "plans": [
+    {
+      "name": "Starter",
+      "price": "$299",
+      "popular": false,
+      "features": [
+        "1-page site",
+        "Mobile responsive",
+        "Basic SEO",
+        "Netlify hosting setup"
+      ],
+      "ctaButton": {
+        "text": "Choose Plan"
+      }
+    },
+    {
+      "name": "Business",
+      "price": "$799",
+      "popular": true,
+      "features": [
+        "Up to 6 pages",
+        "CMS integration",
+        "Contact form",
+        "AOS animations"
+      ],
+      "ctaButton": {
+        "text": "Choose Plan"
+      }
+    },
+    {
+      "name": "Pro",
+      "price": "$1499",
+      "popular": false,
+      "features": [
+        "10+ pages",
+        "Custom features",
+        "Performance tuning",
+        "Priority support"
+      ],
+      "ctaButton": {
+        "text": "Choose Plan"
+      }
+    },
+    {
+      "name": "Enterprise",
+      "price": "Custom",
+      "popular": false,
+      "features": [
+        "Large-scale projects",
+        "SLA and support",
+        "Dedicated PM",
+        "Custom integrations"
+      ],
+      "ctaButton": {
+        "text": "Contact Sales"
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "title": "Our Clients",
+  "titleSize": "2.2rem",
+  "autoPlay": {
+    "enabled": true,
+    "interval": 4000,
+    "pauseOnHover": true,
+    "resumeAfterManualNavigation": true
+  },
+  "clients": [
+    {
+      "name": "Alpha Co.",
+      "logo": "/assets/images/uploads/client-alpha.png",
+      "websiteImage": "/assets/images/uploads/client-alpha-site.jpg",
+      "websiteUrl": "https://example.com",
+      "logoSizeControl": {
+        "w": 160,
+        "h": 80
+      },
+      "websiteImageSizeControl": {
+        "h": 220
+      }
+    },
+    {
+      "name": "Beta LLC",
+      "logo": "/assets/images/uploads/client-beta.png",
+      "websiteImage": "/assets/images/uploads/client-beta-site.jpg",
+      "websiteUrl": "https://example.com",
+      "logoSizeControl": {
+        "w": 160,
+        "h": 80
+      },
+      "websiteImageSizeControl": {
+        "h": 220
+      }
+    },
+    {
+      "name": "Gamma Studio",
+      "logo": "/assets/images/uploads/client-gamma.png",
+      "websiteImage": "/assets/images/uploads/client-gamma-site.jpg",
+      "websiteUrl": "https://example.com",
+      "logoSizeControl": {
+        "w": 160,
+        "h": 80
+      },
+      "websiteImageSizeControl": {
+        "h": 220
+      }
+    },
+    {
+      "name": "Delta Labs",
+      "logo": "/assets/images/uploads/client-delta.png",
+      "websiteImage": "/assets/images/uploads/client-delta-site.jpg",
+      "websiteUrl": "https://example.com",
+      "logoSizeControl": {
+        "w": 160,
+        "h": 80
+      },
+      "websiteImageSizeControl": {
+        "h": 220
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "leftColumn": {
+    "logo": "/assets/images/logo.png",
+    "logoFilter": "invert"
+  },
+  "middleColumn": {
+    "contactInfo": [
+      {
+        "type": "email",
+        "icon": "fa-solid fa-envelope",
+        "value": "info@nexcey.com"
+      },
+      {
+        "type": "phone",
+        "icon": "fa-solid fa-phone",
+        "value": "+94 72 445 2222"
+      },
+      {
+        "type": "address",
+        "icon": "fa-solid fa-map-marker-alt",
+        "value": "203, Somananda MW, Udahamulla, Panadura, Sri Lanka"
+      }
+    ],
+    "textSize": "14px"
+  },
+  "rightColumn": {
+    "socialLinks": [
+      {
+        "platform": "facebook",
+        "icon": "fa-brands fa-facebook-f",
+        "url": "#"
+      },
+      {
+        "platform": "x-twitter",
+        "icon": "fa-brands fa-x-twitter",
+        "url": "#"
+      },
+      {
+        "platform": "linkedin",
+        "icon": "fa-brands fa-linkedin-in",
+        "url": "#"
+      },
+      {
+        "platform": "instagram",
+        "icon": "fa-brands fa-instagram",
+        "url": "#"
+      },
+      {
+        "platform": "whatsapp",
+        "icon": "fa-brands fa-whatsapp",
+        "url": "#"
+      }
+    ]
+  },
+  "copyrightText": "\u00a9 2025 Nexcey. All rights reserved."
+}

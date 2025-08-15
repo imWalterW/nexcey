@@ -1,0 +1,46 @@
+{
+  "branding": {
+    "siteName": "Nexcey - Web Design Agency",
+    "primaryColor": "#522cb5",
+    "colorScheme": "Purple and white",
+    "palette": {
+      "primary": "#522cb5",
+      "primaryLight": "#7c52d6",
+      "primaryDark": "#3d2088",
+      "secondary": "#f8f9fa",
+      "textDark": "#2c3e50",
+      "textLight": "#6c757d",
+      "white": "#ffffff"
+    },
+    "logo": "/assets/images/logo.png",
+    "favicon": "/assets/images/favicon.ico"
+  },
+  "typography": {
+    "googleFont": "Inter",
+    "fallback": "Arial, sans-serif",
+    "bodySize": "15px",
+    "headingScale": 1.25
+  },
+  "layout": {
+    "stickyHeader": true,
+    "smoothScrolling": true,
+    "animationsEnabled": true,
+    "borderRadius": "10px",
+    "boxShadow": "0 10px 25px rgba(82,44,181,0.12)"
+  },
+  "cms": {
+    "enableGoogleFontsSelection": true,
+    "popularOptions": [
+      "Open Sans",
+      "Roboto",
+      "Lato",
+      "Montserrat",
+      "Poppins",
+      "Source Sans Pro",
+      "Raleway",
+      "Ubuntu",
+      "Nunito",
+      "Inter"
+    ]
+  }
+}

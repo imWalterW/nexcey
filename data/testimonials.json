@@ -1,0 +1,40 @@
+{
+  "title": "What Our Clients Say",
+  "titleSize": "2.2rem",
+  "autoPlay": {
+    "enabled": true,
+    "interval": 4000,
+    "pauseOnHover": true,
+    "resumeAfterManualNavigation": true
+  },
+  "testimonials": [
+    {
+      "name": "Don",
+      "position": "Founder",
+      "company": "Nilnara Villa",
+      "image": "/assets/images/uploads/testimonial-don.jpg",
+      "comment": "Experience unparalleled luxury and personalized service at Nilnara Villa, where every stay is a journey into sophistication, comfort, and unforgettable memories."
+    },
+    {
+      "name": "Ayesha Perera",
+      "position": "Marketing Manager",
+      "company": "Alpha Co.",
+      "image": "/assets/images/uploads/testimonial-ayesha.jpg",
+      "comment": "Nexcey delivered a stunning site that boosted our conversions within weeks."
+    },
+    {
+      "name": "Lahiru De Silva",
+      "position": "CEO",
+      "company": "Beta LLC",
+      "image": "/assets/images/uploads/testimonial-lahiru.jpg",
+      "comment": "Clean design, fast performance, and super easy CMS\u2014exactly what we needed."
+    },
+    {
+      "name": "Megan Lloyd",
+      "position": "Product Lead",
+      "company": "Gamma Studio",
+      "image": "/assets/images/uploads/testimonial-megan.jpg",
+      "comment": "Professional team with great attention to detail. Highly recommended!"
+    }
+  ]
+}

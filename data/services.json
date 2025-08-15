@@ -1,0 +1,47 @@
+{
+  "title": "Our Services",
+  "titleSize": "2.2rem",
+  "iconStyling": {
+    "size": "3rem",
+    "color": "primary",
+    "noCircles": true
+  },
+  "autoPlay": {
+    "enabled": true,
+    "interval": 4000,
+    "pauseOnHover": true,
+    "resumeAfterManualNavigation": true
+  },
+  "services": [
+    {
+      "name": "Custom Web Design",
+      "icon": "fa-solid fa-layer-group",
+      "description": "Unique, on-brand designs that convert."
+    },
+    {
+      "name": "Responsive Development",
+      "icon": "fa-solid fa-display",
+      "description": "Pixel-perfect layouts across devices."
+    },
+    {
+      "name": "Landing Pages",
+      "icon": "fa-solid fa-bullseye",
+      "description": "High-converting pages for campaigns."
+    },
+    {
+      "name": "SEO Basics",
+      "icon": "fa-solid fa-magnifying-glass",
+      "description": "Semantic HTML, metadata, and fast load times."
+    },
+    {
+      "name": "Performance Tuning",
+      "icon": "fa-solid fa-gauge-high",
+      "description": "Optimize Core Web Vitals and speed."
+    },
+    {
+      "name": "Maintenance",
+      "icon": "fa-solid fa-screwdriver-wrench",
+      "description": "Ongoing updates and content changes."
+    }
+  ]
+}

@@ -1,66 +1,9 @@
 {
-  "name": "nexcey-website",
+  "name": "nexcey-web-design-service",
   "version": "1.0.0",
-  "description": "Modern, responsive website for Nexcey Web Design Service with Netlify CMS integration",
-  "main": "index.html",
+  "private": true,
   "scripts": {
-    "dev": "npx live-server --port=3000 --host=localhost --open=/",
-    "serve": "npx live-server --port=8080 --host=0.0.0.0",
-    "build": "echo 'Static site - no build step required'",
-    "test": "echo 'No tests configured'",
-    "validate": "npx html-validate index.html && npx jsonlint _data/*.json",
-    "optimize": "npx imagemin assets/images/* --out-dir=assets/images/optimized",
-    "deploy": "netlify deploy --prod"
-  },
-  "keywords": [
-    "web-design",
-    "responsive",
-    "netlify-cms",
-    "static-site",
-    "business-website",
-    "portfolio"
-  ],
-  "author": "Nexcey Web Design Service",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/nexcey-website.git"
-  },
-  "homepage": "https://YOUR_SITE_NAME.netlify.app",
-  "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/nexcey-website/issues"
-  },
-  "devDependencies": {
-    "live-server": "^1.2.2",
-    "html-validate": "^8.7.4",
-    "jsonlint": "^1.6.3",
-    "imagemin": "^8.0.1",
-    "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-pngquant": "^9.0.2",
-    "netlify-cli": "^17.10.1"
-  },
-  "dependencies": {},
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie <= 11"
-  ],
-  "netlify": {
-    "build": {
-      "command": "",
-      "publish": "."
-    },
-    "redirects": [
-      {
-        "from": "/admin",
-        "to": "/admin/",
-        "status": 301
-      }
-    ]
+    "start": "npx serve .",
+    "build": "echo 'Static site \u2014 nothing to build'"
   }
 }
