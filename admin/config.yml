@@ -5,110 +5,148 @@ backend:
 media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
 
+publish_mode: editorial_workflow
+site_url: "/"
+logo_url: "/assets/images/logo.png"
+
 collections:
-  - name: "theme"
-    label: "Theme"
+  - label: "Theme"
+    name: "theme"
     files:
-      - file: "data/theme.json"
-        label: "Theme Settings"
+      - label: "Theme Settings"
         name: "theme"
+        file: "data/theme.json"
         fields:
-          - {label: Primary Color, name: palette.primary, widget: string, default: "#522cb5"}
-          - {label: Google Font, name: branding.typography.googleFont, widget: string, default: "Inter"}
+          - { label: "Primary Color", name: "primary", widget: "string", default: "#522cb5" }
+          - { label: "Primary Light", name: "primaryLight", widget: "string", default: "#7c52d6" }
+          - { label: "Primary Dark", name: "primaryDark", widget: "string", default: "#3d2088" }
+          - { label: "Secondary", name: "secondary", widget: "string", default: "#f8f9fa" }
+          - { label: "Text Dark", name: "textDark", widget: "string", default: "#2c3e50" }
+          - { label: "Text Light", name: "textLight", widget: "string", default: "#6c757d" }
+          - { label: "White", name: "white", widget: "string", default: "#ffffff" }
+          - label: "Typography"
+            name: "typography"
+            widget: "object"
+            fields:
+              - { label: "Google Font (optional)", name: "googleFont", widget: "string", required: false }
+              - { label: "Body Font Size", name: "bodyFontSize", widget: "string", default: "15px" }
 
-  - name: "sections"
-    label: "Sections"
+  - label: "Hero"
+    name: "hero"
     files:
-      - file: "data/hero.json"
-        label: "Hero"
+      - label: "Hero Section"
         name: "hero"
+        file: "data/hero.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - {label: Subtitle, name: subtitle, widget: text}
-          - label: CTA
-            name: cta
-            widget: object
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Subtitle", name: "subtitle", widget: "text" }
+          - label: "CTA Button"
+            name: "cta"
+            widget: "object"
             fields:
-              - {label: Text, name: text, widget: string}
-              - {label: Link, name: link, widget: string, default: "#contact-us"}
+              - { label: "Text", name: "text", widget: "string", default: "Get Started" }
+              - { label: "Link", name: "link", widget: "string", default: "#contact" }
 
-      - file: "data/about.json"
-        label: "About"
+  - label: "About"
+    name: "about"
+    files:
+      - label: "About Section"
         name: "about"
+        file: "data/about.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - {label: Text, name: text, widget: text}
-          - {label: Image, name: image, widget: image}
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Text", name: "text", widget: "text" }
+          - { label: "Image", name: "image", widget: "image", required: false }
 
-      - file: "data/services.json"
-        label: "Services"
+  - label: "Services"
+    name: "services"
+    files:
+      - label: "Services List"
         name: "services"
+        file: "data/services.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - label: Items
-            name: items
-            widget: list
+          - { label: "Title", name: "title", widget: "string", default: "Our Services" }
+          - label: "Services"
+            name: "items"
+            widget: "list"
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Icon (Font Awesome classes), name: icon, widget: string, default: "fas fa-rocket"}
-              - {label: Description, name: description, widget: string}
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Icon (Font Awesome class)", name: "icon", widget: "string", default: "fas fa-rocket" }
+              - { label: "Description", name: "description", widget: "text" }
 
-      - file: "data/pricing.json"
-        label: "Pricing"
+  - label: "Pricing"
+    name: "pricing"
+    files:
+      - label: "Pricing Plans"
         name: "pricing"
+        file: "data/pricing.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - label: Plans
-            name: plans
-            widget: list
+          - { label: "Title", name: "title", widget: "string", default: "Pricing Plans" }
+          - label: "Plans"
+            name: "plans"
+            widget: "list"
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Price, name: price, widget: string}
-              - {label: Popular, name: popular, widget: boolean, default: false}
-              - {label: Features, name: features, widget: list, field: {label: Feature, name: feature, widget: string}}
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Price", name: "price", widget: "string" }
+              - { label: "Popular", name: "popular", widget: "boolean", default: false }
+              - label: "Features"
+                name: "features"
+                widget: "list"
+                field: { label: "Feature", name: "feature", widget: "string" }
 
-      - file: "data/clients.json"
-        label: "Clients"
+  - label: "Clients"
+    name: "clients"
+    files:
+      - label: "Clients"
         name: "clients"
+        file: "data/clients.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - label: Items
-            name: items
-            widget: list
+          - { label: "Title", name: "title", widget: "string", default: "Our Clients" }
+          - label: "Clients"
+            name: "items"
+            widget: "list"
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Logo, name: logo, widget: image}
-              - {label: Website Image, name: websiteImage, widget: image}
-              - {label: Website URL, name: websiteUrl, widget: string}
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Logo", name: "logo", widget: "image", required: false }
+              - { label: "Website Image", name: "websiteImage", widget: "image", required: false }
+              - { label: "Website URL", name: "websiteUrl", widget: "string", required: false }
 
-      - file: "data/testimonials.json"
-        label: "Testimonials"
+  - label: "Testimonials"
+    name: "testimonials"
+    files:
+      - label: "Testimonials"
         name: "testimonials"
+        file: "data/testimonials.json"
         fields:
-          - {label: Title, name: title, widget: string}
-          - label: Items
-            name: items
-            widget: list
+          - { label: "Title", name: "title", widget: "string", default: "What Our Clients Say" }
+          - label: "Testimonials"
+            name: "items"
+            widget: "list"
             fields:
-              - {label: Name, name: name, widget: string}
-              - {label: Position, name: position, widget: string}
-              - {label: Company, name: company, widget: string, required: false}
-              - {label: Photo, name: image, widget: image}
-              - {label: Comment, name: comment, widget: text}
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Position", name: "position", widget: "string", required: false }
+              - { label: "Company", name: "company", widget: "string", required: false }
+              - { label: "Photo", name: "image", widget: "image", required: false }
+              - { label: "Comment", name: "comment", widget: "text" }
 
-      - file: "data/footer.json"
-        label: "Footer"
+  - label: "Footer"
+    name: "footer"
+    files:
+      - label: "Footer"
         name: "footer"
+        file: "data/footer.json"
         fields:
-          - {label: Email, name: email, widget: string}
-          - {label: Phone, name: phone, widget: string}
-          - {label: Address, name: address, widget: text}
-          - label: Social
-            name: social
-            widget: object
+          - label: "Contact Info"
+            name: "contact"
+            widget: "object"
             fields:
-              - {label: Facebook, name: facebook, widget: string, required: false}
-              - {label: X (Twitter), name: x-twitter, widget: string, required: false}
-              - {label: LinkedIn, name: linkedin, widget: string, required: false}
-              - {label: Instagram, name: instagram, widget: string, required: false}
-              - {label: WhatsApp, name: whatsapp, widget: string, required: false}
+              - { label: "Email", name: "email", widget: "string", default: "info@nexcey.com" }
+              - { label: "Phone", name: "phone", widget: "string", default: "+94 72 445 2222" }
+              - { label: "Address", name: "address", widget: "string", default: "203, Somananda MW, Udahamulla, Panadura, Sri Lanka" }
+          - label: "Social Links"
+            name: "social"
+            widget: "list"
+            fields:
+              - { label: "Platform", name: "platform", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
+          - { label: "Copyright Text", name: "copyright", widget: "string", defaul
