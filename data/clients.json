@@ -1,29 +1,10 @@
 {
-  "title": "Our Clients",
-  "items": [
-    {
-      "name": "Aurora Labs",
-      "logo": "/assets/images/uploads/client1.png",
-      "websiteImage": "/assets/images/uploads/site1.jpg",
-      "websiteUrl": "https://example.com"
-    },
-    {
-      "name": "Peak Outfitters",
-      "logo": "/assets/images/uploads/client2.png",
-      "websiteImage": "/assets/images/uploads/site2.jpg",
-      "websiteUrl": "https://example.com"
-    },
-    {
-      "name": "Nimbus Pay",
-      "logo": "/assets/images/uploads/client3.png",
-      "websiteImage": "/assets/images/uploads/site3.jpg",
-      "websiteUrl": "https://example.com"
-    },
-    {
-      "name": "Citrus Tech",
-      "logo": "/assets/images/uploads/client4.png",
-      "websiteImage": "/assets/images/uploads/site4.jpg",
-      "websiteUrl": "https://example.com"
-    }
+  "title":"Our Clients",
+  "items":[
+    {"name":"Acme Corp","logo":"assets/images/uploads/logo-acme.png","websiteImage":"assets/images/uploads/site-acme.jpg","websiteUrl":"#"},
+    {"name":"Globex","logo":"assets/images/uploads/logo-globex.png","websiteImage":"assets/images/uploads/site-globex.jpg","websiteUrl":"#"},
+    {"name":"Soylent","logo":"assets/images/uploads/logo-soylent.png","websiteImage":"assets/images/uploads/site-soylent.jpg","websiteUrl":"#"},
+    {"name":"Initech","logo":"assets/images/uploads/logo-initech.png","websiteImage":"assets/images/uploads/site-initech.jpg","websiteUrl":"#"},
+    {"name":"Umbrella","logo":"assets/images/uploads/logo-umbrella.png","websiteImage":"assets/images/uploads/site-umbrella.jpg","websiteUrl":"#"}
   ]
 }

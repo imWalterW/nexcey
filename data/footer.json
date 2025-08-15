@@ -1,12 +1,11 @@
 {
-  "email": "info@nexcey.com",
-  "phone": "+94 72 445 2222",
-  "address": "203, Somananda MW, Udahamulla, Panadura, Sri Lanka",
-  "social": {
-    "facebook": "#",
-    "x-twitter": "#",
-    "linkedin": "#",
-    "instagram": "#",
-    "whatsapp": "#"
-  }
+  "contact":{"email":"info@nexcey.com","phone":"+94 72 445 2222","address":"203, Somananda MW, Udahamulla, Panadura, Sri Lanka"},
+  "social":[
+    {"platform":"facebook","url":"#"},
+    {"platform":"x-twitter","url":"#"},
+    {"platform":"linkedin","url":"#"},
+    {"platform":"instagram","url":"#"},
+    {"platform":"whatsapp","url":"#"}
+  ],
+  "copyright":"© 2024 Nexcey. All rights reserved."
 }

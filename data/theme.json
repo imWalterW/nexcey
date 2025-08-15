@@ -1,33 +1,10 @@
 {
-  "branding": {
-    "primaryColor": "#522cb5",
-    "colorScheme": "purple-white",
-    "typography": {
-      "fontFamily": "Arial, sans-serif",
-      "googleFont": "Inter"
-    }
-  },
-  "palette": {
-    "primary": "#522cb5",
-    "primaryLight": "#7c52d6",
-    "primaryDark": "#3d2088",
-    "secondary": "#f8f9fa",
-    "textDark": "#2c3e50",
-    "textLight": "#6c757d",
-    "white": "#ffffff"
-  },
-  "effects": {
-    "radius": "10px",
-    "shadow": "0 8px 24px rgba(82,44,181,0.12)",
-    "transition": "0.3s ease"
-  },
-  "fonts": {
-    "body": "15px",
-    "headingScale": {
-      "h1": "3.2rem",
-      "h2": "2.2rem",
-      "h3": "1.3rem",
-      "p": "1rem"
-    }
-  }
+  "primary":"#522cb5",
+  "primaryLight":"#7c52d6",
+  "primaryDark":"#3d2088",
+  "secondary":"#f8f9fa",
+  "textDark":"#2c3e50",
+  "textLight":"#6c757d",
+  "white":"#ffffff",
+  "typography":{"googleFont":"Inter","bodyFontSize":"15px"}
 }

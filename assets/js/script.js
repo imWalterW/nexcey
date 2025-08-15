@@ -1,301 +1,422 @@
+/* ---------- Helpers & Data Loading ---------- */
+const isFileProtocol = location.protocol === 'file:';
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
+const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
-// Smooth scrolling + mobile menu
-document.addEventListener('DOMContentLoaded', () => {
-  const menu = document.querySelector('.menu');
-  const burger = document.querySelector('.hamburger');
-  burger?.addEventListener('click', () => menu.classList.toggle('open'));
-  document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
-
-  // AOS init if present
-  if (window.AOS) AOS.init({ once: true, offset: 60, duration: 600, easing: 'ease' });
-
-  // Load data with graceful fallback to embedded defaults
-  loadAllDataAndRender();
-});
-
-async function safeFetchJSON(path){
-  try{
-    const res = await fetch(path);
-    if(!res.ok) throw new Error('HTTP '+res.status);
+async function loadJSON(path) {
+  if (isFileProtocol) return null; // will use seed
+  try {
+    const res = await fetch(path, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('Fetch failed: ' + path);
     return await res.json();
-  }catch(e){
-    // Fallback to embedded script[type=application/json] or window.__DATA
-    const id = path.split('/').pop().replace('.json','');
-    const inline = document.getElementById('data-'+id);
-    if(inline){
-      return JSON.parse(inline.textContent);
-    }
-    if(window.__DATA && window.__DATA[id]) return window.__DATA[id];
-    console.warn('Using empty fallback for', path);
-    return {};
+  } catch (e) {
+    console.warn('Falling back to seed for', path, e);
+    return null;
   }
 }
 
-async function loadAllDataAndRender(){
+function getSeed() {
+  try {
+    return JSON.parse($('#seed-data')?.textContent || '{}');
+  } catch { return {}; }
+}
+
+/* ---------- Apply Theme ---------- */
+function applyTheme(theme) {
+  if (!theme) return;
+  document.documentElement.style.setProperty('--primary', theme.primary || '#522cb5');
+  document.documentElement.style.setProperty('--primary-light', theme.primaryLight || '#7c52d6');
+  document.documentElement.style.setProperty('--primary-dark', theme.primaryDark || '#3d2088');
+  document.documentElement.style.setProperty('--secondary', theme.secondary || '#f8f9fa');
+  document.documentElement.style.setProperty('--text', theme.textDark || '#2c3e50');
+  document.documentElement.style.setProperty('--text-light', theme.textLight || '#6c757d');
+
+  if (theme.typography?.googleFont) {
+    const f = theme.typography.googleFont.replace(/\s+/g, '+') + ':wght@400;600;800';
+    const link = document.createElement('link');
+    link.href = `https://fonts.googleapis.com/css2?family=${f}&display=swap`;
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    document.body.style.fontFamily = `${theme.typography.googleFont}, Arial, sans-serif`;
+  }
+  if (theme.typography?.bodyFontSize) {
+    document.body.style.fontSize = theme.typography.bodyFontSize;
+  }
+}
+
+/* ---------- Renderers ---------- */
+function renderHero(data) {
+  if (!data) return;
+  $('#hero-title').textContent = data.title || '';
+  $('#hero-subtitle').textContent = data.subtitle || '';
+  const cta = $('#hero-cta');
+  if (data.cta?.text) cta.textContent = data.cta.text;
+  if (data.cta?.link) cta.href = data.cta.link;
+}
+
+function renderAbout(data) {
+  if (!data) return;
+  $('#about-title').textContent = data.title || '';
+  $('#about-text').textContent = data.text || '';
+  if (data.image) $('#about-image').src = data.image;
+}
+
+function serviceItemTpl(s) {
+  return `
+    <div class="carousel-item">
+      <div class="service-card">
+        <i class="${s.icon || 'fas fa-rocket'}" aria-hidden="true"></i>
+        <h3>${s.name || ''}</h3>
+        <p>${s.description || ''}</p>
+      </div>
+    </div>`;
+}
+
+function planItemTpl(p) {
+  const popular = p.popular ? ' popular' : '';
+  const feats = (p.features || []).map(f => `<li>${(f.feature || f)}</li>`).join('');
+  return `
+    <div class="carousel-item">
+      <div class="price-card${popular}">
+        <div class="name"><strong>${p.name || ''}</strong></div>
+        <div class="price">${p.price || ''}</div>
+        <ul>${feats}</ul>
+        <button class="btn ${p.popular ? 'btn-white' : 'btn-primary'}">Choose Plan</button>
+      </div>
+    </div>`;
+}
+
+function clientItemTpl(c) {
+  const logo = c.logo || c.websiteImage || 'assets/images/uploads/logo-placeholder.png';
+  return `
+    <div class="carousel-item">
+      <div class="client-card">
+        <img src="${logo}" alt="${c.name || 'Client'}" />
+        <div class="name">${c.name || ''}</div>
+        ${c.websiteUrl ? `<a class="btn btn-primary" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit Website</a>` : ''}
+      </div>
+    </div>`;
+}
+
+function testimonialItemTpl(t) {
+  const img = t.image || 'assets/images/uploads/user-placeholder.jpg';
+  const who = [t.name, t.position, t.company].filter(Boolean).join(' · ');
+  return `
+    <div class="carousel-item">
+      <div class="testimonial-card">
+        <div class="testimonial-top">
+          <img src="${img}" alt="${t.name || 'User'}" />
+          <div class="meta">
+            <div><strong>${t.name || ''}</strong></div>
+            <small>${[t.position, t.company].filter(Boolean).join(' · ')}</small>
+          </div>
+        </div>
+        <p>“${t.comment || ''}”</p>
+      </div>
+    </div>`;
+}
+
+/* ---------- Carousel (one-by-one, responsive) ---------- */
+class OneByOneCarousel {
+  constructor(root) {
+    this.root = root;
+    this.track = $('.carousel-track', root);
+    this.prevBtn = $('.carousel-btn.prev', root);
+    this.nextBtn = $('.carousel-btn.next', root);
+    this.autoplayMs = parseInt(root.dataset.autoplay || '0', 10) || 0;
+
+    this.visibleDesktop = parseInt(root.dataset.visibleDesktop || '4', 10);
+    this.visibleTablet = parseInt(root.dataset.visibleTablet || '2', 10);
+    this.visibleMobile = parseInt(root.dataset.visibleMobile || '1', 10);
+
+    this.items = [];
+    this.clonesHead = 0;
+    this.clonesTail = 0;
+    this.index = 0;
+    this.itemWidth = 0;
+    this.timer = null;
+
+    this.onResize = this.onResize.bind(this);
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
+    this.onTransitionEnd = this.onTransitionEnd.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+  }
+
+  get visibleCount() {
+    const w = window.innerWidth;
+    if (w < 768) return this.visibleMobile;
+    if (w < 1200) return this.visibleTablet;
+    return this.visibleDesktop;
+  }
+
+  mount() {
+    this.items = $$('.carousel-item', this.track);
+    if (this.items.length === 0) return;
+
+    // Remove any previous clones
+    this.track.innerHTML = '';
+    const originals = this.items.map(n => n);
+    // Determine visible
+    const vis = this.visibleCount;
+
+    // Clone head/tail for infinite effect
+    const headClones = originals.slice(0, vis).map(n => n.cloneNode(true));
+    const tailClones = originals.slice(-vis).map(n => n.cloneNode(true));
+
+    this.clonesHead = headClones.length;
+    this.clonesTail = tailClones.length;
+
+    // Append: tail clones + originals + head clones
+    tailClones.forEach(n => this.track.appendChild(n));
+    originals.forEach(n => this.track.appendChild(n));
+    headClones.forEach(n => this.track.appendChild(n));
+
+    this.items = $$('.carousel-item', this.track);
+    this.index = this.clonesTail; // start at first real item
+    this.applySizes();
+    this.goTo(this.index, false);
+
+    // Events
+    window.addEventListener('resize', this.onResize, { passive:true });
+    this.track.addEventListener('transitionend', this.onTransitionEnd);
+    this.prevBtn.addEventListener('click', this.prev);
+    this.nextBtn.addEventListener('click', this.next);
+    this.root.addEventListener('mouseenter', this.onMouseEnter);
+    this.root.addEventListener('mouseleave', this.onMouseLeave);
+
+    // Touch
+    this.root.addEventListener('touchstart', this.onTouchStart, { passive:true });
+
+    // Autoplay
+    if (this.autoplayMs && this.items.length > this.visibleCount) {
+      this.startAutoplay();
+    }
+
+    // Hide controls if not needed
+    const total = this.items.length - (this.clonesHead + this.clonesTail);
+    const visNow = this.visibleCount;
+    const controls = $('.carousel-controls', this.root);
+    controls.style.display = total <= visNow ? 'none' : 'flex';
+  }
+
+  applySizes() {
+    const vis = this.visibleCount;
+    const gap = parseFloat(getComputedStyle(this.track).columnGap || 18) || 18;
+    const trackWidth = this.root.clientWidth;
+    this.itemWidth = Math.floor((trackWidth - (gap * (vis - 1))) / vis);
+    this.items.forEach(it => {
+      it.style.flex = `0 0 ${this.itemWidth}px`;
+      it.style.maxWidth = `${this.itemWidth}px`;
+    });
+  }
+
+  onResize() {
+    // Rebuild completely to update clones for new visible count
+    this.unmount();
+    this.mount();
+  }
+
+  goTo(i, animate=true) {
+    this.track.style.transition = animate ? 'transform .4s ease' : 'none';
+    const x = -i * (this.itemWidth + 18); // 18px gap set in CSS
+    this.track.style.transform = `translate3d(${x}px,0,0)`;
+    this.index = i;
+  }
+
+  next() {
+    this.stopAutoplay(true);
+    this.goTo(this.index + 1, true);
+  }
+
+  prev() {
+    this.stopAutoplay(true);
+    this.goTo(this.index - 1, true);
+  }
+
+  onTransitionEnd() {
+    const vis = this.visibleCount;
+    const total = this.items.length;
+    const firstReal = this.clonesTail;
+    const lastReal = total - this.clonesHead - 1;
+
+    if (this.index > lastReal) {
+      this.goTo(firstReal, false);
+    }
+    if (this.index < firstReal) {
+      this.goTo(lastReal, false);
+    }
+  }
+
+  startAutoplay() {
+    this.stopAutoplay();
+    this.timer = setInterval(() => this.goTo(this.index + 1, true), this.autoplayMs);
+  }
+
+  stopAutoplay(manual=false) {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    if (manual && this.autoplayMs) {
+      // resume after manual navigation
+      setTimeout(() => this.startAutoplay(), this.autoplayMs + 500);
+    }
+  }
+
+  onMouseEnter(){ this.stopAutoplay(); }
+  onMouseLeave(){ if (this.autoplayMs) this.startAutoplay(); }
+
+  onTouchStart(e){
+    const startX = e.touches[0].clientX;
+    const startTime = Date.now();
+    const move = (ev)=>{
+      // noop; no dragging for simplicity
+    };
+    const end = (ev)=>{
+      const dx = (ev.changedTouches?.[0]?.clientX || 0) - startX;
+      const dt = Date.now() - startTime;
+      const threshold = 30; // small flick
+      if (Math.abs(dx) > threshold || dt < 200) {
+        dx < 0 ? this.next() : this.prev();
+      }
+      window.removeEventListener('touchmove', move);
+      window.removeEventListener('touchend', end);
+    };
+    window.addEventListener('touchmove', move, { passive:true });
+    window.addEventListener('touchend', end, { passive:true });
+  }
+
+  unmount(){
+    window.removeEventListener('resize', this.onResize);
+    this.track.removeEventListener('transitionend', this.onTransitionEnd);
+    this.prevBtn.removeEventListener('click', this.prev);
+    this.nextBtn.removeEventListener('click', this.next);
+    this.root.removeEventListener('mouseenter', this.onMouseEnter);
+    this.root.removeEventListener('mouseleave', this.onMouseLeave);
+    this.root.removeEventListener('touchstart', this.onTouchStart);
+  }
+}
+
+/* ---------- Build Lists ---------- */
+function populateServices(services) {
+  const track = $('#services .carousel-track');
+  track.innerHTML = '';
+  services.items.forEach(s => track.insertAdjacentHTML('beforeend', serviceItemTpl(s)));
+  new OneByOneCarousel($('#services .carousel')).mount();
+}
+
+function populatePricing(pricing) {
+  const track = $('#pricing .carousel-track');
+  track.innerHTML = '';
+  pricing.plans.forEach(p => track.insertAdjacentHTML('beforeend', planItemTpl(p)));
+  new OneByOneCarousel($('#pricing .carousel')).mount();
+}
+
+function populateClients(clients) {
+  const track = $('#clients .carousel-track');
+  track.innerHTML = '';
+  clients.items.forEach(c => track.insertAdjacentHTML('beforeend', clientItemTpl(c)));
+  new OneByOneCarousel($('#clients .carousel')).mount();
+}
+
+function populateTestimonials(tests) {
+  const track = $('#testimonials .carousel-track');
+  track.innerHTML = '';
+  tests.items.forEach(t => track.insertAdjacentHTML('beforeend', testimonialItemTpl(t)));
+  new OneByOneCarousel($('#testimonials .carousel')).mount();
+}
+
+/* ---------- Form Validation (more spacing already in CSS) ---------- */
+function initForm() {
+  const form = $('#contact-form');
+  if (!form) return;
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const name = $('#name'), email = $('#email'), message = $('#message');
+    let ok = true;
+    const setErr = (input, msg) => { ok = false; $(`.error[data-for="${input.id}"]`).textContent = msg; input.setAttribute('aria-invalid','true'); };
+    const clearErr = (input) => { $(`.error[data-for="${input.id}"]`).textContent = ''; input.removeAttribute('aria-invalid'); };
+
+    // Name
+    if (!name.value.trim()) setErr(name, 'Name is required'); else clearErr(name);
+    // Email
+    const emailVal = email.value.trim();
+    if (!emailVal) setErr(email, 'Email is required');
+    else if (!/^\S+@\S+\.\S+$/.test(emailVal)) setErr(email, 'Enter a valid email');
+    else clearErr(email);
+    // Message
+    if (!message.value.trim()) setErr(message, 'Message is required'); else clearErr(message);
+
+    if (ok) {
+      alert('Thanks! Your message has been sent (demo).');
+      form.reset();
+    }
+  });
+}
+
+/* ---------- Nav Toggle ---------- */
+function initNav() {
+  const btn = $('#nav-toggle');
+  const menu = $('#nav-menu');
+  btn.addEventListener('click', ()=>{
+    const open = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  $$('#nav-menu a').forEach(a => a.addEventListener('click', ()=> menu.classList.remove('open')));
+}
+
+/* ---------- Init ---------- */
+(async function init() {
+  AOS.init({ once:true, duration:700 });
+
+  // Load all content (prefer remote JSON, fallback to seed)
+  const seed = getSeed();
   const [theme, hero, about, services, pricing, clients, testimonials, footer] = await Promise.all([
-    safeFetchJSON('data/theme.json'),
-    safeFetchJSON('data/hero.json'),
-    safeFetchJSON('data/about.json'),
-    safeFetchJSON('data/services.json'),
-    safeFetchJSON('data/pricing.json'),
-    safeFetchJSON('data/clients.json'),
-    safeFetchJSON('data/testimonials.json'),
-    safeFetchJSON('data/footer.json')
+    loadJSON('data/theme.json').then(j=> j || seed.theme),
+    loadJSON('data/hero.json').then(j=> j || seed.hero),
+    loadJSON('data/about.json').then(j=> j || seed.about),
+    loadJSON('data/services.json').then(j=> j || seed.services),
+    loadJSON('data/pricing.json').then(j=> j || seed.pricing),
+    loadJSON('data/clients.json').then(j=> j || seed.clients),
+    loadJSON('data/testimonials.json').then(j=> j || seed.testimonials),
+    loadJSON('data/footer.json').then(j=> j || seed.footer),
   ]);
+
   applyTheme(theme);
   renderHero(hero);
   renderAbout(about);
-  renderServices(services);
-  renderPricing(pricing);
-  renderClients(clients);
-  renderTestimonials(testimonials);
-  renderFooter(footer);
-}
+  $('#services-title').textContent = services?.title || 'Our Services';
+  $('#pricing-title').textContent = pricing?.title || 'Pricing Plans';
+  $('#clients-title').textContent = clients?.title || 'Our Clients';
+  $('#testimonials-title').textContent = testimonials?.title || 'What Our Clients Say';
 
-function applyTheme(theme){
-  const p = theme?.palette || {};
-  const root = document.documentElement;
-  if(p.primary) root.style.setProperty('--primary', p.primary);
-  if(p.primaryLight) root.style.setProperty('--primaryLight', p.primaryLight);
-  if(p.primaryDark) root.style.setProperty('--primaryDark', p.primaryDark);
-  if(p.secondary) root.style.setProperty('--secondary', p.secondary);
-  if(p.textDark) root.style.setProperty('--textDark', p.textDark);
-  if(p.textLight) root.style.setProperty('--textLight', p.textLight);
-}
+  populateServices(services);
+  populatePricing(pricing);
+  populateClients(clients);
+  populateTestimonials(testimonials);
 
-function renderHero(data){
-  const el = document.getElementById('hero');
-  if(!el) return;
-  el.innerHTML = `
-    <div class="container">
-      <h1 data-aos="fade-up">${escapeHTML(data.title || '')}</h1>
-      <p data-aos="fade-up" data-aos-delay="80">${escapeHTML(data.subtitle || '')}</p>
-      <a href="${data.cta?.link || '#contact-us'}" class="btn" data-aos="fade-up" data-aos-delay="120">
-        ${escapeHTML(data.cta?.text || 'Get Started')} <i class="fas fa-arrow-right"></i>
-      </a>
-    </div>
-  `;
-}
-
-function renderAbout(data){
-  const el = document.getElementById('about');
-  if(!el) return;
-  el.innerHTML = `
-    <div class="container grid grid-2">
-      <div class="col" data-aos="fade-right">
-        <h2 class="section-title" style="text-align:left">${escapeHTML(data.title || '')}</h2>
-        <p>${escapeHTML(data.text || '')}</p>
-      </div>
-      <div class="col" data-aos="fade-left">
-        <img src="${data.image || 'assets/images/uploads/about.jpg'}" alt="About Nexcey">
-      </div>
-    </div>
-  `;
-}
-
-function renderServices(data){
-  const el = document.getElementById('services');
-  if(!el) return;
-  const items = (data.items || []).map(s => `
-    <div class="card" data-aos="zoom-in">
-      <i class="icon ${s.icon || 'fas fa-rocket'}"></i>
-      <h3>${escapeHTML(s.name || '')}</h3>
-      <p>${escapeHTML(s.description || '')}</p>
-    </div>
-  `);
-
-  const isCarousel = items.length > 4;
-  el.innerHTML = `
-    <div class="container">
-      <h2 class="section-title">${escapeHTML(data.title || 'Our Services')}</h2>
-      ${isCarousel ? carouselHTML('services', items, 4) : `<div class="services-grid">${items.join('')}</div>`}
-    </div>
-  `;
-  if(isCarousel) mountCarousel('services', {itemsPerSlide:4, autoplay:true, interval:4000, pauseOnHover:true});
-}
-
-function renderPricing(data){
-  const el = document.getElementById('pricing');
-  if(!el) return;
-  const items = (data.plans||[]).map(plan=>{
-    const feats = (plan.features||[]).map(f=>`<li><i class="fas fa-check"></i> ${escapeHTML(f)}</li>`).join('');
-    return `
-      <div class="card ${plan.popular?'popular':''}" data-aos="fade-up">
-        ${plan.popular ? `<div class="badge" style="margin-bottom:.5rem;font-weight:700">Most Popular</div>`:''}
-        <h3>${escapeHTML(plan.name||'')}</h3>
-        <p style="font-size:2rem;margin:.2rem 0 1rem">${escapeHTML(plan.price||'')}</p>
-        <ul style="list-style:none;padding:0;display:grid;gap:.4rem">${feats}</ul>
-        <a href="#contact-us" class="btn btn-outline" style="margin-top:1rem">Choose Plan</a>
-      </div>
-    `;
-  });
-
-  const isCarousel = items.length > 3;
-  el.innerHTML = `
-    <div class="container pricing">
-      <h2 class="section-title">${escapeHTML(data.title || 'Pricing Plans')}</h2>
-      ${isCarousel ? carouselHTML('pricing', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
-    </div>
-  `;
-  if(isCarousel) mountCarousel('pricing', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
-}
-
-function renderClients(data){
-  const el = document.getElementById('clients');
-  if(!el) return;
-  const items = (data.items||[]).map(c=>`
-    <div class="card" data-aos="fade-up">
-      <div class="site-thumb"><img src="${c.websiteImage}" alt="${escapeHTML(c.name)} website"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.8rem">
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <img src="${c.logo}" alt="${escapeHTML(c.name)} logo" style="height:36px;width:auto">
-          <strong>${escapeHTML(c.name)}</strong>
-        </div>
-        <a class="btn btn-outline" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit</a>
-      </div>
-    </div>
-  `);
-  const isCarousel = items.length > 3;
-  el.innerHTML = `
-    <div class="container clients">
-      <h2 class="section-title">${escapeHTML(data.title || 'Our Clients')}</h2>
-      ${isCarousel ? carouselHTML('clients', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
-    </div>
-  `;
-  if(isCarousel) mountCarousel('clients', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
-}
-
-function renderTestimonials(data){
-  const el = document.getElementById('testimonials');
-  if(!el) return;
-  const items = (data.items||[]).map(t=>`
-    <div class="card testimonial" data-aos="fade-up">
-      <img src="${t.image}" alt="${escapeHTML(t.name)}">
-      <div>
-        <p style="margin:.2rem 0  .6rem">“${escapeHTML(t.comment)}”</p>
-        <div style="font-weight:700">${escapeHTML(t.name)}</div>
-        <div style="color:var(--textLight)">${escapeHTML(t.position)} ${t.company? ' · '+escapeHTML(t.company):''}</div>
-      </div>
-    </div>
-  `);
-  const isCarousel = items.length > 3;
-  el.innerHTML = `
-    <div class="container">
-      <h2 class="section-title">${escapeHTML(data.title || 'What Our Clients Say')}</h2>
-      ${isCarousel ? carouselHTML('testimonials', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
-    </div>
-  `;
-  if(isCarousel) mountCarousel('testimonials', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
-}
-
-function renderFooter(data){
-  const f = document.querySelector('footer .container');
-  if(!f) return;
-  f.innerHTML = `
-    <div class="footer-grid">
-      <div>
-        <div class="brand"><img class="footer-logo" src="assets/images/logo.png" alt="Nexcey Logo"><span>Nexcey</span></div>
-        <p style="margin-top:.6rem;color:#cfd3dc">We craft clean, modern websites that convert.</p>
-      </div>
-      <div>
-        <div style="display:grid;gap:.6rem">
-          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-envelope"></i> &nbsp; ${escapeHTML(data.email||'')}</div>
-          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-phone"></i> &nbsp; ${escapeHTML(data.phone||'')}</div>
-          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-map-marker-alt"></i> &nbsp; ${escapeHTML(data.address||'')}</div>
-        </div>
-      </div>
-      <div>
-        <div class="footer-social">
-          ${socialLink('facebook', data.social?.facebook)}
-          ${socialLink('x-twitter', data.social?.['x-twitter'])}
-          ${socialLink('linkedin', data.social?.linkedin)}
-          ${socialLink('instagram', data.social?.instagram)}
-          ${socialLink('whatsapp', data.social?.whatsapp)}
-        </div>
-      </div>
-    </div>
-    <div class="mini">© 2024 Nexcey. All rights reserved.</div>
-  `;
-}
-
-function socialLink(name, url){
-  const map = {
-    'facebook':'fab fa-facebook-f',
-    'x-twitter':'fab fa-x-twitter',
-    'linkedin':'fab fa-linkedin-in',
-    'instagram':'fab fa-instagram',
-    'whatsapp':'fab fa-whatsapp'
-  };
-  return `<a href="${url||'#'}" target="_blank" rel="noopener"><i class="${map[name]||'fas fa-link'}"></i></a>`;
-}
-
-function carouselHTML(id, items, per){
-  return `
-    <div class="carousel" id="carousel-${id}" data-per="${per}">
-      <div class="carousel-track">
-        ${items.map(i=>`<div class="card">${i}</div>`).join('')}
-      </div>
-      <div class="carousel-nav">
-        <button class="carousel-btn prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-        <button class="carousel-btn next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
-      </div>
-    </div>
-  `;
-}
-
-function mountCarousel(id, opts){
-  const root = document.getElementById('carousel-'+id);
-  if(!root) return;
-  const track = root.querySelector('.carousel-track');
-  const prev = root.querySelector('.prev');
-  const next = root.querySelector('.next');
-  const per = parseInt(root.dataset.per || String(opts.itemsPerSlide||3),10);
-  const cards = Array.from(track.children);
-  let index = 0, timer = null;
-  const maxIndex = Math.max(0, Math.ceil(cards.length / per) - 1);
-  function update(){
-    const width = root.clientWidth;
-    const slideWidth = width;
-    track.style.transform = `translateX(${-index*slideWidth}px)`;
-    track.style.gridTemplateColumns = `repeat(${cards.length}, 1fr)`;
-    track.style.width = `${(maxIndex+1)*100}%`;
+  if (footer?.contact) {
+    const fc = $('#footer-contact');
+    fc.innerHTML =
+      `<div class="row"><i class="fas fa-envelope"></i><span>${footer.contact.email}</span></div>
+       <div class="row"><i class="fas fa-phone"></i><span>${footer.contact.phone}</span></div>
+       <div class="row"><i class="fas fa-map-marker-alt"></i><span>${footer.contact.address}</span></div>`;
   }
-  function go(dir){
-    index = (index + dir + (maxIndex+1)) % (maxIndex+1);
-    update();
-    if(opts.autoplay) restart();
+  if (footer?.social) {
+    const fs = $('#footer-social');
+    fs.innerHTML = footer.social.map(s => {
+      const iconMap = {
+        'facebook':'fab fa-facebook-f','x-twitter':'fab fa-x-twitter','linkedin':'fab fa-linkedin-in',
+        'instagram':'fab fa-instagram','whatsapp':'fab fa-whatsapp'
+      };
+      return `<a href="${s.url || '#'}" target="_blank" rel="noopener"><i class="${iconMap[s.platform]||'fas fa-link'}"></i></a>`
+    }).join('');
   }
-  prev.addEventListener('click', ()=>go(-1));
-  next.addEventListener('click', ()=>go(1));
-  window.addEventListener('resize', update);
-  update();
-  function start(){
-    if(opts.autoplay){
-      timer = setInterval(()=>go(1), opts.interval||4000);
-      root.addEventListener('mouseenter', ()=>opts.pauseOnHover && clearInterval(timer));
-      root.addEventListener('mouseleave', ()=>opts.pauseOnHover && start());
-    }
-  }
-  function restart(){ if(timer){ clearInterval(timer); start(); } }
-  start();
-}
+  if (footer?.copyright) $('#footer-copy').textContent = footer.copyright;
 
-// Contact form validation
-function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-document.addEventListener('submit', (e)=>{
-  const form = e.target.closest('#contact-form');
-  if(!form) return;
-  e.preventDefault();
-  const name = form.querySelector('[name=name]').value.trim();
-  const email = form.querySelector('[name=email]').value.trim();
-  const phone = form.querySelector('[name=phone]').value.trim();
-  const message = form.querySelector('[name=message]').value.trim();
-  if(!name){ alert('Name is required'); return; }
-  if(!email || !validateEmail(email)){ alert('Valid email is required'); return; }
-  if(!message){ alert('Message is required'); return; }
-  alert('Thanks! Your message has been sent (demo).');
-  form.reset();
-});
-
-// Utils
-function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m])); }
+  initForm();
+  initNav();
+})();

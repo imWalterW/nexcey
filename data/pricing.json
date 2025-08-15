@@ -1,51 +1,9 @@
 {
-  "title": "Pricing Plans",
-  "plans": [
-    {
-      "name": "Starter",
-      "price": "$499",
-      "popular": false,
-      "features": [
-        "Single-page site",
-        "Responsive design",
-        "Basic SEO",
-        "2 revisions"
-      ]
-    },
-    {
-      "name": "Growth",
-      "price": "$1299",
-      "popular": true,
-      "features": [
-        "Up to 6 pages",
-        "AOS animations",
-        "SEO setup",
-        "Contact form",
-        "5 revisions"
-      ]
-    },
-    {
-      "name": "Scale",
-      "price": "$2499",
-      "popular": false,
-      "features": [
-        "Custom pages",
-        "Advanced layouts",
-        "Performance tuning",
-        "CMS integration",
-        "Priority support"
-      ]
-    },
-    {
-      "name": "Enterprise",
-      "price": "Custom",
-      "popular": false,
-      "features": [
-        "Bespoke UX",
-        "Integrations",
-        "SLA",
-        "Roadmap partnership"
-      ]
-    }
+  "title":"Pricing Plans",
+  "plans":[
+    {"name":"Starter","price":"$299","popular":false,"features":["1-page site","Basic SEO","Email support"]},
+    {"name":"Business","price":"$899","popular":true,"features":["Up to 8 pages","On-page SEO","Priority support"]},
+    {"name":"eCommerce","price":"$1499","popular":false,"features":["Store setup","Payment gateway","Training"]},
+    {"name":"Custom","price":"$—","popular":false,"features":["Scalable to your needs","Integrations","Consultation"]}
   ]
 }

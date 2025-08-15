@@ -1,33 +1,10 @@
 {
-  "title": "What Our Clients Say",
-  "items": [
-    {
-      "name": "Maya Diaz",
-      "position": "CMO",
-      "company": "Aurora Labs",
-      "image": "/assets/images/uploads/t1.jpg",
-      "comment": "Nexcey delivered a gorgeous site that boosted signups in week one."
-    },
-    {
-      "name": "Grant Lee",
-      "position": "Founder",
-      "company": "Nimbus Pay",
-      "image": "/assets/images/uploads/t2.jpg",
-      "comment": "Clean code, fast delivery, and great comms. Highly recommend!"
-    },
-    {
-      "name": "Priya Singh",
-      "position": "Product Lead",
-      "company": "Citrus Tech",
-      "image": "/assets/images/uploads/t3.jpg",
-      "comment": "Our new site is fast, accessible, and easy to update."
-    },
-    {
-      "name": "Salman Yusuf",
-      "position": "CEO",
-      "company": "Peak Outfitters",
-      "image": "/assets/images/uploads/t4.jpg",
-      "comment": "They nailed our brand and UX. Conversions are up 30%."
-    }
+  "title":"What Our Clients Say",
+  "items":[
+    {"name":"Jane Doe","position":"CEO","company":"Acme","image":"assets/images/uploads/user1.jpg","comment":"Nexcey transformed our web presence."},
+    {"name":"John Smith","position":"CTO","company":"Globex","image":"assets/images/uploads/user2.jpg","comment":"Fast, reliable, and great UX."},
+    {"name":"Aisha Khan","position":"Founder","company":"Initech","image":"assets/images/uploads/user3.jpg","comment":"Our conversions doubled."},
+    {"name":"Carlos Ruiz","position":"Marketing Lead","company":"Soylent","image":"assets/images/uploads/user4.jpg","comment":"Smooth process end-to-end."},
+    {"name":"Mina Lee","position":"PM","company":"Umbrella","image":"assets/images/uploads/user5.jpg","comment":"Strong attention to detail."}
   ]
 }
