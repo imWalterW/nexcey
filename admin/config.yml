@@ -5,27 +5,31 @@ backend:
 media_folder: "static/images/uploads"
 public_folder: "/images/uploads"
 
+site_url: "https://nexcey.com"
+display_url: "https://nexcey.com"
+
 collections:
-  - name: "homepage"
-    label: "Homepage"
-    files:
-      - file: "content/homepage.yml"
-        label: "Homepage Content"
-        name: "homepage"
-        fields:
-          - { label: "Hero Title", name: "hero_title", widget: "string" }
-          - { label: "Hero Subtitle", name: "hero_subtitle", widget: "string" }
-          - { label: "Hero Button Text", name: "hero_button", widget: "string" }
+  - name: "hero"
+    label: "Hero Section"
+    folder: "content/hero"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "subtitle", label: "Subtitle", widget: "string" }
+      - { name: "button_text", label: "Button Text", widget: "string" }
+      - { name: "button_link", label: "Button Link", widget: "string" }
+      - { name: "background_image", label: "Background Image", widget: "image" }
 
   - name: "about"
-    label: "About"
-    files:
-      - file: "content/about.yml"
-        label: "About Section"
-        name: "about"
-        fields:
-          - { label: "Heading", name: "heading", widget: "string" }
-          - { label: "Body", name: "body", widget: "text" }
+    label: "About Section"
+    folder: "content/about"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "heading", label: "Heading", widget: "string" }
+      - { name: "body", label: "Body", widget: "markdown" }
+      - { name: "image", label: "Image", widget: "image" }
 
   - name: "services"
     label: "Services"
@@ -33,9 +37,9 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Icon", name: "icon", widget: "image" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "icon", label: "Icon (SVG or Image)", widget: "image" }
 
   - name: "pricing"
     label: "Pricing Plans"
@@ -43,18 +47,21 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Plan Name", name: "name", widget: "string" }
-      - { label: "Price", name: "price", widget: "string" }
-      - { label: "Features", name: "features", widget: "list" }
+      - { name: "plan", label: "Plan Name", widget: "string" }
+      - { name: "price", label: "Price", widget: "string" }
+      - { name: "features", label: "Features", widget: "list" }
+      - { name: "button_text", label: "Button Text", widget: "string" }
+      - { name: "button_link", label: "Button Link", widget: "string" }
 
-  - name: "clients"
-    label: "Clients"
-    folder: "content/clients"
+  - name: "portfolio"
+    label: "Portfolio"
+    folder: "content/portfolio"
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Client Name", name: "name", widget: "string" }
-      - { label: "Logo", name: "logo", widget: "image" }
+      - { name: "project_name", label: "Project Name", widget: "string" }
+      - { name: "image", label: "Image", widget: "image" }
+      - { name: "link", label: "Project Link", widget: "string", required: false }
 
   - name: "testimonials"
     label: "Testimonials"
@@ -62,19 +69,17 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Author", name: "author", widget: "string" }
-      - { label: "Position", name: "position", widget: "string" }
-      - { label: "Message", name: "message", widget: "text" }
-      - { label: "Photo", name: "photo", widget: "image" }
+      - { name: "author", label: "Name", widget: "string" }
+      - { name: "role", label: "Role/Company", widget: "string" }
+      - { name: "quote", label: "Testimonial", widget: "text" }
+      - { name: "image", label: "Image", widget: "image" }
 
   - name: "contact"
-    label: "Contact"
-    files:
-      - file: "content/contact.yml"
-        label: "Contact Section"
-        name: "contact"
-        fields:
-          - { label: "Heading", name: "heading", widget: "string" }
-          - { label: "Subheading", name: "subheading", widget: "string" }
-          - { label: "Email", name: "email", widget: "string" }
-          - { label: "Phone", name: "phone", widget: "string" }
+    label: "Contact Info"
+    folder: "content/contact"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: "address", label: "Address", widget: "string" }
+      - { name: "phone", label: "Phone", widget: "string" }
+      - { name: "email", label: "Email", widget: "string" }
