@@ -1,304 +1,301 @@
 
-// Helper to load JSON
-async function loadJSON(path){ const r = await fetch(path); if(!r.ok) throw new Error(`Failed to load ${path}`); return r.json(); }
+// Smooth scrolling + mobile menu
+document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.querySelector('.menu');
+  const burger = document.querySelector('.hamburger');
+  burger?.addEventListener('click', () => menu.classList.toggle('open'));
+  document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
 
-// Dynamic Google Font loader from theme.json
-function injectGoogleFont(fontName){
-  if(!fontName) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontName)}:wght@400;600;700;800&display=swap`;
-  document.head.appendChild(link);
-  document.documentElement.style.setProperty('--font', `'${fontName}', Arial, sans-serif`);
-}
+  // AOS init if present
+  if (window.AOS) AOS.init({ once: true, offset: 60, duration: 600, easing: 'ease' });
 
-// Header behavior
-function initHeader(){
-  const header = document.getElementById('site-header');
-  window.addEventListener('scroll', () => {
-    if(window.scrollY > 12) header.classList.add('scrolled'); else header.classList.remove('scrolled');
-  });
-  // Mobile nav
-  const hamburger = document.getElementById('hamburger');
-  const nav = document.getElementById('main-nav');
-  hamburger.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-}
+  // Load data with graceful fallback to embedded defaults
+  loadAllDataAndRender();
+});
 
-// Smooth anchors
-function initSmoothAnchors(){
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', (e) => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if(target){
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-}
-
-// Generic Carousel
-function createCarousel(rootId, items, renderItem, visibleDesktop=4, visibleTablet=2, visibleMobile=1, autoPlayCfg={enabled:true, interval:4000, pauseOnHover:true, resumeAfterManualNavigation:true}){
-  const wrap = document.getElementById(rootId + '-wrap');
-  const grid = document.getElementById(rootId + '-grid');
-  const carousel = document.getElementById(rootId + '-carousel');
-  const track = document.getElementById(rootId + '-track');
-  const prev = carousel?.querySelector('.prev');
-  const next = carousel?.querySelector('.next');
-
-  const computeVisible = () => {
-    const w = window.innerWidth;
-    if(w <= 640) return visibleMobile;
-    if(w <= 991) return visibleTablet;
-    return visibleDesktop;
-  };
-
-  const renderGrid = () => {
-    grid.classList.add(`${rootId}-cards`);
-    grid.innerHTML = items.map(renderItem).join('');
-  };
-
-  const renderCarousel = () => {
-    carousel.style.display = 'block';
-    track.innerHTML = items.map(i => `<div class="card carousel-card">${renderItem(i)}</div>`).join('');
-  };
-
-  const useGrid = items.length <= computeVisible();
-  if(useGrid){
-    grid.style.display = 'grid'; carousel.style.display = 'none'; renderGrid();
-  }else{
-    grid.style.display = 'none'; renderCarousel();
-  }
-
-  // Carousel logic
-  if(carousel.style.display === 'block'){
-    let index = 0;
-    const maxIndex = Math.max(0, items.length - computeVisible());
-    const scrollToIndex = (i) => {
-      index = Math.max(0, Math.min(i, maxIndex));
-      const card = track.querySelector('.carousel-card');
-      if(!card) return;
-      const cardWidth = card.getBoundingClientRect().width + 16; // including gap
-      track.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
-    };
-
-    prev.addEventListener('click', () => { scrollToIndex(index - 1); manualOverride(); });
-    next.addEventListener('click', () => { scrollToIndex(index + 1); manualOverride(); });
-
-    // Touch support
-    let startX = 0;
-    track.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
-    track.addEventListener('touchend', (e)=>{
-      const dx = e.changedTouches[0].clientX - startX;
-      if(Math.abs(dx) > 40){
-        if(dx < 0) scrollToIndex(index + 1); else scrollToIndex(index - 1);
-        manualOverride();
-      }
-    });
-
-    // Auto-play
-    let timer = null;
-    const start = () => {
-      if(!autoPlayCfg.enabled) return;
-      stop();
-      timer = setInterval(()=>{
-        if(index >= maxIndex) index = -1;
-        scrollToIndex(index + 1);
-      }, autoPlayCfg.interval || 4000);
-    };
-    const stop = () => { if(timer){ clearInterval(timer); timer = null; } };
-    const manualOverride = () => {
-      stop();
-      if(autoPlayCfg.resumeAfterManualNavigation) setTimeout(start, 3000);
-    };
-    if(autoPlayCfg.pauseOnHover){
-      track.addEventListener('mouseenter', stop);
-      track.addEventListener('mouseleave', start);
-    }
-    start();
-
-    window.addEventListener('resize', ()=>{ /* re-render on resize for accuracy */
-      // In a full app we'd re-evaluate layout. For simplicity, leave as-is.
-    });
-  }
-}
-
-// Renderers
-function serviceCard(s){ return `
-  <div class="service-card card">
-    <div class="icon"><i class="${s.icon}"></i></div>
-    <h3>${s.name}</h3>
-    <p>${s.description}</p>
-  </div>`;
-}
-
-function pricingCard(p){
-  const features = (p.features||[]).map(f=>`<li>${f}</li>`).join('');
-  const popularClass = p.popular ? 'popular' : '';
-  const badge = p.popular ? `<span class="badge">${'Most Popular'}</span>` : '';
-  return `
-  <div class="pricing-card card ${popularClass}">
-    ${badge}
-    <h3>${p.name}</h3>
-    <p class="price">${p.price}</p>
-    <ul>${features}</ul>
-    <a href="#contact" class="btn ${p.popular ? 'btn-white' : 'btn-primary'}">${(p.ctaButton && p.ctaButton.text) || 'Choose Plan'}</a>
-  </div>`;
-}
-
-function clientCard(c){
-  return `
-  <div class="client-card card">
-    <img class="logo" src="${c.logo}" alt="${c.name} logo" />
-    <img class="site" src="${c.websiteImage}" alt="${c.name} website" />
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem">
-      <strong>${c.name}</strong>
-      <a class="btn btn-primary" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit</a>
-    </div>
-  </div>`;
-}
-
-function testimonialCard(t){
-  const title = t.company ? `${t.name}, ${t.position} at ${t.company}` : `${t.name} — ${t.position}`;
-  return `
-  <div class="testimonial-card card">
-    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.6rem">
-      <img class="avatar" src="${t.image}" alt="${t.name} photo" />
-      <div><strong>${t.name}</strong><div style="font-size:0.9rem; color:var(--text-light)">${title}</div></div>
-    </div>
-    <p>"${t.comment}"</p>
-  </div>`;
-}
-
-// Contact cards
-function buildContactCards(data){
-  const wrap = document.getElementById('contact-cards');
-  const items = [
-    {icon:'fa-solid fa-envelope', label: 'Email', value: data.email},
-    {icon:'fa-solid fa-phone', label: 'Phone', value: data.phone},
-    {icon:'fa-solid fa-map-marker-alt', label: 'Address', value: data.address}
-  ];
-  wrap.innerHTML = items.map(i => `
-    <div class="contact-card card">
-      <i class="${i.icon}"></i>
-      <div><strong>${i.label}</strong><div>${i.value}</div></div>
-    </div>
-  `).join('');
-}
-
-// Form validation
-function initForm(){
-  const form = document.getElementById('contact-form');
-  form.addEventListener('submit', (e)=>{
-    const name = form.querySelector('#name').value.trim();
-    const email = form.querySelector('#email').value.trim();
-    const message = form.querySelector('#message').value.trim();
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if(!name || !emailOk || !message){
-      e.preventDefault();
-      alert('Please fill in Name, a valid Email, and Message.');
-    }else{
-      // Let Netlify handle submission. Optionally show a friendly feedback.
-      alert('Thanks! Your message has been sent.');
-    }
-  });
-}
-
-async function init(){
+async function safeFetchJSON(path){
   try{
-    // Theme
-    const theme = await loadJSON('/data/theme.json');
-    document.querySelector(':root').style.setProperty('--primary', theme.branding.palette.primary);
-    document.querySelector(':root').style.setProperty('--primary-light', theme.branding.palette.primaryLight);
-    document.querySelector(':root').style.setProperty('--primary-dark', theme.branding.palette.primaryDark);
-    document.querySelector(':root').style.setProperty('--text-dark', theme.branding.palette.textDark);
-    document.querySelector(':root').style.setProperty('--text-light', theme.branding.palette.textLight);
-    document.querySelector(':root').style.setProperty('--body-size', theme.typography.bodySize || '15px');
-    injectGoogleFont(theme.typography.googleFont);
-
-    // Header logo
-    const logo = document.querySelector('.logo');
-    if(theme.branding.logo) logo.src = theme.branding.logo;
-    const footerLogo = document.querySelector('.footer-logo');
-    if(theme.branding.logo) footerLogo.src = theme.branding.logo;
-
-    // HERO
-    const hero = await loadJSON('/data/hero.json');
-    const hTitle = document.getElementById('hero-title');
-    const hSubtitle = document.getElementById('hero-subtitle');
-    const hCta = document.getElementById('hero-cta');
-    hTitle.textContent = hero.title;
-    hTitle.style.fontSize = hero.titleSize || '3rem';
-    hSubtitle.textContent = hero.subtitle;
-    hSubtitle.style.fontSize = hero.subtitleSize || '1.2rem';
-    hCta.textContent = hero.cta?.text || 'Get Started';
-    hCta.href = hero.cta?.link || '#contact';
-
-    // ABOUT
-    const about = await loadJSON('/data/about.json');
-    document.getElementById('about-title').textContent = about.title;
-    document.getElementById('about-text').textContent = about.text;
-    const aboutImg = document.getElementById('about-image');
-    aboutImg.src = about.image;
-    aboutImg.style.borderRadius = (about.imageSettings?.borderRadius || 10) + 'px';
-
-    // SERVICES
-    const services = await loadJSON('/data/services.json');
-    document.querySelector('#services .section-title').textContent = services.title;
-    createCarousel('services', services.services, serviceCard, 4, 2, 1, services.autoPlay || {});
-
-    // PRICING
-    const pricing = await loadJSON('/data/pricing.json');
-    document.querySelector('#pricing .section-title').textContent = pricing.title;
-    createCarousel('pricing', pricing.plans, pricingCard, 3, 2, 1, pricing.autoPlay || {});
-
-    // CLIENTS
-    const clients = await loadJSON('/data/clients.json');
-    document.querySelector('#clients .section-title').textContent = clients.title;
-    createCarousel('clients', clients.clients, clientCard, 3, 2, 1, clients.autoPlay || {});
-
-    // TESTIMONIALS
-    const testimonials = await loadJSON('/data/testimonials.json');
-    document.querySelector('#testimonials .section-title').textContent = testimonials.title;
-    createCarousel('testimonials', testimonials.testimonials, testimonialCard, 3, 2, 1, testimonials.autoPlay || {});
-
-    // CONTACT
-    const contact = await loadJSON('/data/contact.json');
-    buildContactCards(contact);
-    initForm();
-
-    // Footer
-    const footer = await loadJSON('/data/footer.json');
-    const middle = document.getElementById('footer-middle');
-    const right = document.getElementById('footer-right');
-    const copyright = document.getElementById('copyright');
-    // Middle contacts
-    const list = document.createElement('ul');
-    (footer.middleColumn.contactInfo || []).forEach(ci => {
-      const li = document.createElement('li');
-      li.innerHTML = `<i class="${ci.icon}"></i> ${ci.value}`;
-      list.appendChild(li);
-    });
-    middle.appendChild(list);
-    // Social
-    (footer.rightColumn.socialLinks || []).forEach(s => {
-      const a = document.createElement('a'); a.href=s.url || '#'; a.target="_blank"; a.rel="noopener";
-      a.innerHTML = `<i class="${s.icon}"></i>`; right.appendChild(a);
-    });
-    copyright.textContent = footer.copyrightText || `© ${new Date().getFullYear()} Nexcey. All rights reserved.`;
-
-    // Init AOS
-    AOS.init({ once:true, duration:700, easing:'ease' });
-
-    // Init header and anchors
-    initHeader();
-    initSmoothAnchors();
-  }catch(err){
-    console.error(err);
+    const res = await fetch(path);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  }catch(e){
+    // Fallback to embedded script[type=application/json] or window.__DATA
+    const id = path.split('/').pop().replace('.json','');
+    const inline = document.getElementById('data-'+id);
+    if(inline){
+      return JSON.parse(inline.textContent);
+    }
+    if(window.__DATA && window.__DATA[id]) return window.__DATA[id];
+    console.warn('Using empty fallback for', path);
+    return {};
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+async function loadAllDataAndRender(){
+  const [theme, hero, about, services, pricing, clients, testimonials, footer] = await Promise.all([
+    safeFetchJSON('data/theme.json'),
+    safeFetchJSON('data/hero.json'),
+    safeFetchJSON('data/about.json'),
+    safeFetchJSON('data/services.json'),
+    safeFetchJSON('data/pricing.json'),
+    safeFetchJSON('data/clients.json'),
+    safeFetchJSON('data/testimonials.json'),
+    safeFetchJSON('data/footer.json')
+  ]);
+  applyTheme(theme);
+  renderHero(hero);
+  renderAbout(about);
+  renderServices(services);
+  renderPricing(pricing);
+  renderClients(clients);
+  renderTestimonials(testimonials);
+  renderFooter(footer);
+}
+
+function applyTheme(theme){
+  const p = theme?.palette || {};
+  const root = document.documentElement;
+  if(p.primary) root.style.setProperty('--primary', p.primary);
+  if(p.primaryLight) root.style.setProperty('--primaryLight', p.primaryLight);
+  if(p.primaryDark) root.style.setProperty('--primaryDark', p.primaryDark);
+  if(p.secondary) root.style.setProperty('--secondary', p.secondary);
+  if(p.textDark) root.style.setProperty('--textDark', p.textDark);
+  if(p.textLight) root.style.setProperty('--textLight', p.textLight);
+}
+
+function renderHero(data){
+  const el = document.getElementById('hero');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="container">
+      <h1 data-aos="fade-up">${escapeHTML(data.title || '')}</h1>
+      <p data-aos="fade-up" data-aos-delay="80">${escapeHTML(data.subtitle || '')}</p>
+      <a href="${data.cta?.link || '#contact-us'}" class="btn" data-aos="fade-up" data-aos-delay="120">
+        ${escapeHTML(data.cta?.text || 'Get Started')} <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  `;
+}
+
+function renderAbout(data){
+  const el = document.getElementById('about');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="container grid grid-2">
+      <div class="col" data-aos="fade-right">
+        <h2 class="section-title" style="text-align:left">${escapeHTML(data.title || '')}</h2>
+        <p>${escapeHTML(data.text || '')}</p>
+      </div>
+      <div class="col" data-aos="fade-left">
+        <img src="${data.image || 'assets/images/uploads/about.jpg'}" alt="About Nexcey">
+      </div>
+    </div>
+  `;
+}
+
+function renderServices(data){
+  const el = document.getElementById('services');
+  if(!el) return;
+  const items = (data.items || []).map(s => `
+    <div class="card" data-aos="zoom-in">
+      <i class="icon ${s.icon || 'fas fa-rocket'}"></i>
+      <h3>${escapeHTML(s.name || '')}</h3>
+      <p>${escapeHTML(s.description || '')}</p>
+    </div>
+  `);
+
+  const isCarousel = items.length > 4;
+  el.innerHTML = `
+    <div class="container">
+      <h2 class="section-title">${escapeHTML(data.title || 'Our Services')}</h2>
+      ${isCarousel ? carouselHTML('services', items, 4) : `<div class="services-grid">${items.join('')}</div>`}
+    </div>
+  `;
+  if(isCarousel) mountCarousel('services', {itemsPerSlide:4, autoplay:true, interval:4000, pauseOnHover:true});
+}
+
+function renderPricing(data){
+  const el = document.getElementById('pricing');
+  if(!el) return;
+  const items = (data.plans||[]).map(plan=>{
+    const feats = (plan.features||[]).map(f=>`<li><i class="fas fa-check"></i> ${escapeHTML(f)}</li>`).join('');
+    return `
+      <div class="card ${plan.popular?'popular':''}" data-aos="fade-up">
+        ${plan.popular ? `<div class="badge" style="margin-bottom:.5rem;font-weight:700">Most Popular</div>`:''}
+        <h3>${escapeHTML(plan.name||'')}</h3>
+        <p style="font-size:2rem;margin:.2rem 0 1rem">${escapeHTML(plan.price||'')}</p>
+        <ul style="list-style:none;padding:0;display:grid;gap:.4rem">${feats}</ul>
+        <a href="#contact-us" class="btn btn-outline" style="margin-top:1rem">Choose Plan</a>
+      </div>
+    `;
+  });
+
+  const isCarousel = items.length > 3;
+  el.innerHTML = `
+    <div class="container pricing">
+      <h2 class="section-title">${escapeHTML(data.title || 'Pricing Plans')}</h2>
+      ${isCarousel ? carouselHTML('pricing', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
+    </div>
+  `;
+  if(isCarousel) mountCarousel('pricing', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
+}
+
+function renderClients(data){
+  const el = document.getElementById('clients');
+  if(!el) return;
+  const items = (data.items||[]).map(c=>`
+    <div class="card" data-aos="fade-up">
+      <div class="site-thumb"><img src="${c.websiteImage}" alt="${escapeHTML(c.name)} website"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.8rem">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <img src="${c.logo}" alt="${escapeHTML(c.name)} logo" style="height:36px;width:auto">
+          <strong>${escapeHTML(c.name)}</strong>
+        </div>
+        <a class="btn btn-outline" href="${c.websiteUrl}" target="_blank" rel="noopener">Visit</a>
+      </div>
+    </div>
+  `);
+  const isCarousel = items.length > 3;
+  el.innerHTML = `
+    <div class="container clients">
+      <h2 class="section-title">${escapeHTML(data.title || 'Our Clients')}</h2>
+      ${isCarousel ? carouselHTML('clients', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
+    </div>
+  `;
+  if(isCarousel) mountCarousel('clients', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
+}
+
+function renderTestimonials(data){
+  const el = document.getElementById('testimonials');
+  if(!el) return;
+  const items = (data.items||[]).map(t=>`
+    <div class="card testimonial" data-aos="fade-up">
+      <img src="${t.image}" alt="${escapeHTML(t.name)}">
+      <div>
+        <p style="margin:.2rem 0  .6rem">“${escapeHTML(t.comment)}”</p>
+        <div style="font-weight:700">${escapeHTML(t.name)}</div>
+        <div style="color:var(--textLight)">${escapeHTML(t.position)} ${t.company? ' · '+escapeHTML(t.company):''}</div>
+      </div>
+    </div>
+  `);
+  const isCarousel = items.length > 3;
+  el.innerHTML = `
+    <div class="container">
+      <h2 class="section-title">${escapeHTML(data.title || 'What Our Clients Say')}</h2>
+      ${isCarousel ? carouselHTML('testimonials', items, 3) : `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${items.join('')}</div>`}
+    </div>
+  `;
+  if(isCarousel) mountCarousel('testimonials', {itemsPerSlide:3, autoplay:true, interval:4000, pauseOnHover:true});
+}
+
+function renderFooter(data){
+  const f = document.querySelector('footer .container');
+  if(!f) return;
+  f.innerHTML = `
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><img class="footer-logo" src="assets/images/logo.png" alt="Nexcey Logo"><span>Nexcey</span></div>
+        <p style="margin-top:.6rem;color:#cfd3dc">We craft clean, modern websites that convert.</p>
+      </div>
+      <div>
+        <div style="display:grid;gap:.6rem">
+          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-envelope"></i> &nbsp; ${escapeHTML(data.email||'')}</div>
+          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-phone"></i> &nbsp; ${escapeHTML(data.phone||'')}</div>
+          <div class="mini" style="text-align:left;color:#cfd3dc"><i class="fas fa-map-marker-alt"></i> &nbsp; ${escapeHTML(data.address||'')}</div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-social">
+          ${socialLink('facebook', data.social?.facebook)}
+          ${socialLink('x-twitter', data.social?.['x-twitter'])}
+          ${socialLink('linkedin', data.social?.linkedin)}
+          ${socialLink('instagram', data.social?.instagram)}
+          ${socialLink('whatsapp', data.social?.whatsapp)}
+        </div>
+      </div>
+    </div>
+    <div class="mini">© 2024 Nexcey. All rights reserved.</div>
+  `;
+}
+
+function socialLink(name, url){
+  const map = {
+    'facebook':'fab fa-facebook-f',
+    'x-twitter':'fab fa-x-twitter',
+    'linkedin':'fab fa-linkedin-in',
+    'instagram':'fab fa-instagram',
+    'whatsapp':'fab fa-whatsapp'
+  };
+  return `<a href="${url||'#'}" target="_blank" rel="noopener"><i class="${map[name]||'fas fa-link'}"></i></a>`;
+}
+
+function carouselHTML(id, items, per){
+  return `
+    <div class="carousel" id="carousel-${id}" data-per="${per}">
+      <div class="carousel-track">
+        ${items.map(i=>`<div class="card">${i}</div>`).join('')}
+      </div>
+      <div class="carousel-nav">
+        <button class="carousel-btn prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-btn next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  `;
+}
+
+function mountCarousel(id, opts){
+  const root = document.getElementById('carousel-'+id);
+  if(!root) return;
+  const track = root.querySelector('.carousel-track');
+  const prev = root.querySelector('.prev');
+  const next = root.querySelector('.next');
+  const per = parseInt(root.dataset.per || String(opts.itemsPerSlide||3),10);
+  const cards = Array.from(track.children);
+  let index = 0, timer = null;
+  const maxIndex = Math.max(0, Math.ceil(cards.length / per) - 1);
+  function update(){
+    const width = root.clientWidth;
+    const slideWidth = width;
+    track.style.transform = `translateX(${-index*slideWidth}px)`;
+    track.style.gridTemplateColumns = `repeat(${cards.length}, 1fr)`;
+    track.style.width = `${(maxIndex+1)*100}%`;
+  }
+  function go(dir){
+    index = (index + dir + (maxIndex+1)) % (maxIndex+1);
+    update();
+    if(opts.autoplay) restart();
+  }
+  prev.addEventListener('click', ()=>go(-1));
+  next.addEventListener('click', ()=>go(1));
+  window.addEventListener('resize', update);
+  update();
+  function start(){
+    if(opts.autoplay){
+      timer = setInterval(()=>go(1), opts.interval||4000);
+      root.addEventListener('mouseenter', ()=>opts.pauseOnHover && clearInterval(timer));
+      root.addEventListener('mouseleave', ()=>opts.pauseOnHover && start());
+    }
+  }
+  function restart(){ if(timer){ clearInterval(timer); start(); } }
+  start();
+}
+
+// Contact form validation
+function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+document.addEventListener('submit', (e)=>{
+  const form = e.target.closest('#contact-form');
+  if(!form) return;
+  e.preventDefault();
+  const name = form.querySelector('[name=name]').value.trim();
+  const email = form.querySelector('[name=email]').value.trim();
+  const phone = form.querySelector('[name=phone]').value.trim();
+  const message = form.querySelector('[name=message]').value.trim();
+  if(!name){ alert('Name is required'); return; }
+  if(!email || !validateEmail(email)){ alert('Valid email is required'); return; }
+  if(!message){ alert('Message is required'); return; }
+  alert('Thanks! Your message has been sent (demo).');
+  form.reset();
+});
+
+// Utils
+function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m])); }

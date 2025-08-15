@@ -1,14 +1,5 @@
 {
   "title": "About Nexcey",
-  "titleSize": "2.2rem",
-  "text": "We craft modern, fast, and accessible websites that help businesses grow. From design to launch, we focus on results that matter\u2014conversions, performance, and brand consistency.",
-  "textSize": "1rem",
-  "image": "/assets/images/uploads/about-placeholder.jpg",
-  "imageSettings": {
-    "customizable": true,
-    "width": 640,
-    "height": 420,
-    "borderRadius": 14
-  },
-  "backgroundColor": "light-gray"
+  "text": "We build high-performing, responsive websites that help businesses grow. Our Nexcey team blends strategy, design, and code to deliver clean, fast, and scalable sites.",
+  "image": "/assets/images/uploads/about.jpg"
 }

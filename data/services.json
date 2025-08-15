@@ -1,47 +1,35 @@
 {
   "title": "Our Services",
-  "titleSize": "2.2rem",
-  "iconStyling": {
-    "size": "3rem",
-    "color": "primary",
-    "noCircles": true
-  },
-  "autoPlay": {
-    "enabled": true,
-    "interval": 4000,
-    "pauseOnHover": true,
-    "resumeAfterManualNavigation": true
-  },
-  "services": [
+  "items": [
     {
-      "name": "Custom Web Design",
-      "icon": "fa-solid fa-layer-group",
-      "description": "Unique, on-brand designs that convert."
+      "name": "Website Design",
+      "icon": "fas fa-palette",
+      "description": "Pixel-perfect, responsive layouts with modern UX."
     },
     {
-      "name": "Responsive Development",
-      "icon": "fa-solid fa-display",
-      "description": "Pixel-perfect layouts across devices."
+      "name": "Web Development",
+      "icon": "fas fa-code",
+      "description": "Clean, maintainable, standards-compliant code."
     },
     {
-      "name": "Landing Pages",
-      "icon": "fa-solid fa-bullseye",
-      "description": "High-converting pages for campaigns."
+      "name": "E\u2011commerce",
+      "icon": "fas fa-shopping-cart",
+      "description": "Fast storefronts with secure checkout."
     },
     {
-      "name": "SEO Basics",
-      "icon": "fa-solid fa-magnifying-glass",
-      "description": "Semantic HTML, metadata, and fast load times."
+      "name": "Branding",
+      "icon": "fas fa-briefcase",
+      "description": "Logos, colors, typography, and style guides."
     },
     {
-      "name": "Performance Tuning",
-      "icon": "fa-solid fa-gauge-high",
-      "description": "Optimize Core Web Vitals and speed."
+      "name": "SEO Setup",
+      "icon": "fas fa-rocket",
+      "description": "Technical SEO foundations to boost visibility."
     },
     {
       "name": "Maintenance",
-      "icon": "fa-solid fa-screwdriver-wrench",
-      "description": "Ongoing updates and content changes."
+      "icon": "fas fa-wrench",
+      "description": "Keep your site secure and up-to-date."
     }
   ]
 }

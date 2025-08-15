@@ -1,13 +1,8 @@
 {
   "title": "Web Design that Drives Results",
-  "titleSize": "3.2rem",
   "subtitle": "Modern, responsive websites tailored to your brand.",
-  "subtitleSize": "1.2rem",
   "cta": {
     "text": "Get Started",
-    "link": "#contact",
-    "style": "white-background-purple-text"
-  },
-  "background": "gradient-purple",
-  "animations": true
+    "link": "#contact-us"
+  }
 }

@@ -1,40 +1,33 @@
 {
   "title": "What Our Clients Say",
-  "titleSize": "2.2rem",
-  "autoPlay": {
-    "enabled": true,
-    "interval": 4000,
-    "pauseOnHover": true,
-    "resumeAfterManualNavigation": true
-  },
-  "testimonials": [
+  "items": [
     {
-      "name": "Don",
+      "name": "Maya Diaz",
+      "position": "CMO",
+      "company": "Aurora Labs",
+      "image": "/assets/images/uploads/t1.jpg",
+      "comment": "Nexcey delivered a gorgeous site that boosted signups in week one."
+    },
+    {
+      "name": "Grant Lee",
       "position": "Founder",
-      "company": "Nilnara Villa",
-      "image": "/assets/images/uploads/testimonial-don.jpg",
-      "comment": "Experience unparalleled luxury and personalized service at Nilnara Villa, where every stay is a journey into sophistication, comfort, and unforgettable memories."
+      "company": "Nimbus Pay",
+      "image": "/assets/images/uploads/t2.jpg",
+      "comment": "Clean code, fast delivery, and great comms. Highly recommend!"
     },
     {
-      "name": "Ayesha Perera",
-      "position": "Marketing Manager",
-      "company": "Alpha Co.",
-      "image": "/assets/images/uploads/testimonial-ayesha.jpg",
-      "comment": "Nexcey delivered a stunning site that boosted our conversions within weeks."
-    },
-    {
-      "name": "Lahiru De Silva",
-      "position": "CEO",
-      "company": "Beta LLC",
-      "image": "/assets/images/uploads/testimonial-lahiru.jpg",
-      "comment": "Clean design, fast performance, and super easy CMS\u2014exactly what we needed."
-    },
-    {
-      "name": "Megan Lloyd",
+      "name": "Priya Singh",
       "position": "Product Lead",
-      "company": "Gamma Studio",
-      "image": "/assets/images/uploads/testimonial-megan.jpg",
-      "comment": "Professional team with great attention to detail. Highly recommended!"
+      "company": "Citrus Tech",
+      "image": "/assets/images/uploads/t3.jpg",
+      "comment": "Our new site is fast, accessible, and easy to update."
+    },
+    {
+      "name": "Salman Yusuf",
+      "position": "CEO",
+      "company": "Peak Outfitters",
+      "image": "/assets/images/uploads/t4.jpg",
+      "comment": "They nailed our brand and UX. Conversions are up 30%."
     }
   ]
 }

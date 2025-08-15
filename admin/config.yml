@@ -1,4 +1,3 @@
-
 backend:
   name: git-gateway
   branch: main
@@ -6,178 +5,110 @@ backend:
 media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
 
-publish_mode: editorial_workflow
-
 collections:
   - name: "theme"
-    label: "Theme & Branding"
-    file: "data/theme.json"
-    fields:
-      - { label: "Site Name", name: "branding.siteName", widget: "string" }
-      - { label: "Primary Color", name: "branding.palette.primary", widget: "string", default: "#522cb5" }
-      - { label: "Primary Light", name: "branding.palette.primaryLight", widget: "string", default: "#7c52d6" }
-      - { label: "Primary Dark", name: "branding.palette.primaryDark", widget: "string", default: "#3d2088" }
-      - { label: "Text Dark", name: "branding.palette.textDark", widget: "string", default: "#2c3e50" }
-      - { label: "Text Light", name: "branding.palette.textLight", widget: "string", default: "#6c757d" }
-      - { label: "Logo", name: "branding.logo", widget: "image" }
-      - { label: "Favicon", name: "branding.favicon", widget: "image" }
-      - { label: "Google Font", name: "typography.googleFont", widget: "select", options: ["Open Sans","Roboto","Lato","Montserrat","Poppins","Source Sans Pro","Raleway","Ubuntu","Nunito","Inter"], default: "Inter" }
-      - { label: "Body Size", name: "typography.bodySize", widget: "string", default: "15px" }
+    label: "Theme"
+    files:
+      - file: "data/theme.json"
+        label: "Theme Settings"
+        name: "theme"
+        fields:
+          - {label: Primary Color, name: palette.primary, widget: string, default: "#522cb5"}
+          - {label: Google Font, name: branding.typography.googleFont, widget: string, default: "Inter"}
 
-  - name: "hero"
-    label: "Hero"
-    file: "data/hero.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "3.2rem" }
-      - { label: "Subtitle", name: "subtitle", widget: "string" }
-      - { label: "Subtitle Size", name: "subtitleSize", widget: "string", default: "1.2rem" }
-      - label: "CTA"
-        name: "cta"
-        widget: "object"
+  - name: "sections"
+    label: "Sections"
+    files:
+      - file: "data/hero.json"
+        label: "Hero"
+        name: "hero"
         fields:
-          - { label: "Text", name: "text", widget: "string" }
-          - { label: "Link", name: "link", widget: "string", default: "#contact" }
-
-  - name: "about"
-    label: "About"
-    file: "data/about.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "2.2rem" }
-      - { label: "Text", name: "text", widget: "text" }
-      - { label: "Text Size", name: "textSize", widget: "string", default: "1rem" }
-      - { label: "Image", name: "image", widget: "image" }
-      - label: "Image Settings"
-        name: "imageSettings"
-        widget: "object"
-        fields:
-          - { label: "Width", name: "width", widget: "number", default: 640 }
-          - { label: "Height", name: "height", widget: "number", default: 420 }
-          - { label: "Border Radius", name: "borderRadius", widget: "number", default: 14 }
-
-  - name: "services"
-    label: "Services"
-    file: "data/services.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "2.2rem" }
-      - label: "Auto Play"
-        name: "autoPlay"
-        widget: "object"
-        fields:
-          - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
-          - { label: "Interval (ms)", name: "interval", widget: "number", default: 4000 }
-          - { label: "Pause On Hover", name: "pauseOnHover", widget: "boolean", default: true }
-          - { label: "Resume After Manual Navigation", name: "resumeAfterManualNavigation", widget: "boolean", default: true }
-      - label: "Services"
-        name: "services"
-        widget: "list"
-        fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Icon (Font Awesome class)", name: "icon", widget: "string" }
-          - { label: "Description", name: "description", widget: "string" }
-
-  - name: "pricing"
-    label: "Pricing"
-    file: "data/pricing.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "2.2rem" }
-      - label: "Auto Play"
-        name: "autoPlay"
-        widget: "object"
-        fields:
-          - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
-          - { label: "Interval (ms)", name: "interval", widget: "number", default: 4000 }
-          - { label: "Pause On Hover", name: "pauseOnHover", widget: "boolean", default: true }
-          - { label: "Resume After Manual Navigation", name: "resumeAfterManualNavigation", widget: "boolean", default: true }
-      - label: "Plans"
-        name: "plans"
-        widget: "list"
-        fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Price", name: "price", widget: "string" }
-          - { label: "Popular", name: "popular", widget: "boolean", default: false }
-          - { label: "Features", name: "features", widget: "list", field: {label: "Feature", name: "feature", widget: "string"} }
-          - label: "CTA Button"
-            name: "ctaButton"
-            widget: "object"
+          - {label: Title, name: title, widget: string}
+          - {label: Subtitle, name: subtitle, widget: text}
+          - label: CTA
+            name: cta
+            widget: object
             fields:
-              - { label: "Text", name: "text", widget: "string", default: "Choose Plan" }
+              - {label: Text, name: text, widget: string}
+              - {label: Link, name: link, widget: string, default: "#contact-us"}
 
-  - name: "clients"
-    label: "Clients"
-    file: "data/clients.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "2.2rem" }
-      - label: "Auto Play"
-        name: "autoPlay"
-        widget: "object"
+      - file: "data/about.json"
+        label: "About"
+        name: "about"
         fields:
-          - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
-          - { label: "Interval (ms)", name: "interval", widget: "number", default: 4000 }
-          - { label: "Pause On Hover", name: "pauseOnHover", widget: "boolean", default: true }
-          - { label: "Resume After Manual Navigation", name: "resumeAfterManualNavigation", widget: "boolean", default: true }
-      - label: "Clients"
+          - {label: Title, name: title, widget: string}
+          - {label: Text, name: text, widget: text}
+          - {label: Image, name: image, widget: image}
+
+      - file: "data/services.json"
+        label: "Services"
+        name: "services"
+        fields:
+          - {label: Title, name: title, widget: string}
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Icon (Font Awesome classes), name: icon, widget: string, default: "fas fa-rocket"}
+              - {label: Description, name: description, widget: string}
+
+      - file: "data/pricing.json"
+        label: "Pricing"
+        name: "pricing"
+        fields:
+          - {label: Title, name: title, widget: string}
+          - label: Plans
+            name: plans
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Price, name: price, widget: string}
+              - {label: Popular, name: popular, widget: boolean, default: false}
+              - {label: Features, name: features, widget: list, field: {label: Feature, name: feature, widget: string}}
+
+      - file: "data/clients.json"
+        label: "Clients"
         name: "clients"
-        widget: "list"
         fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Logo", name: "logo", widget: "image" }
-          - { label: "Website Image", name: "websiteImage", widget: "image" }
-          - { label: "Website URL", name: "websiteUrl", widget: "string" }
+          - {label: Title, name: title, widget: string}
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Logo, name: logo, widget: image}
+              - {label: Website Image, name: websiteImage, widget: image}
+              - {label: Website URL, name: websiteUrl, widget: string}
 
-  - name: "testimonials"
-    label: "Testimonials"
-    file: "data/testimonials.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Title Size", name: "titleSize", widget: "string", default: "2.2rem" }
-      - label: "Auto Play"
-        name: "autoPlay"
-        widget: "object"
-        fields:
-          - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
-          - { label: "Interval (ms)", name: "interval", widget: "number", default: 4000 }
-          - { label: "Pause On Hover", name: "pauseOnHover", widget: "boolean", default: true }
-          - { label: "Resume After Manual Navigation", name: "resumeAfterManualNavigation", widget: "boolean", default: true }
-      - label: "Testimonials"
+      - file: "data/testimonials.json"
+        label: "Testimonials"
         name: "testimonials"
-        widget: "list"
         fields:
-          - { label: "Name", name: "name", widget: "string" }
-          - { label: "Position", name: "position", widget: "string" }
-          - { label: "Company", name: "company", widget: "string", required: false }
-          - { label: "Image", name: "image", widget: "image" }
-          - { label: "Comment", name: "comment", widget: "text" }
+          - {label: Title, name: title, widget: string}
+          - label: Items
+            name: items
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Position, name: position, widget: string}
+              - {label: Company, name: company, widget: string, required: false}
+              - {label: Photo, name: image, widget: image}
+              - {label: Comment, name: comment, widget: text}
 
-  - name: "contact"
-    label: "Contact"
-    file: "data/contact.json"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Email", name: "email", widget: "string" }
-      - { label: "Phone", name: "phone", widget: "string" }
-      - { label: "Address", name: "address", widget: "string" }
-
-  - name: "footer"
-    label: "Footer"
-    file: "data/footer.json"
-    fields:
-      - { label: "Copyright Text", name: "copyrightText", widget: "string" }
-      - label: "Contact Info"
-        name: "middleColumn.contactInfo"
-        widget: "list"
+      - file: "data/footer.json"
+        label: "Footer"
+        name: "footer"
         fields:
-          - { label: "Type", name: "type", widget: "string" }
-          - { label: "Icon", name: "icon", widget: "string" }
-          - { label: "Value", name: "value", widget: "string" }
-      - label: "Social Links"
-        name: "rightColumn.socialLinks"
-        widget: "list"
-        fields:
-          - { label: "Platform", name: "platform", widget: "string" }
-          - { label: "Icon", name: "icon", widget: "string" }
-          - { label: "URL", name: "url", widget: "string" }
+          - {label: Email, name: email, widget: string}
+          - {label: Phone, name: phone, widget: string}
+          - {label: Address, name: address, widget: text}
+          - label: Social
+            name: social
+            widget: object
+            fields:
+              - {label: Facebook, name: facebook, widget: string, required: false}
+              - {label: X (Twitter), name: x-twitter, widget: string, required: false}
+              - {label: LinkedIn, name: linkedin, widget: string, required: false}
+              - {label: Instagram, name: instagram, widget: string, required: false}
+              - {label: WhatsApp, name: whatsapp, widget: string, required: false}

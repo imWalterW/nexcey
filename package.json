@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx serve .",
-    "build": "echo 'Static site \u2014 nothing to build'"
+    "start": "python -m http.server 5000",
+    "serve": "python -m http.server 5000"
   }
 }

@@ -1,64 +1,29 @@
 {
   "title": "Our Clients",
-  "titleSize": "2.2rem",
-  "autoPlay": {
-    "enabled": true,
-    "interval": 4000,
-    "pauseOnHover": true,
-    "resumeAfterManualNavigation": true
-  },
-  "clients": [
+  "items": [
     {
-      "name": "Alpha Co.",
-      "logo": "/assets/images/uploads/client-alpha.png",
-      "websiteImage": "/assets/images/uploads/client-alpha-site.jpg",
-      "websiteUrl": "https://example.com",
-      "logoSizeControl": {
-        "w": 160,
-        "h": 80
-      },
-      "websiteImageSizeControl": {
-        "h": 220
-      }
+      "name": "Aurora Labs",
+      "logo": "/assets/images/uploads/client1.png",
+      "websiteImage": "/assets/images/uploads/site1.jpg",
+      "websiteUrl": "https://example.com"
     },
     {
-      "name": "Beta LLC",
-      "logo": "/assets/images/uploads/client-beta.png",
-      "websiteImage": "/assets/images/uploads/client-beta-site.jpg",
-      "websiteUrl": "https://example.com",
-      "logoSizeControl": {
-        "w": 160,
-        "h": 80
-      },
-      "websiteImageSizeControl": {
-        "h": 220
-      }
+      "name": "Peak Outfitters",
+      "logo": "/assets/images/uploads/client2.png",
+      "websiteImage": "/assets/images/uploads/site2.jpg",
+      "websiteUrl": "https://example.com"
     },
     {
-      "name": "Gamma Studio",
-      "logo": "/assets/images/uploads/client-gamma.png",
-      "websiteImage": "/assets/images/uploads/client-gamma-site.jpg",
-      "websiteUrl": "https://example.com",
-      "logoSizeControl": {
-        "w": 160,
-        "h": 80
-      },
-      "websiteImageSizeControl": {
-        "h": 220
-      }
+      "name": "Nimbus Pay",
+      "logo": "/assets/images/uploads/client3.png",
+      "websiteImage": "/assets/images/uploads/site3.jpg",
+      "websiteUrl": "https://example.com"
     },
     {
-      "name": "Delta Labs",
-      "logo": "/assets/images/uploads/client-delta.png",
-      "websiteImage": "/assets/images/uploads/client-delta-site.jpg",
-      "websiteUrl": "https://example.com",
-      "logoSizeControl": {
-        "w": 160,
-        "h": 80
-      },
-      "websiteImageSizeControl": {
-        "h": 220
-      }
+      "name": "Citrus Tech",
+      "logo": "/assets/images/uploads/client4.png",
+      "websiteImage": "/assets/images/uploads/site4.jpg",
+      "websiteUrl": "https://example.com"
     }
   ]
 }

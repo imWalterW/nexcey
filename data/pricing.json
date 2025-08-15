@@ -1,73 +1,51 @@
 {
   "title": "Pricing Plans",
-  "titleSize": "2.2rem",
-  "popularPlanHighlight": {
-    "badge": "Most Popular",
-    "specialBackground": "purple-gradient",
-    "textColor": "white"
-  },
-  "autoPlay": {
-    "enabled": true,
-    "interval": 4000,
-    "pauseOnHover": true,
-    "resumeAfterManualNavigation": true
-  },
   "plans": [
     {
       "name": "Starter",
-      "price": "$299",
+      "price": "$499",
       "popular": false,
       "features": [
-        "1-page site",
-        "Mobile responsive",
+        "Single-page site",
+        "Responsive design",
         "Basic SEO",
-        "Netlify hosting setup"
-      ],
-      "ctaButton": {
-        "text": "Choose Plan"
-      }
+        "2 revisions"
+      ]
     },
     {
-      "name": "Business",
-      "price": "$799",
+      "name": "Growth",
+      "price": "$1299",
       "popular": true,
       "features": [
         "Up to 6 pages",
-        "CMS integration",
+        "AOS animations",
+        "SEO setup",
         "Contact form",
-        "AOS animations"
-      ],
-      "ctaButton": {
-        "text": "Choose Plan"
-      }
+        "5 revisions"
+      ]
     },
     {
-      "name": "Pro",
-      "price": "$1499",
+      "name": "Scale",
+      "price": "$2499",
       "popular": false,
       "features": [
-        "10+ pages",
-        "Custom features",
+        "Custom pages",
+        "Advanced layouts",
         "Performance tuning",
+        "CMS integration",
         "Priority support"
-      ],
-      "ctaButton": {
-        "text": "Choose Plan"
-      }
+      ]
     },
     {
       "name": "Enterprise",
       "price": "Custom",
       "popular": false,
       "features": [
-        "Large-scale projects",
-        "SLA and support",
-        "Dedicated PM",
-        "Custom integrations"
-      ],
-      "ctaButton": {
-        "text": "Contact Sales"
-      }
+        "Bespoke UX",
+        "Integrations",
+        "SLA",
+        "Roadmap partnership"
+      ]
     }
   ]
 }

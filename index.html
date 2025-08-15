@@ -1,181 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexcey - Web Design Agency</title>
-  <meta name="description" content="Modern, responsive web design and development services by Nexcey." />
-
-  <link rel="icon" href="/assets/images/favicon.ico" />
-  <!-- Google Font dynamically injected by script.js based on data/theme.json -->
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pO12HkGd8FfM9p6a4r6H9+zR5y9oJrK3n2c7z2iZlN1Yv1m+c5QZ3C4H2d9n4S2iC1mD9nHnU6q7zQF0zF5xkA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- AOS -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nexcey Web Design Service</title>
+  <meta name="description" content="Modern, responsive business websites by Nexcey.">
+  <link rel="icon" href="assets/images/favicon.ico">
+  <!-- Google Fonts (CMS can swap) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6.4.0 (must be in head) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- AOS CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link href="assets/css/style.css" rel="stylesheet">
+  <!-- Inline JSON fallbacks for offline open -->
+  <script type="application/json" id="data-theme">{"branding": {"primaryColor": "#522cb5", "colorScheme": "purple-white", "typography": {"fontFamily": "Arial, sans-serif", "googleFont": "Inter"}}, "palette": {"primary": "#522cb5", "primaryLight": "#7c52d6", "primaryDark": "#3d2088", "secondary": "#f8f9fa", "textDark": "#2c3e50", "textLight": "#6c757d", "white": "#ffffff"}, "effects": {"radius": "10px", "shadow": "0 8px 24px rgba(82,44,181,0.12)", "transition": "0.3s ease"}, "fonts": {"body": "15px", "headingScale": {"h1": "3.2rem", "h2": "2.2rem", "h3": "1.3rem", "p": "1rem"}}}</script>
+  <script type="application/json" id="data-hero">{"title": "Web Design that Drives Results", "subtitle": "Modern, responsive websites tailored to your brand.", "cta": {"text": "Get Started", "link": "#contact-us"}}</script>
+  <script type="application/json" id="data-about">{"title": "About Nexcey", "text": "We build high-performing, responsive websites that help businesses grow. Our Nexcey team blends strategy, design, and code to deliver clean, fast, and scalable sites.", "image": "/assets/images/uploads/about.jpg"}</script>
+  <script type="application/json" id="data-services">{"title": "Our Services", "items": [{"name": "Website Design", "icon": "fas fa-palette", "description": "Pixel-perfect, responsive layouts with modern UX."}, {"name": "Web Development", "icon": "fas fa-code", "description": "Clean, maintainable, standards-compliant code."}, {"name": "E\u2011commerce", "icon": "fas fa-shopping-cart", "description": "Fast storefronts with secure checkout."}, {"name": "Branding", "icon": "fas fa-briefcase", "description": "Logos, colors, typography, and style guides."}, {"name": "SEO Setup", "icon": "fas fa-rocket", "description": "Technical SEO foundations to boost visibility."}, {"name": "Maintenance", "icon": "fas fa-wrench", "description": "Keep your site secure and up-to-date."}]}</script>
+  <script type="application/json" id="data-pricing">{"title": "Pricing Plans", "plans": [{"name": "Starter", "price": "$499", "popular": false, "features": ["Single-page site", "Responsive design", "Basic SEO", "2 revisions"]}, {"name": "Growth", "price": "$1299", "popular": true, "features": ["Up to 6 pages", "AOS animations", "SEO setup", "Contact form", "5 revisions"]}, {"name": "Scale", "price": "$2499", "popular": false, "features": ["Custom pages", "Advanced layouts", "Performance tuning", "CMS integration", "Priority support"]}, {"name": "Enterprise", "price": "Custom", "popular": false, "features": ["Bespoke UX", "Integrations", "SLA", "Roadmap partnership"]}]}</script>
+  <script type="application/json" id="data-clients">{"title": "Our Clients", "items": [{"name": "Aurora Labs", "logo": "/assets/images/uploads/client1.png", "websiteImage": "/assets/images/uploads/site1.jpg", "websiteUrl": "https://example.com"}, {"name": "Peak Outfitters", "logo": "/assets/images/uploads/client2.png", "websiteImage": "/assets/images/uploads/site2.jpg", "websiteUrl": "https://example.com"}, {"name": "Nimbus Pay", "logo": "/assets/images/uploads/client3.png", "websiteImage": "/assets/images/uploads/site3.jpg", "websiteUrl": "https://example.com"}, {"name": "Citrus Tech", "logo": "/assets/images/uploads/client4.png", "websiteImage": "/assets/images/uploads/site4.jpg", "websiteUrl": "https://example.com"}]}</script>
+  <script type="application/json" id="data-testimonials">{"title": "What Our Clients Say", "items": [{"name": "Maya Diaz", "position": "CMO", "company": "Aurora Labs", "image": "/assets/images/uploads/t1.jpg", "comment": "Nexcey delivered a gorgeous site that boosted signups in week one."}, {"name": "Grant Lee", "position": "Founder", "company": "Nimbus Pay", "image": "/assets/images/uploads/t2.jpg", "comment": "Clean code, fast delivery, and great comms. Highly recommend!"}, {"name": "Priya Singh", "position": "Product Lead", "company": "Citrus Tech", "image": "/assets/images/uploads/t3.jpg", "comment": "Our new site is fast, accessible, and easy to update."}, {"name": "Salman Yusuf", "position": "CEO", "company": "Peak Outfitters", "image": "/assets/images/uploads/t4.jpg", "comment": "They nailed our brand and UX. Conversions are up 30%."}]}</script>
+  <script type="application/json" id="data-footer">{"email": "info@nexcey.com", "phone": "+94 72 445 2222", "address": "203, Somananda MW, Udahamulla, Panadura, Sri Lanka", "social": {"facebook": "#", "x-twitter": "#", "linkedin": "#", "instagram": "#", "whatsapp": "#"}}</script>
 </head>
 <body>
-  <header id="site-header" class="header">
-    <div class="container header-inner">
-      <a href="#" class="logo-link">
-        <img src="/assets/images/logo.png" alt="Nexcey Logo" class="logo" />
-      </a>
-      <nav id="main-nav" class="nav">
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#clients">Clients</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-        </ul>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home"><img src="assets/images/logo.png" alt="Nexcey Logo"><span>Nexcey</span></a>
+      <nav class="menu" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#about">About Us</a>
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#clients">Clients</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact-us">Contact Us</a>
       </nav>
-      <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="hamburger" aria-label="Open menu"><i class="fas fa-bars"></i></button>
     </div>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section id="home" class="section hero" data-section="hero">
-      <div class="container hero-inner">
-        <div class="hero-content" data-aos="fade-up">
-          <h1 id="hero-title"></h1>
-          <p id="hero-subtitle"></p>
-          <a id="hero-cta" class="btn btn-white"></a>
-        </div>
-      </div>
-      <div class="scroll-indicator"><i class="fa-solid fa-angles-down"></i></div>
-    </section>
+  <main id="home">
+    <section id="hero" class="hero"></section>
 
-    <!-- ABOUT -->
-    <section id="about" class="section about" data-section="about">
-      <div class="container grid-2">
-        <div class="about-text" data-aos="fade-right">
-          <h2 id="about-title"></h2>
-          <p id="about-text"></p>
-        </div>
-        <div class="about-image" data-aos="fade-left">
-          <img id="about-image" alt="About Nexcey" />
-        </div>
-      </div>
-    </section>
+    <section id="about" class="about"></section>
 
-    <!-- SERVICES -->
-    <section id="services" class="section services" data-section="services">
+    <section id="services"></section>
+
+    <section id="pricing"></section>
+
+    <section id="clients"></section>
+
+    <section id="testimonials"></section>
+
+    <section id="contact-us" class="contact">
       <div class="container">
-        <h2 class="section-title"></h2>
-        <div class="responsive-wrap" id="services-wrap">
-          <div class="grid" id="services-grid"></div>
-          <div class="carousel" id="services-carousel">
-            <button class="carousel-arrow prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="carousel-track" id="services-track"></div>
-            <button class="carousel-arrow next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+        <h2 class="section-title">Contact Us</h2>
+        <div class="grid grid-2">
+          <div class="left" style="display:grid;gap:1rem">
+            <div class="info-item"><i class="fas fa-envelope"></i><div>info@nexcey.com</div></div>
+            <div class="info-item"><i class="fas fa-phone"></i><div>+94 72 445 2222</div></div>
+            <div class="info-item"><i class="fas fa-map-marker-alt"></i><div>203, Somananda MW, Udahamulla, Panadura, Sri Lanka</div></div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section id="pricing" class="section pricing" data-section="pricing">
-      <div class="container">
-        <h2 class="section-title"></h2>
-        <div class="responsive-wrap" id="pricing-wrap">
-          <div class="grid" id="pricing-grid"></div>
-          <div class="carousel" id="pricing-carousel">
-            <button class="carousel-arrow prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="carousel-track" id="pricing-track"></div>
-            <button class="carousel-arrow next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+          <div class="right">
+            <form id="contact-form">
+              <div class="row">
+                <div><input name="name" placeholder="Your name *" required></div>
+                <div><input name="email" placeholder="Email address *" required></div>
+              </div>
+              <div class="row">
+                <div><input name="phone" placeholder="Phone (optional)"></div>
+                <div><input name="subject" placeholder="Subject (optional)"></div>
+              </div>
+              <div><textarea name="message" placeholder="Your message *" required></textarea></div>
+              <button class="btn" type="submit">Send Message <i class="fas fa-paper-plane"></i></button>
+            </form>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CLIENTS -->
-    <section id="clients" class="section clients" data-section="clients">
-      <div class="container">
-        <h2 class="section-title"></h2>
-        <div class="responsive-wrap" id="clients-wrap">
-          <div class="grid" id="clients-grid"></div>
-          <div class="carousel" id="clients-carousel">
-            <button class="carousel-arrow prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="carousel-track" id="clients-track"></div>
-            <button class="carousel-arrow next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section id="testimonials" class="section testimonials" data-section="testimonials">
-      <div class="container">
-        <h2 class="section-title"></h2>
-        <div class="responsive-wrap" id="testimonials-wrap">
-          <div class="grid" id="testimonials-grid"></div>
-          <div class="carousel" id="testimonials-carousel">
-            <button class="carousel-arrow prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="carousel-track" id="testimonials-track"></div>
-            <button class="carousel-arrow next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section contact" data-section="contact">
-      <div class="container grid-2">
-        <div class="contact-info" data-aos="fade-right">
-          <h2 class="section-title">Contact Us</h2>
-          <div class="contact-cards" id="contact-cards"></div>
-        </div>
-        <div class="contact-form" data-aos="fade-left">
-          <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contact-form">
-            <input type="hidden" name="form-name" value="contact" />
-            <p class="hidden">
-              <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
-            </p>
-            <div class="form-group">
-              <label for="name">Name *</label>
-              <input id="name" name="name" type="text" required />
-            </div>
-            <div class="form-group">
-              <label for="email">Email *</label>
-              <input id="email" name="email" type="email" required />
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" />
-            </div>
-            <div class="form-group">
-              <label for="message">Message *</label>
-              <textarea id="message" name="message" required></textarea>
-            </div>
-            <button class="btn btn-primary" type="submit">
-              <i class="fa-solid fa-paper-plane"></i> Send Message
-            </button>
-          </form>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div class="footer-left">
-        <img src="/assets/images/logo.png" alt="Nexcey Logo" class="footer-logo" />
-      </div>
-      <div class="footer-middle" id="footer-middle"></div>
-      <div class="footer-right" id="footer-right"></div>
-    </div>
-    <div class="container footer-bottom">
-      <p id="copyright"></p>
-    </div>
+  <footer>
+    <div class="container"></div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- AOS JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script src="/assets/js/script.js"></script>
+  <script src="assets/js/script.js"></script>
 </body>
 </html>
